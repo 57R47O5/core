@@ -5,4 +5,11 @@ Incluye componentes, contextos, utilidades y configuraciones que se repiten en l
 
 El objetivo es evitar reescribir lo mismo una y otra vez, mantener coherencia entre proyectos y permitir mejoras evolutivas compartidas.
 
+🌱 Estructura general del repositorio
+main              → rama neutra o de referencia (opcional)
+core              → rama base compartida por todos los proyectos
+carteles          → rama de proyecto A basada en core
+feria_virtual     → rama de proyecto B basada en core
 
+
+Cada rama de proyecto mantiene su independencia funcional, pero puede sincronizar los cambios comunes desde core.
