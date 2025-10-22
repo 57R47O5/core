@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'core_app',
     'rest_framework.authtoken',
+    'features.carteles',
     ]
 
 MIDDLEWARE = [
