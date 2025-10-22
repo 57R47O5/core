@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const MapaUbicacion = ({ latitudInicial, longitudInicial, onUbicacionChange }) => {
+const MapaUbicacion = ({ latitudInicial, longitudInicial, onUbicacionChange, children }) => {
     const [posicion, setPosicion] = useState([latitudInicial, longitudInicial]);
 
     const MarcadorSeleccion = () => {
@@ -23,8 +23,6 @@ const MapaUbicacion = ({ latitudInicial, longitudInicial, onUbicacionChange }) =
         );
     };
 
-    console.log('latitudInicial: ', latitudInicial)
-    console.log('longitudInicial: ', longitudInicial)
     return (
         <MapContainer center={posicion} zoom={13} style={{ height: "400px", width: "100%" }}>
             <TileLayer
@@ -32,6 +30,7 @@ const MapaUbicacion = ({ latitudInicial, longitudInicial, onUbicacionChange }) =
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             <MarcadorSeleccion />
+            {children}
         </MapContainer>
     );
 };

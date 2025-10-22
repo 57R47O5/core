@@ -7,7 +7,7 @@ import Home from "./pages/Home"
 import Nav from './components/Nav/Nav';
 import { getCookie } from "./api/csrf";
 import { AuthProvider } from "./context/AuthContext";
-
+import {CrearCartelPage} from "../src/pages/carteles/CrearCartelPage.jsx"
 
 function App() {
   useEffect(() => {
@@ -31,6 +31,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/carteles/nuevo" element={<CrearCartelPage />} />
         </Routes>
       </Router>
     </AuthProvider>
