@@ -10,7 +10,7 @@ const MapaUbicacion = ({ latitudInicial, longitudInicial, onUbicacionChange, chi
             click(e) {
                 const { lat, lng } = e.latlng;
                 setPosicion([lat, lng]);
-                onUbicacionChange(lat, lng);
+                onUbicacionChange({lat, lng});
             },
         });
 
