@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import MapaUbicacion from "./MapaUbicacion";
+import { useState, useEffect } from "react";
+import Mapa from "../Mapa"
 import { Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
-import axios from "axios";
+import request from "../../api/requests"
 
 const iconoCartel = new L.Icon({
   iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
@@ -18,7 +18,7 @@ const MapaCarteles = ({ onUbicacionSeleccionada }) => {
 
   // 🔹 Cargar carteles desde la API
   useEffect(() => {
-    axios
+    request
       .get("http://127.0.0.1:8000/api/carteles/")
       .then((res) => setCarteles(res.data))
       .catch((err) => console.error("Error al obtener carteles:", err));
@@ -28,7 +28,7 @@ const MapaCarteles = ({ onUbicacionSeleccionada }) => {
   const handleBuscar = async () => {
     if (!busqueda.trim()) return;
     try {
-      const response = await axios.get("https://nominatim.openstreetmap.org/search", {
+      const response = await request.get("https://nominatim.openstreetmap.org/search", {
         params: { q: busqueda, format: "json", limit: 1 },
       });
       if (response.data.length > 0) {
@@ -66,7 +66,7 @@ const MapaCarteles = ({ onUbicacionSeleccionada }) => {
       </div>
 
       {/* Reutilizamos el mapa base */}
-      <MapaUbicacion
+      <Mapa
         latitudInicial={posicionMapa[0]}
         longitudInicial={posicionMapa[1]}
         onUbicacionChange={onUbicacionSeleccionada}
@@ -90,7 +90,7 @@ const MapaCarteles = ({ onUbicacionSeleccionada }) => {
             </Popup>
           </Marker>
         ))}
-      </MapaUbicacion>
+      </Mapa>
     </div>
   );
 };

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import axiosClient from "../../api/axiosClient";
+import { useState } from "react";
+import request from "../../api/requests";
 import MapaUbicacion from "../../components/MapaUbicacion";
 
 const CrearCartel = () => {
@@ -48,7 +48,7 @@ const CrearCartel = () => {
         data.append("imagenes", imagenes[i]);
       }
 
-      const response = await axiosClient.post("/api/carteles/", data, {
+      const response = await request.post("carteles/crear/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

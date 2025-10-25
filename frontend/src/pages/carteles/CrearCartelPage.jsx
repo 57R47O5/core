@@ -1,10 +1,10 @@
-import FormularioCartel from "../components/Carteles/FormularioCartel";
-import axiosClient from "../api/axiosClient";
+import FormularioCartel from "../../components/carteles/FormularioCartel";
+import request from "../../api/requests"
 
 const CrearCartelPage = () => {
   const crearCartel = async (data) => {
     try {
-      const response = await axiosClient.post("/api/carteles/", data);
+      const response = await request.post("carteles/crear/", data);
       alert("Cartel creado correctamente");
       console.log(response.data);
     } catch (error) {

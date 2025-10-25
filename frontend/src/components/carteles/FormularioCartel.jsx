@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import MapaSeleccionUbicacion from "./MapaSeleccionUbicacion";
+import MapaCarteles from "./MapaCarteles";
 
 const schema = Yup.object().shape({
   tipo_cartel: Yup.string().required("El tipo de cartel es obligatorio"),
@@ -54,7 +54,7 @@ const FormularioCartel = ({ onSubmit }) => {
 
           <div className="mb-3">
             <label>Ubicación</label>
-            <MapaSeleccionUbicacion
+            <MapaCarteles
               onUbicacionSeleccionada={(latlng) => {
                 setFieldValue("latitud", latlng.lat);
                 setFieldValue("longitud", latlng.lng);

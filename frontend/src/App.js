@@ -7,7 +7,7 @@ import Home from "./pages/Home"
 import Nav from './components/Nav/Nav';
 import { getCookie } from "./api/csrf";
 import { AuthProvider } from "./context/AuthContext";
-import {CrearCartelPage} from "../src/pages/carteles/CrearCartelPage.jsx"
+import CrearCartelPage from "../src/pages/carteles/CrearCartelPage.jsx"
 
 function App() {
   useEffect(() => {
