@@ -2,6 +2,8 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
+
+from core_app.framework.exceptions import excepcion
 from ..models.imagen_cartel import Cartel
 from ..serializers.cartel import (
     CartelSerializer,
@@ -31,12 +33,12 @@ def detalle_cartel(request, pk):
 
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
+@excepcion
 def crear_cartel(request):
     serializer = CartelCreateUpdateSerializer(data=request.data)
-    if serializer.is_valid():
+    if serializer.is_valid(raise_exception=True):
         cartel = serializer.save(administrador=request.user.persona)
-        return Response(CartelSerializer(cartel).data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(CartelSerializer(cartel).data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["PUT", "PATCH"])

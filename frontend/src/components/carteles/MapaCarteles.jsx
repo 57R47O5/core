@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import Mapa from "../Mapa"
+import MapaUbicacion from "../Mapa";
 import { Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
-import request from "../../api/requests"
+import { obtenerCarteles, buscarDireccion } from "./MapaCartelesAPI";
 
 const iconoCartel = new L.Icon({
   iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
@@ -14,35 +14,32 @@ const iconoCartel = new L.Icon({
 const MapaCarteles = ({ onUbicacionSeleccionada }) => {
   const [carteles, setCarteles] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  const [posicionMapa, setPosicionMapa] = useState([-25.2637, -57.5759]); // Ejemplo: Asunción
+  const [posicionMapa, setPosicionMapa] = useState([-25.2637, -57.5759]); // Asunción
 
   // 🔹 Cargar carteles desde la API
   useEffect(() => {
-    request
-      .get("http://127.0.0.1:8000/api/carteles/")
-      .then((res) => setCarteles(res.data))
-      .catch((err) => console.error("Error al obtener carteles:", err));
+    const cargarCarteles = async () => {
+      try {
+        const data = await obtenerCarteles();
+        setCarteles(data);
+      } catch {
+        // ya se loguea el error dentro de la función API
+      }
+    };
+    cargarCarteles();
   }, []);
 
-  // 🔹 Buscar dirección en Nominatim (OpenStreetMap)
+  // 🔹 Buscar dirección y mover mapa
   const handleBuscar = async () => {
-    if (!busqueda.trim()) return;
-    try {
-      const response = await request.get("https://nominatim.openstreetmap.org/search", {
-        params: { q: busqueda, format: "json", limit: 1 },
-      });
-      if (response.data.length > 0) {
-        const { lat, lon } = response.data[0];
-        setPosicionMapa([parseFloat(lat), parseFloat(lon)]);
-      } else {
-        alert("No se encontró la dirección.");
-      }
-    } catch (err) {
-      console.error("Error al buscar dirección:", err);
+    const nuevaPosicion = await buscarDireccion(busqueda);
+    if (nuevaPosicion) {
+      setPosicionMapa(nuevaPosicion);
+    } else {
+      alert("No se encontró la dirección.");
     }
   };
 
-  // 🔹 Componente auxiliar para mover el mapa al buscar
+  // 🔹 Componente auxiliar para mover el mapa
   const MoverMapa = ({ posicion }) => {
     const map = useMap();
     useEffect(() => {
@@ -66,31 +63,33 @@ const MapaCarteles = ({ onUbicacionSeleccionada }) => {
       </div>
 
       {/* Reutilizamos el mapa base */}
-      <Mapa
+      <MapaUbicacion
         latitudInicial={posicionMapa[0]}
         longitudInicial={posicionMapa[1]}
         onUbicacionChange={onUbicacionSeleccionada}
       >
-        {/* Este contenido se inyecta dentro del mapa */}
         <MoverMapa posicion={posicionMapa} />
 
-        {/* Marcadores de carteles existentes */}
-        {carteles.map((cartel) => (
-          <Marker
-            key={cartel.id}
-            position={[cartel.latitud, cartel.longitud]}
-            icon={iconoCartel}
-          >
-            <Popup>
-              <strong>{cartel.tipo_cartel?.nombre || "Cartel"}</strong><br />
-              {cartel.direccion || "Sin dirección"}<br />
-              {cartel.precio_exhibicion
-                ? `Precio: ${cartel.precio_exhibicion} Gs`
-                : "Precio no disponible"}
-            </Popup>
-          </Marker>
-        ))}
-      </Mapa>
+        {/* Mostrar marcadores solo si hay carteles */}
+        {carteles.length > 0 &&
+          carteles.map((cartel) => (
+            <Marker
+              key={cartel.id}
+              position={[cartel.latitud, cartel.longitud]}
+              icon={iconoCartel}
+            >
+              <Popup>
+                <strong>{cartel.tipo_cartel?.nombre || "Cartel"}</strong>
+                <br />
+                {cartel.direccion || "Sin dirección"}
+                <br />
+                {cartel.precio_exhibicion
+                  ? `Precio: ${cartel.precio_exhibicion} Gs`
+                  : "Precio no disponible"}
+              </Popup>
+            </Marker>
+          ))}
+      </MapaUbicacion>
     </div>
   );
 };

@@ -24,7 +24,7 @@ class CartelSerializer(serializers.ModelSerializer):
 
 class CartelCreateUpdateSerializer(serializers.ModelSerializer):
     calles = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Calle.objects.all()
+        many=True, queryset=Calle.objects.all(), required=False
     )
 
     class Meta:

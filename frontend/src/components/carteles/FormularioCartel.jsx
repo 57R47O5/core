@@ -5,8 +5,8 @@ import MapaCarteles from "./MapaCarteles";
 const schema = Yup.object().shape({
   tipo_cartel: Yup.string().required("El tipo de cartel es obligatorio"),
   precio: Yup.number().nullable(),
-  ancho: Yup.number().required("Campo obligatorio"),
-  alto: Yup.number().required("Campo obligatorio"),
+  ancho_metros: Yup.number().required("Campo obligatorio"),
+  alto_metros: Yup.number().required("Campo obligatorio"),
 });
 
 const FormularioCartel = ({ onSubmit }) => {
@@ -15,8 +15,8 @@ const FormularioCartel = ({ onSubmit }) => {
       initialValues={{
         tipo_cartel: "",
         precio: "",
-        ancho: "",
-        alto: "",
+        ancho_metros: "",
+        alto_metros: "",
         latitud: "",
         longitud: "",
       }}
@@ -39,11 +39,11 @@ const FormularioCartel = ({ onSubmit }) => {
           <div className="row">
             <div className="col">
               <label>Ancho (m)</label>
-              <Field name="ancho" type="number" className="form-control" />
+              <Field name="ancho_metros" type="number" className="form-control" />
             </div>
             <div className="col">
               <label>Alto (m)</label>
-              <Field name="alto" type="number" className="form-control" />
+              <Field name="alto_metros" type="number" className="form-control" />
             </div>
           </div>
 

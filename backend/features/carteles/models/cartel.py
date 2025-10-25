@@ -26,8 +26,8 @@ class Cartel(models.Model):
 
     calles = models.ManyToManyField(Calle, related_name="carteles", blank=True)
 
-    latitud = models.DecimalField(max_digits=9, decimal_places=6)
-    longitud = models.DecimalField(max_digits=9, decimal_places=6)
+    latitud = models.DecimalField(max_digits=21, decimal_places=18)
+    longitud = models.DecimalField(max_digits=21, decimal_places=18)
 
     numero = models.CharField(max_length=20, blank=True, null=True)
     direccion_completa = models.CharField(max_length=255, blank=True, null=True)

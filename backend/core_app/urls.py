@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import register_view, get_csrf_token, check_auth, login_view, logout_view
@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('csrf/', get_csrf_token, name='get-csrf-token'),
     path('check-auth/', check_auth, name='check_auth'),
+    path('carteles/', include('features.carteles.urls')),
 ]
 
 if settings.DEBUG:
