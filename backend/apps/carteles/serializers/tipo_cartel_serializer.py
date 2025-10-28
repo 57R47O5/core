@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models.tipo_cartel import TipoCartel
+from ..models.tipocartel import TipoCartel
 
 
 class TipoCartelSerializer(serializers.ModelSerializer):

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
-
-class CoreAppConfig(AppConfig):
+class CartelesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'core_app'
+    name = 'apps.carteles'
+    label = 'carteles'  

@@ -1,0 +1,4 @@
+python manage.py makemigrations
+python manage.py makemigrations carteles
+python manage.py loaddata apps/carteles/fixtures/tipo_cartel.json
+python manage.py migrate

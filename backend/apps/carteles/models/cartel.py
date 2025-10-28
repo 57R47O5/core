@@ -1,7 +1,7 @@
 from enum import Enum
 from django.db import models
 from .persona import Persona
-from .tipo_cartel import TipoCartel
+from .tipocartel import TipoCartel
 from .calle import Calle
 
 
@@ -17,6 +17,7 @@ class Cartel(models.Model):
         def choices(cls):
             return [(estado.value, estado.name) for estado in cls]
 
+    id = models.BigAutoField(primary_key=True)
     administrador = models.ForeignKey(Persona, on_delete=models.SET_NULL, 
         related_name="carteles", blank=True, null=True)
     tipo = models.ForeignKey(TipoCartel, on_delete=models.SET_NULL, 
@@ -38,6 +39,9 @@ class Cartel(models.Model):
     precio_exhibicion = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     visible = models.BooleanField(default=True)
     fecha_alta = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table='cartel'
 
     def __str__(self):
         calles_str = ", ".join(calle.nombre for calle in self.calles.all()[:2])

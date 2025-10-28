@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from ..models.calle import Calle
-from ..models.imagen_cartel import Cartel
+from ..models.imagencartel import Cartel
 from .tipo_cartel_serializer import TipoCartelSerializer
 from .persona_serializer import PersonaSerializer
 from .calle_serializer import CalleSerializer

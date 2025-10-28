@@ -9,7 +9,7 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('csrf/', get_csrf_token, name='get-csrf-token'),
     path('check-auth/', check_auth, name='check_auth'),
-    path('carteles/', include('features.carteles.urls')),
+    path('carteles/', include('apps.carteles.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,42 @@
+[
+  {
+    "model": "carteles.tipocartel",
+    "pk": 1,
+    "fields": {
+      "nombre": "Cartel",
+      "descripcion": "Cartel tradicional con estructura fija, generalmente impreso en vinilo o lona."
+    }
+  },
+  {
+    "model": "carteles.tipocartel",
+    "pk": 2,
+    "fields": {
+      "nombre": "Medianera",
+      "descripcion": "Publicidad colocada en paredes laterales de edificios o medianeras."
+    }
+  },
+  {
+    "model": "carteles.tipocartel",
+    "pk": 3,
+    "fields": {
+      "nombre": "Columna",
+      "descripcion": "Cartel montado sobre una o más columnas o postes."
+    }
+  },
+  {
+    "model": "carteles.tipocartel",
+    "pk": 4,
+    "fields": {
+      "nombre": "Led",
+      "descripcion": "Pantalla LED para publicidad digital con contenido dinámico."
+    }
+  },
+  {
+    "model": "carteles.tipocartel",
+    "pk": 5,
+    "fields": {
+      "nombre": "Cambiante",
+      "descripcion": "Cartel con sistema mecánico o electrónico que alterna entre distintos anuncios."
+    }
+  }
+]

@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'core_app',
     'rest_framework.authtoken',
-    'features.carteles',
+    'apps.base.apps.BaseConfig',
+    'apps.carteles.apps.CartelesConfig',
     ]
 
 MIDDLEWARE = [

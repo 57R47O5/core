@@ -20,7 +20,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('core_app.urls')),  # 👈 aquí incluís las URLs de la app
-    path('api/carteles/', include('features.carteles.urls')),
+    path('api/', include('apps.base.urls')),  # 👈 aquí incluís las URLs de la app
+    path('api/carteles/', include('apps.carteles.urls')),
     re_path(r'^.*$', TemplateView.as_view(template_name='index.html')), 
 ]

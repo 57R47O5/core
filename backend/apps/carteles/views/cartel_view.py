@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 
-from core_app.framework.exceptions import excepcion
-from ..models.imagen_cartel import Cartel
+from ...base.framework.exceptions import excepcion
+from ..models.imagencartel import Cartel
 from ..serializers.cartel import (
     CartelSerializer,
     CartelCreateUpdateSerializer,

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models.imagen_cartel import ImagenCartel
+from ..models.imagencartel import ImagenCartel
 
 class ImagenCartelSerializer(serializers.ModelSerializer):
     class Meta:
