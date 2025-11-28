@@ -1,7 +1,6 @@
 from enum import Enum
 from django.db import models
-from django.contrib.auth.models import User
-
+from apps.base.models.user import User
 
 class Persona(models.Model):
     """Representa a una persona física o jurídica que puede administrar carteles."""
@@ -14,12 +13,13 @@ class Persona(models.Model):
             return tuple((tipo.value, tipo.name) for tipo in cls)
 
     id = models.BigAutoField(primary_key=True)
-    tipo = models.CharField(max_length=1, choices=Tipo.choices())
+    tipo = models.CharField(max_length=1, choices=Tipo.choices(), 
+        default=Tipo.USUARIO.value)
     nombre = models.CharField(max_length=255)
     documento = models.CharField(max_length=30, blank=True, null=True)
     telefono = models.CharField(max_length=30, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='persona')
 
     class Meta:
         db_table='persona'

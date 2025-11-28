@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User
+from apps.base.models.user import User
+from apps.auditoria.models import AuditoriaUsuario
 from rest_framework import serializers
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -15,7 +16,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return User.objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email', ''),
-            password=validated_data['password']
+            password=validated_data['password'],
         )
 
 
@@ -49,3 +50,93 @@ class UserLookupSerializer(serializers.Serializer):
         Retorna el usuario validado.
         """
         return self.context.get('user')
+    
+class UserCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'rol', 'activo', 'password']
+        extra_kwargs = {
+            'username': {'required': True},
+            'email': {'required': True},
+            'rol': {'required': True},
+            'activo': {'required': False},
+        }
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        usuario_actor = request.user if request and request.user.is_authenticated else None
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+
+        # AUDITORÍA
+        AuditoriaUsuario.objects.create(
+            usuario=usuario_actor,
+            usuario_afectado=user,
+            accion="CREAR",
+            cambios=validated_data  # campos creados
+        )
+        return user
+    
+class UserUpdateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False, allow_blank=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'rol', 'activo', 'password']
+        extra_kwargs = {
+            'username': {'required': False},
+            'email': {'required': False},
+            'rol': {'required': False},
+            'activo': {'required': False},
+            'password': {'required': False},
+        }
+
+    def update(self, instance, validated_data):
+        request = self.context.get("request")
+        usuario_actor = request.user if request and request.user.is_authenticated else None
+
+         # ====== CAPTURAR ESTADO ORIGINAL ======
+        original = {}
+        for field in self.Meta.fields:
+            if field != "password":  
+                original[field] = getattr(instance, field)
+
+        password = validated_data.pop('password', None)
+
+        # ====== APLICAR CAMBIOS ======
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+
+        # ====== DETECTAR DIFERENCIAS ======
+        cambios = {}
+        for campo, valor_original in original.items():
+            valor_nuevo = getattr(instance, campo)
+            if valor_original != valor_nuevo:
+                cambios[campo] = {
+                    "antes": valor_original,
+                    "después": valor_nuevo
+                }
+
+        # Si la contraseña cambió, registrarlo
+        if password:
+            cambios["password"] = {"antes": "********", "después": "********"}
+
+        # ====== REGISTRAR AUDITORÍA ======
+        if cambios:
+            AuditoriaUsuario.objects.create(
+                usuario=usuario_actor,
+                usuario_afectado=instance,
+                accion="EDITAR",
+                cambios=cambios
+            )
+
+        return instance 

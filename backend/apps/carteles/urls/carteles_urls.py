@@ -1,8 +1,7 @@
 from django.urls import path
-from .views.cartel_view import (
+from ..views.cartel_view import (
     listar_carteles, detalle_cartel, crear_cartel, eliminar_cartel,
     editar_cartel, agregar_imagen_cartel
-    
 )
 
 urlpatterns = [

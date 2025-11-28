@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Alertar, Tipo } from "../utils/alertas";
 
 // --- Función auxiliar para obtener el CSRF token ---
 function getCookie(name) {
@@ -38,19 +39,28 @@ request.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    // Captura de errores con mensaje personalizado
+    let mensaje = "Error inesperado en el servidor.";
+
     if (error.response) {
-      const { status, data } = error.response;
-      const mensaje = data?.mensaje || "Error en la solicitud.";
-      console.error(`Error ${status}: ${mensaje}`);
-      throw new Error(mensaje);
-    } else if (error.request) {
-      console.error("No se recibió respuesta del servidor.");
-      throw new Error("No se recibió respuesta del servidor.");
-    } else {
-      console.error("Error en la configuración de la solicitud:", error.message);
-      throw new Error("Error en la configuración de la solicitud.");
+      const data = error.response.data;
+
+      if (data && data.mensaje) {
+        mensaje = data.mensaje;
+      } 
+      else {
+        mensaje = "Error al procesar la solicitud.";
+      }
+    } 
+    else if (error.request) {
+      mensaje = "El servidor no respondió.";
+    } 
+    else {
+      mensaje = "Error al preparar la solicitud.";
     }
+
+    Alertar(mensaje, Tipo.ERROR, "Error");
+
+    throw new Error(mensaje);
   }
 );
 

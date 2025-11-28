@@ -30,7 +30,6 @@ def detalle_cartel(request, pk):
     serializer = CartelSerializer(cartel)
     return Response(serializer.data)
 
-
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
 @excepcion
@@ -39,7 +38,6 @@ def crear_cartel(request):
     if serializer.is_valid(raise_exception=True):
         cartel = serializer.save(administrador=request.user.persona)
     return Response(CartelSerializer(cartel).data, status=status.HTTP_201_CREATED)
-
 
 @api_view(["PUT", "PATCH"])
 @permission_classes([permissions.IsAuthenticated])

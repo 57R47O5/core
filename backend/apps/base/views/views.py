@@ -12,20 +12,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from apps.base.serializers import UserLookupSerializer
+from apps.base.framework.exceptions import excepcion, ExcepcionPermisos, ExcepcionValidacion
 
-from .framework.exceptions import excepcion, ExcepcionPermisos, ExcepcionBase, ExcepcionValidacion
-from .serializers import UserRegisterSerializer, UserLookupSerializer
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-@csrf_protect
-@excepcion
-def register_view(request):
-    serializer = UserRegisterSerializer(data=request.data)
-    if not serializer.is_valid():
-        raise ExcepcionBase('Error en el registro')
-    serializer.save()
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -43,13 +33,15 @@ def login_view(request):
     if user is None:
         raise ExcepcionPermisos('Credenciales inválidas')
     login(request, user)
-    return Response({
-        'message': 'Inicio de sesión exitoso.',
-        'user': {
+    datos_usuario={
             'id': user.id,
             'username': user.username,
             'email': user.email,
+            'rol': user.rol or None,
         }
+    return Response({
+        'message': 'Inicio de sesión exitoso.',
+        'user': datos_usuario
     }, status=status.HTTP_200_OK)
 
     
@@ -66,7 +58,10 @@ def check_auth(request):
     user_data=None
     if is_authenticated:
         user_data = {
-            "username": request.user.username,
+            'id': request.user.id,
+            'username': request.user.username,
+            'email': request.user.email,
+            'rol': request.user.rol or None,
         }
 
     return Response(
@@ -150,3 +145,4 @@ def password_reset_confirm(request, uidb64, token):
 @ensure_csrf_cookie
 def get_csrf_token(request):
     return JsonResponse({'detail': 'CSRF cookie set'})
+

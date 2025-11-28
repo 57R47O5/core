@@ -3,33 +3,30 @@ import MapaUbicacion from "../Mapa";
 import { Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { obtenerCarteles, buscarDireccion } from "./MapaCartelesAPI";
+import iconoCartelImg from "../../icons/cartel.png";
 
 const iconoCartel = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+  iconUrl: iconoCartelImg,
   iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32],
 });
 
-const MapaCarteles = ({ onUbicacionSeleccionada }) => {
+const MapaCarteles = () => {
   const [carteles, setCarteles] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  const [posicionMapa, setPosicionMapa] = useState([-25.2637, -57.5759]); // Asunción
+  const [posicionMapa, setPosicionMapa] = useState([-25.2637, -57.5759]);
 
-  // 🔹 Cargar carteles desde la API
   useEffect(() => {
     const cargarCarteles = async () => {
       try {
         const data = await obtenerCarteles();
         setCarteles(data);
-      } catch {
-        // ya se loguea el error dentro de la función API
-      }
+      } catch {}
     };
     cargarCarteles();
   }, []);
 
-  // 🔹 Buscar dirección y mover mapa
   const handleBuscar = async () => {
     const nuevaPosicion = await buscarDireccion(busqueda);
     if (nuevaPosicion) {
@@ -39,7 +36,6 @@ const MapaCarteles = ({ onUbicacionSeleccionada }) => {
     }
   };
 
-  // 🔹 Componente auxiliar para mover el mapa
   const MoverMapa = ({ posicion }) => {
     const map = useMap();
     useEffect(() => {
@@ -50,7 +46,6 @@ const MapaCarteles = ({ onUbicacionSeleccionada }) => {
 
   return (
     <div>
-      {/* Barra de búsqueda */}
       <div style={{ marginBottom: "8px", display: "flex", gap: "4px" }}>
         <input
           type="text"
@@ -62,15 +57,13 @@ const MapaCarteles = ({ onUbicacionSeleccionada }) => {
         <button onClick={handleBuscar}>Buscar</button>
       </div>
 
-      {/* Reutilizamos el mapa base */}
       <MapaUbicacion
         latitudInicial={posicionMapa[0]}
         longitudInicial={posicionMapa[1]}
-        onUbicacionChange={onUbicacionSeleccionada}
+        onUbicacionChange={() => {}}
       >
         <MoverMapa posicion={posicionMapa} />
 
-        {/* Mostrar marcadores solo si hay carteles */}
         {carteles.length > 0 &&
           carteles.map((cartel) => (
             <Marker
@@ -95,3 +88,29 @@ const MapaCarteles = ({ onUbicacionSeleccionada }) => {
 };
 
 export default MapaCarteles;
+
+export const MapaNuevoCartel = ({ onUbicacionSeleccionada }) => {
+  const [posicion, setPosicion] = useState(null);
+
+  const handleUbicacion = ({ lat, lng }) => {
+    setPosicion([lat, lng]);
+    onUbicacionSeleccionada({ lat, lng });
+  };
+
+  return (
+    <MapaUbicacion
+      latitudInicial={-25.2637}
+      longitudInicial={-57.5759}
+      onUbicacionChange={handleUbicacion}
+    >
+      {posicion && (
+        <Marker position={posicion} icon={iconoCartel}>
+          <Popup>
+            Ubicación seleccionada: {posicion[0]}, {posicion[1]}
+          </Popup>
+        </Marker>
+      )}
+    </MapaUbicacion>
+  );
+};
+

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
+    'apps.auditoria.apps.AuditoriaConfig',
     'apps.base.apps.BaseConfig',
     'apps.carteles.apps.CartelesConfig',
     ]
@@ -180,8 +181,15 @@ CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SAMESITE = "Lax" #Debe ser None en producción
 SESSION_COOKIE_SECURE = False
 
+# Usuario
+
+AUTH_USER_MODEL = 'base.User'
+
 # Datos para mensajeria
 
 DOMAIN_NAME='carteles.com.py'
 SITE_NAME='carteles'
 EMAIL='serafa999@gmail.com'
+
+SESSION_COOKIE_AGE = 2 * 60 * 60
+SESSION_SAVE_EVERY_REQUEST = True

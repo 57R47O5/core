@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import L from "leaflet";
+
+const iconoSeleccion = new L.DivIcon({
+    html: "<div style='font-size:24px;'>📍</div>",
+    iconSize: [24, 24],
+    className: "marker-seleccion", 
+});
 
 const MapaUbicacion = ({ latitudInicial, longitudInicial, onUbicacionChange, children }) => {
     const [posicion, setPosicion] = useState([latitudInicial, longitudInicial]);
@@ -10,12 +17,12 @@ const MapaUbicacion = ({ latitudInicial, longitudInicial, onUbicacionChange, chi
             click(e) {
                 const { lat, lng } = e.latlng;
                 setPosicion([lat, lng]);
-                onUbicacionChange({lat, lng});
+                onUbicacionChange({ lat, lng });
             },
         });
 
-        return posicion === null ? null : (
-            <Marker position={posicion}>
+        return (
+            <Marker position={posicion} icon={iconoSeleccion}>
                 <Popup>
                     Ubicación seleccionada: {posicion[0]}, {posicion[1]}
                 </Popup>

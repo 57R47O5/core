@@ -2,6 +2,7 @@ import toastr from "toastr";
 import "toastr/build/toastr.min.css";
 import "../utils/custom-toastr.css";
 
+
 export const Tipo = {
   ERROR: "error",
   WARNING: "warning",
