@@ -14,6 +14,8 @@ urlpatterns = [
     path('usuarios/', include('apps.base.urls.user_urls')), 
     path('carteles/', include('apps.carteles.urls.carteles_urls')), 
     path('personas/', include('apps.carteles.urls.personas_urls')), 
+    path('pacientes/', include('apps.carteles.urls.paciente_urls')), 
+    path('turnos/', include('apps.carteles.urls.turno_urls')), 
     path('tipo-carteles/', include('apps.carteles.urls.tipo_cartel_urls')), 
 ]
 

@@ -7,6 +7,11 @@ export const obtenerUsuarios = async () => {
   return response || [];
 };
 
+export const obtenerMedicos = async () => {
+  const response = await request.get(`${controller}/`);
+  return response || [];
+};
+
 export const obtenerUsuario = async (id) => {
   const response = await request.get(`${controller}/${id}/`);
   return response;

@@ -140,3 +140,38 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             )
 
         return instance 
+    
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields = ['id', 'username', 'nombres', 'apellidos', 'rol']
+
+class UsuarioMedicoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id", "nombres", "apellidos", "dni",
+            "telefono", "email_contacto", "direccion",
+            "matricula", "especialidad", "activo"
+        ]
+
+
+class UsuarioUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "email",
+            "nombres",
+            "apellidos",
+            "dni",
+            "telefono",
+            "direccion",
+            "email_contacto",
+            "matricula",
+            "especialidad",
+            "rol",
+            "activo",
+        ]
+        read_only_fields = ["id", "username"]
