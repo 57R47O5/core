@@ -1,56 +1,111 @@
-from apps.base.framework.exceptions import ExcepcionValidacion
+from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 class BaseOptionsAPIView(APIView):
     """
     Clase genérica para devolver opciones de un modelo.
+    field → str o lista[str]
+    Si algún field tiene choices → devuelve choices.
+    Si no tiene choices:
+        - si ?q= → filtra con OR entre todos los fields.
     """
     model = None
-    field = None
+    field = None             # str | list[str]
     id_field = "id"
-    desc_field = None           # por defecto usamos str(obj)
+    desc_field = None
     order_by = None
+    filtro = None
+
+    def _get_fields(self):
+        """Normaliza: devuelve una lista siempre."""
+        if self.field is None:
+            return []
+        if isinstance(self.field, (list, tuple)):
+            return list(self.field)
+        return [self.field]
+
+    def _get_model_field(self, name):
+        """Devuelve el campo Django del modelo."""
+        return self.model._meta.get_field(name)
 
     def get_queryset(self):
         assert self.model is not None, (
-            f"{self.__class__.__name__} debe definir el atributo 'model'"
+            f"{self.__class__.__name__} debe definir 'model'"
         )
 
         qs = self.model.objects.all()
+
+        # Filtros predefinidos
+        if self.filtro and isinstance(self.filtro, dict):
+            filtros_limpios = {
+                k: v for k, v in self.filtro.items()
+                if v not in (None, "")
+            }
+            if filtros_limpios:
+                qs = qs.filter(**filtros_limpios)
+
+        # Buscar mientras se escribe (?q=)
+        q = self.request.query_params.get("q", "").strip()
+        fields = self._get_fields()
+
+        if q and fields:
+            # Armar OR dinámico entre los fields que NO tienen choices
+            q_obj = Q()
+
+            for f in fields:
+                model_field = self._get_model_field(f)
+
+                # si tiene choices → no se usa para búsqueda
+                if model_field.choices:
+                    continue
+
+                q_obj |= Q(**{f"{f}__icontains": q})
+
+            qs = qs.filter(q_obj) if q_obj else qs.none()
+
         if self.order_by:
             qs = qs.order_by(self.order_by)
+
         return qs
 
     def get_id(self, obj):
         return getattr(obj, self.id_field)
 
     def get_desc(self, obj):
-        if self.desc_field:
-            return getattr(obj, self.desc_field)
-        return str(obj)  
+        return getattr(obj, self.desc_field) if self.desc_field else str(obj)
 
     def get(self, request):
 
-        if self.field:
-            field = self.model._meta.get_field(self.field)
+        fields = self._get_fields()
 
-            if not field.choices:
-                raise ExcepcionValidacion(
-                    f"El campo '{self.field}' no tiene choices definidos."
-                )
+        # Caso: algún field tiene choices
+        choice_fields = []
+        for f in fields:
+            model_field = self._get_model_field(f)
+            if model_field.choices:
+                choice_fields.append(model_field)
 
-            data = [
-                {"id": value, "descripcion": label}
-                for value, label in field.choices
-            ]
+        if choice_fields:
+            # Combinar todos los choices (evita duplicados)
+            data = []
+            agregados = set()
 
-        else:
-            data = [
-                {
-                    "id": self.get_id(obj),
-                    "descripcion": self.get_desc(obj)
-                }
-                for obj in self.get_queryset()
-            ]
+            for mf in choice_fields:
+                for value, label in mf.choices:
+                    if value not in agregados:
+                        agregados.add(value)
+                        data.append({"id": value, "descripcion": label})
+
+            return Response(data)
+
+        # Caso normal: queryset
+        data = [
+            {
+                "id": self.get_id(obj),
+                "descripcion": self.get_desc(obj)
+            }
+            for obj in self.get_queryset()
+        ]
         return Response(data)
+

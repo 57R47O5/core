@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import BaseLayout from "./BaseLayout";
-import "../App.css";
 
 const Home = () => {
   const { user, isAuthenticated } = useContext(AuthContext);
@@ -17,7 +16,7 @@ const Home = () => {
 
               {isAuthenticated ? (
                 <p className="fs-5 text-secondary">
-                  ¡Hola, <strong>{user}</strong>! 👋
+                  ¡Hola, <strong>{user.nombres}</strong>! 👋
                 </p>
               ) : (
                 <p className="text-muted fs-6 mt-2">

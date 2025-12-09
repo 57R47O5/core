@@ -14,6 +14,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from apps.base.serializers import UserLookupSerializer
 from apps.base.framework.exceptions import excepcion, ExcepcionPermisos, ExcepcionValidacion
+from apps.base.models.user import User
+from apps.base.serializers import UserSerializer
 
 
 
@@ -57,12 +59,9 @@ def check_auth(request):
     is_authenticated = request.user.is_authenticated
     user_data=None
     if is_authenticated:
-        user_data = {
-            'id': request.user.id,
-            'username': request.user.username,
-            'email': request.user.email,
-            'rol': request.user.rol or None,
-        }
+        usuario=User.objects.get(pk=request.user.id)
+        serializer = UserSerializer(instance=usuario)
+        user_data =  serializer.data
 
     return Response(
         {"isAuthenticated": is_authenticated, "user": user_data},
