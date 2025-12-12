@@ -46,7 +46,7 @@ const PacienteAPI = {
   // Si no hay filtros rellenados, devolver []
   // if ([...params.entries()].length === 0) return [];
 
-  return await request.get(`${BASE_URL}buscar/?${params.toString()}`);
+  return await request.get(`${BASE_URL}?${params.toString()}`);
   },
 };
 
