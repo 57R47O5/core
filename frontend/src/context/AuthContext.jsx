@@ -15,8 +15,8 @@ export const AuthProvider = ({ children }) => {
             try {
                 const response = await check();
                 setIsAuthenticated(response.isAuthenticated);
-                setUser(response.user);
-                setRol(response.user.rol);
+                setUser(response?.user);
+                setRol(response?.user?.rol);
             } catch (error) {
                 setIsAuthenticated(false);
                 setUser(null);
