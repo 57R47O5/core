@@ -3,15 +3,19 @@ from datetime import datetime
 
 from apps.base.framework.api.options import BaseOptionsAPIView
 from apps.carteles.models.paciente import Paciente
-from apps.carteles.serializers.paciente_serializer import PacienteSerializer
+from apps.carteles.serializers.paciente_serializer import (
+    PacienteCreateSerializer,
+    PacienteUpdateSerializer,
+    PacienteRetrieveSerializer
+)
 from controllers.base.base_rest_controller import ModelRestController
 
 
 class PacienteRestController(ModelRestController):
     model=Paciente
-    create_serializer=PacienteSerializer
-    update_serializer=PacienteSerializer
-    retrieve_serializer=PacienteSerializer
+    create_serializer=PacienteCreateSerializer
+    update_serializer=PacienteUpdateSerializer
+    retrieve_serializer=PacienteRetrieveSerializer
 
     def _get_filter(self, params):
         filtros = Q()

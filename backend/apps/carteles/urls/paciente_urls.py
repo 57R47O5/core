@@ -8,7 +8,7 @@ from apps.carteles.views.paciente_view import (
 from django.urls import path
 
 router = routers.SimpleRouter()
-router.register(r'pacientes', PacienteRestController, 'pacientes')
+router.register(r'paciente', PacienteRestController, 'paciente')
 
 urlpatterns = [
     path('options/', PacienteNombreOptions.as_view(), name='paciente-nombre-options'),
