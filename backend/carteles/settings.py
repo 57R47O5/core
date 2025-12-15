@@ -182,7 +182,6 @@ SESSION_COOKIE_SAMESITE = "Lax" #Debe ser None en producción
 SESSION_COOKIE_SECURE = False
 
 # Usuario
-
 AUTH_USER_MODEL = 'base.User'
 
 # Datos para mensajeria
