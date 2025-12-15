@@ -1,3 +1,4 @@
+from django.apps import apps
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -7,8 +8,9 @@ from django.views.decorators.csrf import csrf_protect
 from apps.base.framework.api.options import BaseOptionsAPIView
 from apps.carteles.permisos import EsMedico
 from apps.base.models.user import User
-from apps.base.serializers import UserCreateSerializer, UserUpdateSerializer, UserRegisterSerializer, UsuarioUpdateSerializer
+from apps.base.serializers import UserCreateSerializer, UserRegisterSerializer, UsuarioUpdateSerializer
 from apps.base.framework.exceptions import excepcion, ExcepcionValidacion
+from apps.base.framework.permissions import get_roles
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated, EsMedico])   
@@ -38,12 +40,12 @@ def register_view(request):
 
 class MedicosOptions(BaseOptionsAPIView):
     model=User
-    filtro={'rol':'medico'}
+    filtro={'role':'medico'}
 
-class UserRolesOptions(BaseOptionsAPIView):
-    model=User
-    field='rol'
-
+@api_view(['GET'])
+def roles_view(request, pk):
+    roles = get_roles(User.objects.get(pk=pk))
+    return Response(list(roles), status=status.HTTP_200_OK)
 
 @api_view(["GET", "PUT", "PATCH"])
 @permission_classes([IsAuthenticated])

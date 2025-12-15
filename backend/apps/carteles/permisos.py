@@ -1,9 +1,10 @@
 from rest_framework.permissions import BasePermission
+from apps.base.framework.permissions import user_has_role
 
 class EsMedico(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.rol == "medico"
+        return user_has_role(request.user, "medico")
 
-class EsSecretaria(BasePermission):
+class EsAsistente(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.rol == "secretaria"
+        return user_has_role(request.user, "asistente")

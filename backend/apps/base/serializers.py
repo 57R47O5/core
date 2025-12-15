@@ -1,6 +1,9 @@
+from django.apps import apps
+from rest_framework import serializers
+
 from apps.base.models.user import User
 from apps.auditoria.models import AuditoriaUsuario
-from rest_framework import serializers
+from apps.base.framework.permissions import get_roles
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     """
@@ -56,11 +59,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'rol', 'activo', 'password']
+        fields = ['id', 'username', 'email', 'activo', 'password']
         extra_kwargs = {
             'username': {'required': True},
             'email': {'required': True},
-            'rol': {'required': True},
             'activo': {'required': False},
         }
 
@@ -86,11 +88,10 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'rol', 'activo', 'password']
+        fields = ['id', 'username', 'email', 'activo', 'password']
         extra_kwargs = {
             'username': {'required': False},
             'email': {'required': False},
-            'rol': {'required': False},
             'activo': {'required': False},
             'password': {'required': False},
         }
@@ -144,7 +145,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields = ['id', 'username', 'nombres', 'apellidos', 'rol']
+        fields = ['id', 'username', 'nombres', 'apellidos']
 
 class UsuarioMedicoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -157,6 +158,8 @@ class UsuarioMedicoSerializer(serializers.ModelSerializer):
 
 
 class UsuarioUpdateSerializer(serializers.ModelSerializer):
+
+    roles = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields = [
@@ -169,9 +172,10 @@ class UsuarioUpdateSerializer(serializers.ModelSerializer):
             "telefono",
             "direccion",
             "email_contacto",
-            "matricula",
-            "especialidad",
-            "rol",
             "activo",
+            "roles",
         ]
         read_only_fields = ["id", "username"]
+
+    def get_roles(self, instancia):
+        return get_roles(instancia)

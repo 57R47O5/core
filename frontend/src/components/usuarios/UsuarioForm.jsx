@@ -8,7 +8,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import InputFormik from "../forms/InputFormik";
 import PasswordFormik from "../forms/PasswordFormik";
 import SwitchFormik from "../forms/SwitchFormik";
-import SelectFormik from "../forms/SelectFormik";
 
 import { UsuarioSchema } from "./UsuarioSchema";
 import {
@@ -27,8 +26,6 @@ export default function UsuarioForm() {
   const [initialValues, setInitialValues] = useState({
     username: "",
     email: "",
-    rol: "",
-
     activo: true,
 
     // Datos personales
@@ -64,7 +61,6 @@ export default function UsuarioForm() {
         setInitialValues({
           username: data.username,
           email: data.email,
-          rol: data.rol,
           activo: data.activo,
 
           nombres: data.nombres || "",
@@ -177,14 +173,6 @@ export default function UsuarioForm() {
                     </Row>
 
                     <Row className="mt-3">
-                      <Col md={6}>
-                        <SelectFormik
-                          name="rol"
-                          label="Rol"
-                          endpoint="usuarios/roles"
-                        />
-                      </Col>
-
                       <Col md={6} className="d-flex align-items-center">
                         <SwitchFormik name="activo" label="Usuario activo" />
                       </Col>

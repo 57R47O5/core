@@ -3,7 +3,7 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from ..models.persona import Persona
 from ..serializers.persona_serializer import PersonaSerializer
-from ...base.framework.exceptions import excepcion
+from apps.base.framework.exceptions import excepcion
 
 
 @api_view(["GET", "POST"])

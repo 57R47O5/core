@@ -1,0 +1,18 @@
+[
+    {
+        "model": "roles.rol",
+        "pk":1,
+        "fields": {
+            "nombre":"medico",
+            "descripcion":"encargado de realizar consultas"
+        }
+    },
+    {
+        "model": "roles.rol",
+        "pk":2,
+        "fields": {
+            "nombre":"asistente",
+            "descripcion":"encargado de agendar consultas"
+        }
+    }
+]
