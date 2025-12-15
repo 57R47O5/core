@@ -1,0 +1,10 @@
+[
+  {
+    "model": "roles.userrole",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "role": 1
+    }
+  }
+]

@@ -40,9 +40,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
-    'apps.auditoria.apps.AuditoriaConfig',
-    'apps.base.apps.BaseConfig',
-    'apps.carteles.apps.CartelesConfig',
+    'apps.carteles',
+    'apps.auditoria',
+    'apps.base',
+    'roles'
     ]
 
 MIDDLEWARE = [
@@ -56,7 +57,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -73,8 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
-
+WSGI_APPLICATION = 'wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -193,3 +193,5 @@ EMAIL='serafa999@gmail.com'
 
 SESSION_COOKIE_AGE = 2 * 60 * 60
 SESSION_SAVE_EVERY_REQUEST = True
+
+USER_ROLES_PROVIDER = "project_roles.get_user_roles"

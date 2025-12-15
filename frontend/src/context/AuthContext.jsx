@@ -7,7 +7,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState();
-  const [rol, setRol] = useState(null)
+  const [userRoles, setUserRoles] = useState(null)
   const [loading, setLoading] = useState(true);
 
    useEffect(() => {
@@ -16,11 +16,11 @@ export const AuthProvider = ({ children }) => {
                 const response = await check();
                 setIsAuthenticated(response.isAuthenticated);
                 setUser(response?.user);
-                setRol(response?.user?.rol);
+                setUserRoles(response?.user?.roles);
             } catch (error) {
                 setIsAuthenticated(false);
                 setUser(null);
-                setRol(null);
+                setUserRoles(null);
                 console.error('Error', error)
                 Alertar(error, Tipo.ERROR)
               } finally {
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{ 
       user, setUser, 
-      rol, setRol, 
+      userRoles, setUserRoles, 
       isAuthenticated, loading, 
       handleLogin, handleLogout  }}>
       {children}

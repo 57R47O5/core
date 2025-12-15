@@ -5,7 +5,7 @@ from datetime import datetime
 CONTROLLER_TEMPLATE = """from django.db.models import Q
 from datetime import datetime
 
-from apps.base.framework.api.options import BaseOptionsAPIView
+from base.framework.api.options import BaseOptionsAPIView
 from apps.{app_name}.models.{model_name} import {ModelName}
 from apps.{app_name}.serializers.{model_name}_serializer import (
     {ModelName}CreateSerializer,

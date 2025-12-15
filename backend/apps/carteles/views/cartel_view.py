@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 
-from ...base.framework.exceptions import excepcion
+from apps.base.framework.exceptions import excepcion
 from ..models.imagencartel import Cartel
 from ..serializers.cartel import (
     CartelSerializer,

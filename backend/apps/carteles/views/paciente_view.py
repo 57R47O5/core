@@ -8,7 +8,7 @@ from apps.carteles.serializers.paciente_serializer import (
     PacienteUpdateSerializer,
     PacienteRetrieveSerializer
 )
-from controllers.base.base_rest_controller import ModelRestController
+from apps.base.rest_controllers.base_rest_controller import ModelRestController
 
 
 class PacienteRestController(ModelRestController):
