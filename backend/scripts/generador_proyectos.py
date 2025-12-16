@@ -184,6 +184,41 @@ CORS_ALLOW_CREDENTIALS = True
 
     settings_path.write_text(settings)
 
+    # ==============================
+    # VS Code config (.vscode)
+    # ==============================
+
+    vscode_dir = proyecto_dir / ".vscode"
+    vscode_dir.mkdir(exist_ok=True)
+
+    (vscode_dir / "settings.json").write_text(
+        """{
+  "python.defaultInterpreterPath": ".venv/Scripts/python.exe",
+  "python.analysis.extraPaths": [
+    "..",
+    "../apps"
+  ],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoSearchPaths": true,
+  "python.terminal.activateEnvironment": false,
+  "editor.formatOnSave": true
+}
+""",
+        encoding="utf8",
+    )
+
+    (vscode_dir / "extensions.json").write_text(
+        """{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.vscode-pylance"
+  ]
+}
+""",
+        encoding="utf8",
+    )
+
+
     # 7. Env + DB
     create_env_file(proyecto_dir, nombre)
     create_postgres_db(nombre)
