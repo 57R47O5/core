@@ -1,5 +1,5 @@
 from django.db import models
-from .distrito import Distrito
+from .....geografia.models.distrito import Distrito
 
 
 class Campana(models.Model):

@@ -4,7 +4,7 @@ from .colaborador import Colaborador
 from .votante import Votante
 from django.contrib.gis.db import models as gis_models
 
-class Visit(models.Model):
+class Visita(models.Model):
     """
     Registro de cada visita. Se autoregistra fecha y ubicación (si la app la provee).
     - result: 1..5 (1 = rechazo, 5 = promesa de voto)
