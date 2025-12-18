@@ -14,12 +14,12 @@ class Visita(models.Model):
     RESULT_CHOICES = [(i, str(i)) for i in range(1, 6)]
 
     id = models.BigAutoField(primary_key=True)
-    campana = models.ForeignKey(Campana, on_delete=models.CASCADE, related_name='visits')
-    colaborador = models.ForeignKey(Colaborador, on_delete=models.SET_NULL, null=True, related_name='visits')
-    votante = models.ForeignKey(Votante, on_delete=models.PROTECT, related_name='visits')
+    campana = models.ForeignKey(Campana, on_delete=models.CASCADE, related_name='visitas')
+    colaborador = models.ForeignKey(Colaborador, on_delete=models.SET_NULL, null=True, related_name='visitas')
+    votante = models.ForeignKey(Votante, on_delete=models.PROTECT, related_name='visitas')
     created_at = models.DateTimeField(auto_now_add=True)  # cuando se registró la visita
     location = gis_models.PointField(null=True, blank=True, srid=4326)  # ubicación de la visita
-    result = models.PositiveSmallIntegerField(choices=RESULT_CHOICES)
+    resultado = models.PositiveSmallIntegerField(choices=RESULT_CHOICES)
     notes = models.TextField(null=True, blank=True)
     transport_needed = models.BooleanField(default=False)
     # metadata
@@ -28,16 +28,16 @@ class Visita(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['campaign', '-created_at'], name='idx_visit_campaign_date'),
-            models.Index(fields=['padron_entry'], name='idx_visit_padron'),
-            models.Index(fields=['collaborator'], name='idx_visit_collab'),
-            models.Index(fields=['result'], name='idx_visit_result'),
+            models.Index(fields=['campana', '-created_at'], name='idx_visit_campaign_date'),
+            models.Index(fields=['votante'], name='idx_visita_votante'),
+            models.Index(fields=['colaborador'], name='idx_visita_colab'),
+            models.Index(fields=['resultado'], name='idx_visita_resultado'),
             # GIST index for location must be added via a GIS migration - Django does that for PointField
         ]
         constraints = [
-            models.CheckConstraint(check=models.Q(result__gte=1, result__lte=5), name='check_visit_result_range'),
+            models.CheckConstraint(condition=models.Q(result__gte=1, result__lte=5), name='check_visit_result_range'),
         ]
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Visita {self.id} - {self.votante} by {self.colaborador} ({self.result})"
+        return f"Visita {self.id} - {self.votante} by {self.colaborador} ({self.resultado})"
