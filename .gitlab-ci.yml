@@ -1,0 +1,14 @@
+stages:
+  - test
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+test:
+  stage: test
+  image: python:3.14
+  before_script:
+    - pip install uv
+  script:
+    - uv pip install -r backend/requirements.txt
+    - echo "Pipeline base OK"
