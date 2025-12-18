@@ -257,14 +257,15 @@ CORS_ALLOW_CREDENTIALS=True
     )
 
 
-def create_postgres_db(db_name):
+def create_postgres_schema(schema_name):
     """
-    Crea la base de datos PostgreSQL si no existe.
+    Crea un schema PostgreSQL si no existe.
     """
     try:
-        import psycopg2
+        import psycopg2  # type: ignore
+
         conn = psycopg2.connect(
-            dbname="postgres",
+            dbname="postgres",   
             user="postgres",
             password="142857",
             host="localhost",
@@ -272,11 +273,17 @@ def create_postgres_db(db_name):
         )
         conn.autocommit = True
         cur = conn.cursor()
-        cur.execute(f"CREATE DATABASE {db_name};")
+
+        cur.execute(f'CREATE SCHEMA IF NOT EXISTS "{schema_name}";')
+
         cur.close()
         conn.close()
+
+        print(f"✅ Schema '{schema_name}' creado o ya existente")
+
     except Exception as e:
-        print(f"⚠️ DB posiblemente existente: {e}")
+        print(f"⚠️ Error creando schema '{schema_name}': {e}")
+
 
 
 # ==============================
@@ -310,7 +317,7 @@ def main():
     configure_settings(project_name, project_dir)
     configure_vscode(project_dir)
     create_env_file(project_dir, project_name)
-    create_postgres_db(project_name)
+    create_postgres_schema(project_name)
     run_migrations(project_dir)
 
     print("\n🎉 Proyecto creado correctamente")
