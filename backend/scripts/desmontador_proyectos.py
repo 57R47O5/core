@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+from pathlib import Path
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -65,6 +66,40 @@ def drop_postgres_schema(schema_name):
     except Exception as e:
         print(f"⚠️ Error eliminando schema: {e}")
 
+def unregister_project_from_liquibase(project_name: str):
+    """
+    Elimina el registro del proyecto en Liquibase:
+    - Quita el include del master
+    - Borra el changelog del proyecto
+    """
+    liquibase_dir = Path("liquibase")
+    projects_dir = liquibase_dir / "changelog" / "projects"
+    master_file = liquibase_dir / "changelog" / "db.changelog-master.yaml"
+
+    project_changelog = projects_dir / f"{project_name}.yaml"
+
+    # 1. Eliminar changelog del proyecto
+    if project_changelog.exists():
+        project_changelog.unlink()
+
+    # 2. Quitar include del master
+    if master_file.exists():
+        lines = master_file.read_text(encoding="utf8").splitlines()
+        new_lines = []
+
+        skip = False
+        for line in lines:
+            if f"projects/{project_name}.yaml" in line:
+                skip = True
+                continue
+            if skip and line.strip().startswith("file:"):
+                skip = False
+                continue
+            if not skip:
+                new_lines.append(line)
+
+        master_file.write_text("\n".join(new_lines) + "\n", encoding="utf8")
+
 
 def main():
     print("\n=== Desmontador de proyectos Django ===\n")
@@ -79,6 +114,7 @@ def main():
 
     remove_project_directory(project_name)
     drop_postgres_schema(project_name)
+    unregister_project_from_liquibase(project_name)
 
     print("\n✅ Proyecto desmontado correctamente")
 
