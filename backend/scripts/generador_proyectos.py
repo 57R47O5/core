@@ -285,18 +285,45 @@ def create_postgres_schema(schema_name):
         print(f"⚠️ Error creando schema '{schema_name}': {e}")
 
 
-
 # ==============================
-# Migraciones
+# Liquibase
 # ==============================
 
-def run_migrations(project_dir):
+def register_project_in_liquibase(project_name: str):
     """
-    Ejecuta makemigrations y migrate.
-    """
-    run(["uv", "run", "python", "manage.py", "makemigrations"], cwd=project_dir)
-    run(["uv", "run", "python", "manage.py", "migrate"], cwd=project_dir)
+    Registra un nuevo proyecto en Liquibase:
+    - Crea un changelog vacío para el proyecto
+    - Lo incluye en el db.changelog-master.yaml
 
+    No ejecuta Liquibase.
+    """
+    liquibase_dir = Path("liquibase")
+    projects_dir = liquibase_dir / "changelog" / "projects"
+    master_file = liquibase_dir / "changelog" / "db.changelog-master.yaml"
+
+    projects_dir.mkdir(parents=True, exist_ok=True)
+
+    project_changelog = projects_dir / f"{project_name}.yaml"
+
+    # 1. Crear changelog vacío si no existe
+    if not project_changelog.exists():
+        project_changelog.write_text(
+            f"""databaseChangeLog:
+  # Changelog del proyecto {project_name}
+""",
+            encoding="utf8",
+        )
+
+    # 2. Incluir en master si no está incluido
+    include_line = f"  - include:\n      file: projects/{project_name}.yaml\n"
+
+    master_content = master_file.read_text(encoding="utf8")
+
+    if f"projects/{project_name}.yaml" not in master_content:
+        master_file.write_text(
+            master_content.rstrip() + "\n" + include_line,
+            encoding="utf8",
+        )
 
 # ==============================
 # Main
@@ -318,9 +345,10 @@ def main():
     configure_vscode(project_dir)
     create_env_file(project_dir, project_name)
     create_postgres_schema(project_name)
-    run_migrations(project_dir)
+    register_project_in_liquibase(project_name)
 
     print("\n🎉 Proyecto creado correctamente")
+    print("📌 El schema será gestionado por Liquibase")
     print(f"cd backend/{project_name}")
     print("uv run python manage.py runserver")
 
