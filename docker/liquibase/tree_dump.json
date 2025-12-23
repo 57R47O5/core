@@ -1,0 +1,70 @@
+{
+  "type": "directory",
+  "name": "liquibase",
+  "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase",
+  "children": [
+    {
+      "type": "directory",
+      "name": "changelog",
+      "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\changelog",
+      "children": [
+        {
+          "type": "directory",
+          "name": "baseline",
+          "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\changelog\\baseline",
+          "children": [
+            {
+              "type": "file",
+              "name": "000-baseline.yaml",
+              "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\changelog\\baseline\\000-baseline.yaml",
+              "size_bytes": 40364
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "name": "db.changelog-master.yaml",
+          "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\changelog\\db.changelog-master.yaml",
+          "size_bytes": 98
+        },
+        {
+          "type": "file",
+          "name": "master.xml",
+          "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\changelog\\master.xml",
+          "size_bytes": 397
+        },
+        {
+          "type": "directory",
+          "name": "projects",
+          "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\changelog\\projects",
+          "children": []
+        }
+      ]
+    },
+    {
+      "type": "directory",
+      "name": "drivers",
+      "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\drivers",
+      "children": [
+        {
+          "type": "file",
+          "name": "postgresql-42.7.8.jar",
+          "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\drivers\\postgresql-42.7.8.jar",
+          "size_bytes": 1116727
+        }
+      ]
+    },
+    {
+      "type": "file",
+      "name": "dump_tree.py",
+      "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\dump_tree.py",
+      "size_bytes": 4532
+    },
+    {
+      "type": "file",
+      "name": "liquibase.properties",
+      "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\liquibase.properties",
+      "size_bytes": 192
+    }
+  ]
+}
