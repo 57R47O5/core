@@ -3,6 +3,9 @@ import shutil
 import sys
 from pathlib import Path
 
+LIQUIBASE_ROOT = Path("docker") / "liquibase"
+LIQUIBASE_PROJECTS_DIR = LIQUIBASE_ROOT / "changelog" / "projects"
+
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 
@@ -66,41 +69,20 @@ def drop_postgres_schema(schema_name):
     except Exception as e:
         print(f"⚠️ Error eliminando schema: {e}")
 
-def unregister_project_from_liquibase(project_name: str):
+def unregister_project_from_liquibase(project_name: str) -> None:
     """
-    Elimina el registro del proyecto en Liquibase:
-    - Quita el include del master
-    - Borra el changelog del proyecto
+    Elimina el registro del proyecto en Liquibase.
+
+    - Borra el directorio de changelogs del proyecto
+    - No modifica el master changelog (usa includeAll)
     """
-    liquibase_dir = Path("liquibase")
-    projects_dir = liquibase_dir / "changelog" / "projects"
-    master_file = liquibase_dir / "changelog" / "db.changelog-master.yaml"
+    project_dir = LIQUIBASE_PROJECTS_DIR / project_name
 
-    project_changelog = projects_dir / f"{project_name}.yaml"
-
-    # 1. Eliminar changelog del proyecto
-    if project_changelog.exists():
-        project_changelog.unlink()
-
-    # 2. Quitar include del master
-    if master_file.exists():
-        lines = master_file.read_text(encoding="utf8").splitlines()
-        new_lines = []
-
-        skip = False
-        for line in lines:
-            if f"projects/{project_name}.yaml" in line:
-                skip = True
-                continue
-            if skip and line.strip().startswith("file:"):
-                skip = False
-                continue
-            if not skip:
-                new_lines.append(line)
-
-        master_file.write_text("\n".join(new_lines) + "\n", encoding="utf8")
-
-
+    if project_dir.exists():
+        shutil.rmtree(project_dir)
+        print(f"🧹 Liquibase: proyecto '{project_name}' eliminado")
+    else:
+        print(f"ℹ️ Liquibase: no existe registro para '{project_name}'")
 def main():
     print("\n=== Desmontador de proyectos Django ===\n")
 
