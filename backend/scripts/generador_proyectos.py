@@ -3,6 +3,13 @@ from pathlib import Path
 import secrets
 import os
 
+# ==============================
+# Constants
+# ==============================
+
+LIQUIBASE_ROOT = Path("docker") / "liquibase"
+LIQUIBASE_PROJECTS_DIR = LIQUIBASE_ROOT / "changelog" / "projects"
+
 
 # ==============================
 # Helpers
@@ -289,42 +296,32 @@ def create_postgres_schema(schema_name):
 # Liquibase
 # ==============================
 
-def register_project_in_liquibase(project_name: str):
+def register_project_in_liquibase(project_name: str) -> None:
     """
-    Registra un nuevo proyecto en Liquibase:
-    - Crea un changelog vacío para el proyecto
-    - Lo incluye en el db.changelog-master.yaml
+    Registra un nuevo proyecto en Liquibase.
 
+    - Crea el directorio del proyecto en changelog/projects/
+    - Crea un changelog inicial vacío (001-init.yaml)
+
+    No modifica el master changelog.
     No ejecuta Liquibase.
     """
-    liquibase_dir = Path("liquibase")
-    projects_dir = liquibase_dir / "changelog" / "projects"
-    master_file = liquibase_dir / "changelog" / "db.changelog-master.yaml"
+    project_dir = LIQUIBASE_PROJECTS_DIR / project_name
+    project_dir.mkdir(parents=True, exist_ok=True)
 
-    projects_dir.mkdir(parents=True, exist_ok=True)
+    initial_changelog = project_dir / "001-init.yaml"
 
-    project_changelog = projects_dir / f"{project_name}.yaml"
-
-    # 1. Crear changelog vacío si no existe
-    if not project_changelog.exists():
-        project_changelog.write_text(
+    if not initial_changelog.exists():
+        initial_changelog.write_text(
             f"""databaseChangeLog:
-  # Changelog del proyecto {project_name}
+  - comment: Changelog inicial del proyecto {project_name}
 """,
             encoding="utf8",
         )
 
-    # 2. Incluir en master si no está incluido
-    include_line = f"  - include:\n      file: projects/{project_name}.yaml\n"
-
-    master_content = master_file.read_text(encoding="utf8")
-
-    if f"projects/{project_name}.yaml" not in master_content:
-        master_file.write_text(
-            master_content.rstrip() + "\n" + include_line,
-            encoding="utf8",
-        )
-
+        print(f"🧩 Liquibase: proyecto '{project_name}' registrado")
+    else:
+        print(f"ℹ️ Liquibase: proyecto '{project_name}' ya existe")
 # ==============================
 # Main
 # ==============================
