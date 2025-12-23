@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: changelog/baseline/000-baseline.yaml
+
