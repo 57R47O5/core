@@ -13,16 +13,16 @@ liquibase_migrate:
     LIQUIBASE_CLASSPATH: "$CI_PROJECT_DIR/drivers/postgresql.jar"
 
   before_script:
-    - mkdir -p "$CI_PROJECT_DIR/drivers"
-    - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar" https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
-
-    - |
+  - mkdir -p "$CI_PROJECT_DIR/drivers"
+  - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar" https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
+  - |
       echo "Waiting for Postgres..."
-      until nc -z postgres 5432; do
+      until bash -c "</dev/tcp/postgres/5432"; do
         sleep 1
       done
+      echo "Postgres is up"
+
 
   script:
     - liquibase --version
     - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
-    
