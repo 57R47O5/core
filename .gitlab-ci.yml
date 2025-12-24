@@ -25,4 +25,3 @@ liquibase_migrate:
   script:
     - liquibase --version
     - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
-
