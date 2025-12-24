@@ -14,7 +14,7 @@ liquibase_migrate:
 
   before_script:
     - mkdir -p "$CI_PROJECT_DIR/drivers"
-    - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.8.jar"
+    - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar" https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
 
     - |
       echo "Waiting for Postgres..."
