@@ -1,14 +1,22 @@
 stages:
-  - test
+  - migrate
 
-variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+liquibase_migrate:
+  stage: migrate
+  image: liquibase/liquibase:5.0
 
-test:
-  stage: test
-  image: python:3.14
-  before_script:
-    - pip install uv
+  services:
+    - name: postgres:16
+      alias: postgres
+
+  variables:
+    POSTGRES_HOST: postgres
+    POSTGRES_PORT: 5432
+    POSTGRES_DB: postgres
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+
   script:
-    - uv pip install -r backend/requirements.txt
-    - echo "Pipeline base OK"
+    - liquibase --version
+    - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
+
