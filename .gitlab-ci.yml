@@ -16,20 +16,12 @@ liquibase_migrate:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
 
+    LIQUIBASE_CLASSPATH: /workspace/drivers/postgresql.jar
+
   before_script:
-    # Mostrar contexto (debug friendly)
-    - echo "Working directory inicial:"
-    - pwd
-    - ls -la
-
-    # Forzar working directory correcto
-    - cd docker/liquibase
-
-    - echo "Working directory Liquibase:"
-    - pwd
-    - ls -la
-    - ls -la changelog
+    - mkdir -p /workspace/drivers
+    - curl -L -o /workspace/drivers/postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
 
   script:
     - liquibase --version
-    - liquibase update
+    - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
