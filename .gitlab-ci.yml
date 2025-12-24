@@ -10,19 +10,15 @@ liquibase_migrate:
       alias: postgres
 
   variables:
-    POSTGRES_HOST: postgres
-    POSTGRES_PORT: 5432
-
     LIQUIBASE_CLASSPATH: "$CI_PROJECT_DIR/drivers/postgresql.jar"
 
   before_script:
     - mkdir -p "$CI_PROJECT_DIR/drivers"
-    - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar" https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
+    - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.8.jar"
 
-    # ⏳ Esperar a Postgres
     - |
       echo "Waiting for Postgres..."
-      until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT"; do
+      until nc -z postgres 5432; do
         sleep 1
       done
 
