@@ -12,15 +12,12 @@ liquibase_migrate:
   variables:
     POSTGRES_HOST: postgres
     POSTGRES_PORT: 5432
-    POSTGRES_DB: postgres
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
 
-    LIQUIBASE_CLASSPATH: /workspace/drivers/postgresql.jar
+    LIQUIBASE_CLASSPATH: "$CI_PROJECT_DIR/drivers/postgresql.jar"
 
   before_script:
-    - mkdir -p /workspace/drivers
-    - curl -L -o /workspace/drivers/postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
+    - mkdir -p "$CI_PROJECT_DIR/drivers"
+    - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar" https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
 
   script:
     - liquibase --version
