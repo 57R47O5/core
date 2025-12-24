@@ -19,6 +19,13 @@ liquibase_migrate:
     - mkdir -p "$CI_PROJECT_DIR/drivers"
     - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar" https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
 
+    # ⏳ Esperar a Postgres
+    - |
+      echo "Waiting for Postgres..."
+      until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT"; do
+        sleep 1
+      done
+
   script:
     - liquibase --version
     - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
