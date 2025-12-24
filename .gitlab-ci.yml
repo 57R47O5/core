@@ -16,7 +16,20 @@ liquibase_migrate:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
 
+  before_script:
+    # Mostrar contexto (debug friendly)
+    - echo "Working directory inicial:"
+    - pwd
+    - ls -la
+
+    # Forzar working directory correcto
+    - cd docker/liquibase
+
+    - echo "Working directory Liquibase:"
+    - pwd
+    - ls -la
+    - ls -la changelog
+
   script:
     - liquibase --version
-    - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
-
+    - liquibase update
