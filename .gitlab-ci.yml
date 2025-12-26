@@ -9,9 +9,7 @@ liquibase_migrate:
     - name: postgres:16
       alias: postgres
       variables:
-        POSTGRES_DB: postgres
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_PASSWORD: 142857
 
   variables:
     LIQUIBASE_CLASSPATH: "$CI_PROJECT_DIR/drivers/postgresql.jar"
