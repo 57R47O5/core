@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from .fields import UserForeignKey
 
 class User(AbstractUser):
     activo = models.BooleanField(default=True)

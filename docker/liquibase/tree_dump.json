@@ -17,7 +17,7 @@
               "type": "file",
               "name": "000-baseline.yaml",
               "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\changelog\\baseline\\000-baseline.yaml",
-              "size_bytes": 40364
+              "size_bytes": 41835
             }
           ]
         },
@@ -25,7 +25,7 @@
           "type": "file",
           "name": "db.changelog-master.yaml",
           "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\changelog\\db.changelog-master.yaml",
-          "size_bytes": 98
+          "size_bytes": 274
         },
         {
           "type": "file",
@@ -65,6 +65,31 @@
       "name": "liquibase.properties",
       "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\liquibase.properties",
       "size_bytes": 192
+    },
+    {
+      "type": "directory",
+      "name": "roles",
+      "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\roles",
+      "children": [
+        {
+          "type": "file",
+          "name": "001-create-role-table.yaml",
+          "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\roles\\001-create-role-table.yaml",
+          "size_bytes": 621
+        },
+        {
+          "type": "file",
+          "name": "002-create-user-role-table.yaml",
+          "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\roles\\002-create-user-role-table.yaml",
+          "size_bytes": 1216
+        },
+        {
+          "type": "file",
+          "name": "003-insert-initial-roles.yaml",
+          "path": "C:\\Users\\Seraf\\proyectos\\docker\\liquibase\\roles\\003-insert-initial-roles.yaml",
+          "size_bytes": 741
+        }
+      ]
     }
   ]
 }
