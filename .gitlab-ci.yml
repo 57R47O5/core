@@ -30,3 +30,4 @@ liquibase_migrate:
     - env | sort
     - liquibase --log-level=info --defaultsFile=docker/liquibase/liquibase.properties status
     - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
+    - liquibase update
