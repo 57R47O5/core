@@ -8,10 +8,6 @@ liquibase_migrate:
   services:
     - name: postgres:16
       alias: postgres
-      variables:
-        POSTGRES_DB: postgres
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: 142857
 
   variables:
     LIQUIBASE_CLASSPATH: "$CI_PROJECT_DIR/drivers/postgresql.jar"
@@ -21,7 +17,7 @@ liquibase_migrate:
   - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar" https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
   - |
       echo "Waiting for Postgres..."
-      until bash -c "</dev/tcp/postgres/5432"; do
+      until bash -c "</dev/tcp/$POSTGRES_HOST/$POSTGRES_PORT"; do
         sleep 1
       done
       echo "Postgres is up"
