@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-insert-roles-elecciones
+      author: sistema
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column: { name: nombre, value: ADMIN }
+              - column: { name: descripcion, value: Administrador del sistema }
+
+        - insert:
+            tableName: role
+            columns:
+              - column: { name: nombre, value: COORDINADOR }
+              - column: { name: descripcion, value: Coordinador de campaña }
+
+        - insert:
+            tableName: role
+            columns:
+              - column: { name: nombre, value: COLABORADOR }
+              - column: { name: descripcion, value: Operador de campo }
