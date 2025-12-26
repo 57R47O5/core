@@ -11,7 +11,7 @@ liquibase_migrate:
       variables:
         POSTGRES_DB: postgres
         POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: 142857
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
   variables:
     LIQUIBASE_CLASSPATH: "$CI_PROJECT_DIR/drivers/postgresql.jar"
@@ -29,4 +29,6 @@ liquibase_migrate:
 
   script:
     - liquibase --version
+    - env | sort
+    - liquibase --log-level=info --defaultsFile=docker/liquibase/liquibase.properties status
     - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
