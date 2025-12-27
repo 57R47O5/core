@@ -8,13 +8,12 @@ liquibase_migrate:
   services:
     - name: postgres:16
       alias: postgres
+      variables:
+        POSTGRES_PASSWORD: 142857
+        POSTGRES_DB: elecciones
+        POSTGRES_USER: postgres
 
   variables:
-    POSTGRES_HOST: postgres
-    POSTGRES_PORT: 5432
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: 142857
-    POSTGRES_DB: elecciones
     LIQUIBASE_CLASSPATH: "$CI_PROJECT_DIR/drivers/postgresql.jar"
 
   before_script:
@@ -22,30 +21,17 @@ liquibase_migrate:
     - mkdir -p "$CI_PROJECT_DIR/drivers"
     - curl -L -o "$CI_PROJECT_DIR/drivers/postgresql.jar" https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
 
-    # Esperar a Postgres
-    - echo "Waiting for Postgres..."
+    # Esperar a que Postgres acepte conexiones
     - |
-        until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER"; do
+        echo "Waiting for Postgres..."
+        until bash -c "</dev/tcp/postgres/5432"; do
           sleep 1
         done
         echo "Postgres is up"
 
-    # Crear base de datos si no existe
-    - echo "Ensuring database $POSTGRES_DB exists..."
-    - |
-        PGPASSWORD="$POSTGRES_PASSWORD" psql \
-          -h "$POSTGRES_HOST" \
-          -U "$POSTGRES_USER" \
-          -d postgres \
-          -tc "SELECT 1 FROM pg_database WHERE datname = '$POSTGRES_DB'" \
-          | grep -q 1 \
-          || PGPASSWORD="$POSTGRES_PASSWORD" psql \
-              -h "$POSTGRES_HOST" \
-              -U "$POSTGRES_USER" \
-              -d postgres \
-              -c "CREATE DATABASE $POSTGRES_DB;"
-
   script:
     - liquibase --version
-    - liquibase --defaultsFile=docker/liquibase/liquibase.properties status
-    - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
+    - liquibase --log-level=info \
+        --defaultsFile=docker/liquibase/liquibase.properties status
+    - liquibase \
+        --defaultsFile=docker/liquibase/liquibase.properties update
