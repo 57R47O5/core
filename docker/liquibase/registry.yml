@@ -1,0 +1,10 @@
+projects:
+  carteles:
+    apps:
+      - base
+      - geografia
+
+  elecciones:
+    apps:
+      - base
+      - geografia
