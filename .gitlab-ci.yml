@@ -31,7 +31,5 @@ liquibase_migrate:
 
   script:
     - liquibase --version
-    - liquibase --log-level=info \
-        --defaultsFile=docker/liquibase/liquibase.properties status
-    - liquibase \
-        --defaultsFile=docker/liquibase/liquibase.properties update
+    - liquibase --log-level=info --defaultsFile=docker/liquibase/liquibase.properties status
+    - liquibase --defaultsFile=docker/liquibase/liquibase.properties update
