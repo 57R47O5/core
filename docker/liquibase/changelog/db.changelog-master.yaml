@@ -1,10 +1,5 @@
 databaseChangeLog:
   - include:
-      file: changelog/baseline/000-baseline.yaml
-  - include:
-      file: roles/001-create-role-table.yaml
-  - include:
-      file: roles/002-create-user-role-table.yaml
-  - include:
-      file: roles/003-insert-initial-roles.yaml
+      file: core.changelog.yaml
+
 

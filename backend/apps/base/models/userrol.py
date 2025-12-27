@@ -9,3 +9,5 @@ class UserRol(BaseModel):
 
     class Meta:
         unique_together = ('user', 'rol')
+        db_name = 'user_rol'
+        

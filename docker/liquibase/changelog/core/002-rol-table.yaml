@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: rol.xml
+  - include:
+      file: rol_history.xml
