@@ -4,3 +4,6 @@ class Rol(BasicModel):
 
     def __str__(self):
         return self.nombre
+    
+    class Meta:
+        db_name = 'rol'

@@ -15,3 +15,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.nombres} {self.apellidos} - {self.username}"
+    
+    class Meta:
+        db_name = 'user'

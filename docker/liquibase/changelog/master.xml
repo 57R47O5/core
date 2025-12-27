@@ -3,9 +3,12 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
-        http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+      http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
 
-    <include file="000-baseline.xml"/>
+    <include file="001_create_rol.xml"/>
+    <include file="002_create_rol_history.xml"/>
+    <include file="003_create_user_rol.xml"/>
+    <include file="004_create_user_rol_history.xml"/>
 
 </databaseChangeLog>
