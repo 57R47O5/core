@@ -1,7 +1,7 @@
 from django.db import models
-from basemodels import BaseModel, SAFEDELETE_PROTECT
-from models import User
-from backend.apps.base.models.rol import Rol
+from .basemodels import BaseModel, SAFEDELETE_PROTECT
+from .user import User
+from .rol import Rol
 
 class UserRol(BaseModel):
     user = models.ForeignKey(User, on_delete=SAFEDELETE_PROTECT)
@@ -9,5 +9,5 @@ class UserRol(BaseModel):
 
     class Meta:
         unique_together = ('user', 'rol')
-        db_name = 'user_rol'
+        db_table = 'user_rol'
         

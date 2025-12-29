@@ -17,4 +17,4 @@ class User(AbstractUser):
         return f"{self.nombres} {self.apellidos} - {self.username}"
     
     class Meta:
-        db_name = 'user'
+        db_table = 'auth_user'
