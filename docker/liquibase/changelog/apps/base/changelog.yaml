@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: changelog/apps/base/001-user-table.yaml
+  - include:
+      file: changelog/apps/base/004-initial-user.yaml
+  - include:
+      file: changelog/apps/base/002-rol-table.yaml
+  - include:
+      file: changelog/apps/base/005-initial-roles.yaml
+  - include:
+      file: changelog/apps/base/003-user-rol-table.yaml
+  - include:
+      file: changelog/apps/base/006-initial-admin-user.yaml

@@ -70,7 +70,7 @@
         <addForeignKeyConstraint
             baseTableName="user_rol"
             baseColumnNames="user_id"
-            referencedTableName="user"
+            referencedTableName="auth_user"
             referencedColumnNames="id"
             constraintName="fk_user_rol_user"
             onDelete="RESTRICT"/>
@@ -90,7 +90,7 @@
         <addForeignKeyConstraint
             baseTableName="user_rol"
             baseColumnNames="createdby_id"
-            referencedTableName="user"
+            referencedTableName="auth_user"
             referencedColumnNames="id"
             constraintName="fk_user_rol_createdby"/>
     </changeSet>
@@ -99,7 +99,7 @@
         <addForeignKeyConstraint
             baseTableName="user_rol"
             baseColumnNames="updatedby_id"
-            referencedTableName="user"
+            referencedTableName="auth_user"
             referencedColumnNames="id"
             constraintName="fk_user_rol_updatedby"/>
     </changeSet>

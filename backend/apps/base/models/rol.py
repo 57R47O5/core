@@ -1,4 +1,4 @@
-from basemodels import BasicModel
+from .basemodels import BasicModel
 
 class Rol(BasicModel):
 
@@ -6,4 +6,4 @@ class Rol(BasicModel):
         return self.nombre
     
     class Meta:
-        db_name = 'rol'
+        db_table = 'rol'

@@ -57,7 +57,7 @@
         <addForeignKeyConstraint
             baseTableName="rol"
             baseColumnNames="createdby_id"
-            referencedTableName="user"
+            referencedTableName="auth_user"
             referencedColumnNames="id"
             constraintName="fk_rol_createdby"/>
     </changeSet>
@@ -66,7 +66,7 @@
         <addForeignKeyConstraint
             baseTableName="rol"
             baseColumnNames="updatedby_id"
-            referencedTableName="user"
+            referencedTableName="auth_user"
             referencedColumnNames="id"
             constraintName="fk_rol_updatedby"/>
     </changeSet>

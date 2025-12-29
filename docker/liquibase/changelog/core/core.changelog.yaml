@@ -1,9 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: 001-user-table.yaml
-  - include:
-      file: 002-rol-table.yaml
-  - include:
-      file: 003-user-rol-table.yaml
-  - include:
-      file: 004-initial-roles.yaml

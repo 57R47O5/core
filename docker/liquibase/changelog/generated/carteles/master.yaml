@@ -1,0 +1,7 @@
+databaseChangeLog:
+- include:
+    file: changelog/apps/base/changelog.yaml
+- include:
+    file: changelog/apps/geografia/changelog.yaml
+- include:
+    file: changelog/projects/carteles/changelog.yaml
