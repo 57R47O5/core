@@ -58,9 +58,10 @@ monorepo/
 │
 ├── projects/
 │   ├── proyecto_a/
-│   │   ├── apps/
-│   │   ├── docker/
-│   │   └── liquibase/
+│   │   └──proyecto_a/
+│   │       ├── apps/
+│   │       ├── docker/
+│   │       └── liquibase/
 │   └── proyecto_b/
 │
 ├── docker/
