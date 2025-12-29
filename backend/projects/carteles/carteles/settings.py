@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'apps.carteles',
     'apps.auditoria',
     'apps.base',
-    'roles'
     ]
 
 MIDDLEWARE = [
