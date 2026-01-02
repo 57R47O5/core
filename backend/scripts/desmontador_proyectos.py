@@ -6,7 +6,10 @@ from pathlib import Path
 LIQUIBASE_ROOT = Path("docker") / "liquibase"
 LIQUIBASE_PROJECTS_DIR = LIQUIBASE_ROOT / "changelog" / "projects"
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+BACKEND_PROJECTS_DIR = REPO_ROOT / "backendpy" / "projects"
+FRONTEND_PROJECTS_DIR = REPO_ROOT / "frontend" / "proyectos"
 
 
 def ask_project_name():
@@ -21,7 +24,9 @@ def ask_project_name():
 
 
 def project_exists(project_name):
-    return os.path.isdir(os.path.join(BASE_DIR, project_name))
+    existe_backend = os.path.isdir(os.path.join(BACKEND_PROJECTS_DIR, project_name))
+    existe_frontend = os.path.isdir(os.path.join(FRONTEND_PROJECTS_DIR, project_name))
+    return existe_backend or existe_frontend
 
 
 def confirm_destruction(project_name):
@@ -39,7 +44,10 @@ def confirm_destruction(project_name):
 
 
 def remove_project_directory(project_name):
-    path = os.path.join(BASE_DIR, project_name)
+    path = os.path.join(BACKEND_PROJECTS_DIR, project_name)
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    path = os.path.join(FRONTEND_PROJECTS_DIR, project_name)
     if os.path.exists(path):
         shutil.rmtree(path)
         print(f"🗑️ Proyecto '{project_name}' eliminado del filesystem")
