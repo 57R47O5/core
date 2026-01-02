@@ -307,7 +307,10 @@ def create_frontend_project(project_name):
     project_dir = FRONTEND_PROJECTS_DIR / project_name
     project_dir.mkdir(parents=True, exist_ok=True)
 
-    run(["npm", "create", "vite@latest", ".", "--", "--template", "react"], cwd=project_dir)
+    if any(project_dir.iterdir()):
+        raise RuntimeError("El directorio frontend no está vacío")
+
+    run(["npm", "create", "vite@latest", ".", "--", "--template", "react"], cwd=project_dir, shell=True)
     run(["npm", "install"], cwd=project_dir)
 
     return project_dir
@@ -324,6 +327,10 @@ def main():
         project_name = args.project
     else:
         project_name = ask_project_name()
+    if not args.backend and not args.frontend:
+        args.backend = True
+        args.frontend = True
+
     project_dir = create_project_directory(project_name)
 
     print(f"\n🚀 Creando proyecto '{project_name}'\n")
