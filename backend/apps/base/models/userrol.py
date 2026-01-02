@@ -4,7 +4,7 @@ from .user import User
 from .rol import Rol
 
 class UserRol(BaseModel):
-    user = models.ForeignKey(User, on_delete=SAFEDELETE_PROTECT)
+    user = models.ForeignKey(User, on_delete=SAFEDELETE_PROTECT, related_name='usuario')
     rol = models.ForeignKey(Rol, on_delete=SAFEDELETE_PROTECT)
 
     class Meta:
