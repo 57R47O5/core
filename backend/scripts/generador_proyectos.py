@@ -1,12 +1,16 @@
 import subprocess
 from pathlib import Path
 import secrets
-import os
+import argparse
 
 # ==============================
 # Constants
 # ==============================
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+BACKEND_PROJECTS_DIR = REPO_ROOT / "backendpy" / "projects"
+FRONTEND_PROJECTS_DIR = REPO_ROOT / "frontend" / "proyectos"
 LIQUIBASE_ROOT = Path("docker") / "liquibase"
 LIQUIBASE_PROJECTS_DIR = LIQUIBASE_ROOT / "changelog" / "projects"
 
@@ -22,6 +26,13 @@ def run(cmd, cwd=None, env=None):
     """
     print("→", " ".join(map(str, cmd)))
     subprocess.run(cmd, cwd=cwd, env=env, check=True)
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--project", required=False)
+    parser.add_argument("--backend", action="store_true")
+    parser.add_argument("--frontend", action="store_true")
+    return parser.parse_args()
 
 
 # ==============================
@@ -46,9 +57,8 @@ def create_project_directory(project_name):
     """
     Crea el directorio del proyecto dentro de backend/.
     """
-    backend_dir = Path(__file__).resolve().parents[1]
-    project_dir = backend_dir / project_name
-    project_dir.mkdir(exist_ok=True)
+    project_dir = BACKEND_PROJECTS_DIR / project_name
+    project_dir.mkdir(parents=True, exist_ok=True)
     return project_dir
 
 
@@ -91,39 +101,6 @@ def create_django_project(project_name, project_dir):
     )
 
 
-def create_roles_app(project_dir):
-    """
-    Crea la app roles y define los modelos Role y UserRole.
-    """
-    run(
-        ["uv", "run", "python", "manage.py", "startapp", "roles"],
-        cwd=project_dir,
-    )
-
-    (project_dir / "roles" / "models.py").write_text(
-        """from django.db import models
-from apps.base.models import User
-
-
-class Role(models.Model):
-    nombre = models.CharField(max_length=50, unique=True)
-    descripcion = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.nombre
-
-
-class UserRole(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ('user', 'role')
-""",
-        encoding="utf8",
-    )
-
-
 # ==============================
 # Settings
 # ==============================
@@ -160,8 +137,7 @@ if str(BACKEND_DIR) not in sys.path:
         "INSTALLED_APPS = [\n"
         "    'corsheaders',\n"
         "    'apps.base',\n"
-        "    'apps.auditoria',\n"
-        "    'roles',",
+        "    'apps.auditoria',",
     )
 
     settings = settings.replace(
@@ -322,27 +298,47 @@ def register_project_in_liquibase(project_name: str) -> None:
         print(f"🧩 Liquibase: proyecto '{project_name}' registrado")
     else:
         print(f"ℹ️ Liquibase: proyecto '{project_name}' ya existe")
+
+# ==============================
+# Frontend
+# ==============================
+
+def create_frontend_project(project_name):
+    project_dir = FRONTEND_PROJECTS_DIR / project_name
+    project_dir.mkdir(parents=True, exist_ok=True)
+
+    run(["npm", "create", "vite@latest", ".", "--", "--template", "react"], cwd=project_dir)
+    run(["npm", "install"], cwd=project_dir)
+
+    return project_dir
+
+
 # ==============================
 # Main
 # ==============================
 
 def main():
-    print("\n=== Generador de proyectos Django (monorepo + uv) ===\n")
+    args = parse_args()
 
-    project_name = ask_project_name()
+    if args.project:
+        project_name = args.project
+    else:
+        project_name = ask_project_name()
     project_dir = create_project_directory(project_name)
 
     print(f"\n🚀 Creando proyecto '{project_name}'\n")
 
-    create_virtualenv(project_dir)
-    install_dependencies(project_dir)
-    create_django_project(project_name, project_dir)
-    create_roles_app(project_dir)
-    configure_settings(project_name, project_dir)
-    configure_vscode(project_dir)
-    create_env_file(project_dir, project_name)
-    create_postgres_schema(project_name)
-    register_project_in_liquibase(project_name)
+    if args.backend:
+        create_virtualenv(project_dir)
+        install_dependencies(project_dir)
+        create_django_project(project_name, project_dir)
+        configure_settings(project_name, project_dir)
+        configure_vscode(project_dir)
+        create_env_file(project_dir, project_name)
+        create_postgres_schema(project_name)
+        register_project_in_liquibase(project_name)
+    if args.frontend:
+        create_frontend_project(project_name)
 
     print("\n🎉 Proyecto creado correctamente")
     print("📌 El schema será gestionado por Liquibase")
