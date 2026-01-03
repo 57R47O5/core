@@ -8,7 +8,7 @@ LIQUIBASE_PROJECTS_DIR = LIQUIBASE_ROOT / "changelog" / "projects"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-BACKEND_PROJECTS_DIR = REPO_ROOT / "backendpy" / "projects"
+BACKEND_PROJECTS_DIR = REPO_ROOT / "backend" / "projects"
 FRONTEND_PROJECTS_DIR = REPO_ROOT / "frontend" / "proyectos"
 
 
