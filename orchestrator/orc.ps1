@@ -16,7 +16,9 @@ $SupportedCommands = @(
     "down",
     "reset",
     "status",
-    "doctor"
+    "doctor",
+    "create",
+    "destroy"
 )
 
 $scriptRoot = $PSScriptRoot
@@ -286,6 +288,12 @@ switch ($command) {
     "doctor" {
         . "$PSScriptRoot\commands\doctor.ps1"
         Invoke-OrcDoctor -Project $project
+    }
+     "create" {
+        . "$PSScriptRoot\commands\create.ps1" -project $project -repoRoot $repoRoot
+    }
+    "destroy" {
+        . "$PSScriptRoot\commands\destroy.ps1" -project $project -repoRoot $repoRoot
     }
 }
 
