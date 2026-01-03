@@ -66,12 +66,21 @@ if ($command -eq "up") {
         exit 1
     }
 
+    # ---- Levantar backend ----
     Write-Host "Levantando backend ($project) en http://localhost:8000"
 
-    Start-Process powershell `
-        -ArgumentList "-NoExit", "-Command", "cd `"$backendPath`"; Write-Host 'Activando venv...'; . `"$venvActivate`"; python manage.py runserver" `
-        -WindowStyle Normal
+    $pythonExe = Join-Path $backendPath ".venv\Scripts\python.exe"
 
+    Start-Process powershell `
+        -ArgumentList @(
+            "-NoExit",
+            "-Command",
+            "cd `"$backendPath`";
+            Write-Host 'Activando venv...';
+            . `"$venvActivate`";
+            & `"$pythonExe`" manage.py runserver"
+        ) `
+        -WindowStyle Normal
 
     # ---- Frontend ----
     $frontendPath = Join-Path $repoRoot "frontend\proyectos\$project"

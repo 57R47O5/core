@@ -2,6 +2,10 @@ import subprocess
 from pathlib import Path
 import secrets
 import argparse
+import shutil
+from typing import Union, Sequence
+import os
+import sys
 
 # ==============================
 # Constants
@@ -9,23 +13,47 @@ import argparse
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-BACKEND_PROJECTS_DIR = REPO_ROOT / "backendpy" / "projects"
+BACKEND_PROJECTS_DIR = REPO_ROOT / "backend" / "projects"
 FRONTEND_PROJECTS_DIR = REPO_ROOT / "frontend" / "proyectos"
 LIQUIBASE_ROOT = Path("docker") / "liquibase"
 LIQUIBASE_PROJECTS_DIR = LIQUIBASE_ROOT / "changelog" / "projects"
 
+BASE_REQUIREMENTS = REPO_ROOT / "backend" / "requirements.txt"
 
 # ==============================
 # Helpers
 # ==============================
 
-def run(cmd, cwd=None, env=None):
+def run(cmd: Union[str, Sequence[str]], cwd=None, env=None, input_text=None, **kwargs):
     """
-    Ejecuta un comando del sistema mostrando el comando por consola.
+    Ejecuta un comando del sistema mostrando stdout/stderr.
     Falla inmediatamente si el comando devuelve error.
+
+    - Si cmd es str → se ejecuta vía shell
+    - Si cmd es lista → ejecución directa (recomendado)
     """
-    print("→", " ".join(map(str, cmd)))
-    subprocess.run(cmd, cwd=cwd, env=env, check=True)
+    print("→", cmd if isinstance(cmd, str) else " ".join(cmd))
+
+    process = subprocess.Popen(
+        cmd,
+        cwd=cwd,
+        env=env,
+        shell=isinstance(cmd, str),
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    stdout, stderr = process.communicate(input=input_text)
+
+    if stdout:
+        print(stdout)
+    if stderr:
+        print(stderr)
+
+    if process.returncode != 0:
+        raise RuntimeError(f"❌ Comando falló ({process.returncode})")
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -62,42 +90,72 @@ def create_project_directory(project_name):
     return project_dir
 
 
-def create_virtualenv(project_dir):
+def create_virtualenv(project_dir: Path):
     """
-    Crea el entorno virtual usando uv.
+    Crea el entorno virtual usando Python 3.14 explícitamente.
+    Falla si Python 3.14 no está disponible.
     """
-    run(["uv", "venv", ".venv"], cwd=project_dir)
+    python_exe = "py"
 
-
-def install_dependencies(project_dir):
-    """
-    Instala las dependencias base del proyecto.
-    """
     run(
-        [
-            "uv",
-            "pip",
-            "install",
-            "django",
-            "psycopg2-binary",
-            "python-dotenv",
-            "django-cors-headers",
-        ],
+        [python_exe, "-3.14", "-m", "venv", ".venv"],
         cwd=project_dir,
+        check=True,
     )
 
+def install_dependencies(project_dir: Path):
+    """
+    Copia el requirements.txt base al proyecto e instala dependencias
+    usando el Python del virtualenv.
+    """
+    python_exe = project_dir / ".venv" / "Scripts" / "python.exe"
+
+    base_requirements = REPO_ROOT / "backend" / "requirements.txt"
+    target_requirements = project_dir / "requirements.txt"
+
+    if not base_requirements.exists():
+        raise FileNotFoundError(
+            f"No se encontró el requirements base en {base_requirements}"
+        )
+
+    # Copiar requirements.txt al proyecto (sobrescribe si existe)
+    shutil.copy(base_requirements, target_requirements)
+
+    # Instalar dependencias
+    run(
+        [
+            str(python_exe),
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "requirements.txt",
+        ],
+        cwd=project_dir,
+        check=True,
+    )
 
 # ==============================
 # Django
 # ==============================
 
-def create_django_project(project_name, project_dir):
+def create_django_project(project_name: str, project_dir: Path):
     """
-    Inicializa el proyecto Django.
+    Inicializa el proyecto Django usando el Python del venv.
     """
+    python_exe = project_dir / ".venv" / "Scripts" / "python.exe"
+
     run(
-        ["uv", "run", "django-admin", "startproject", project_name, "."],
+        [
+            str(python_exe),
+            "-m",
+            "django",
+            "startproject",
+            project_name,
+            ".",
+        ],
         cwd=project_dir,
+        check=True,
     )
 
 
@@ -118,7 +176,7 @@ def configure_settings(project_name, project_dir):
 
     settings = settings.replace(
         "BASE_DIR = Path(__file__).resolve().parent.parent",
-        """BASE_DIR = Path(__file__).resolve().parent.parent
+        """BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 import os
 import sys
@@ -159,10 +217,10 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'base.User'
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
-CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ["localhost","127.0.0.1"]
+CORS_ALLOWED_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000"]
+CSRF_TRUSTED_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000"]
+CORS_ALLOW_CREDENTIALS=True
 """
 
     settings_path.write_text(settings)
@@ -310,11 +368,39 @@ def create_frontend_project(project_name):
     if any(project_dir.iterdir()):
         raise RuntimeError("El directorio frontend no está vacío")
 
-    run(["npm", "create", "vite@latest", ".", "--", "--template", "react"], cwd=project_dir, shell=True)
-    run(["npm", "install"], cwd=project_dir)
+    env = os.environ.copy()
+    env["CI"] = "true"
+
+    run(
+    ["npx.cmd", "create-vite", ".", "--template", "react"],
+    cwd=project_dir, env=env,
+    )
+    run(["npm.cmd", "install"], cwd=project_dir, env=env)
+
+    patch_vite_config(project_dir)
 
     return project_dir
 
+def patch_vite_config(project_dir):
+    vite_config = project_dir / "vite.config.js"
+
+    if not vite_config.exists():
+        raise FileNotFoundError(
+            f"No se encontró vite.config.js en {project_dir}"
+        )
+
+    content = vite_config.read_text(encoding="utf-8")
+
+    if "server:" in content:
+        # Ya fue modificado antes
+        return
+
+    patched = content.replace(
+        "export default defineConfig({",
+        "export default defineConfig({\n  server: {\n    port: 3000,\n  },"
+    )
+
+    vite_config.write_text(patched, encoding="utf-8")
 
 # ==============================
 # Main
@@ -350,7 +436,7 @@ def main():
     print("\n🎉 Proyecto creado correctamente")
     print("📌 El schema será gestionado por Liquibase")
     print(f"cd backend/{project_name}")
-    print("uv run python manage.py runserver")
+    print("python manage.py runserver")
 
 
 if __name__ == "__main__":
