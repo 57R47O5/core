@@ -1,53 +1,136 @@
-# Monorepo – Visión General, Organización y Filosofía
+Monorepo – Visión, Thélos y Sistema de Exploración de Software
+0. Thélos (finalidad última)
 
-## 1. Propósito del monorepo
+Este monorepo existe para maximizar la velocidad de aprendizaje y la capacidad de exploración en el desarrollo de software, reduciendo drásticamente:
 
-Este monorepo existe para **centralizar, orquestar y estandarizar** el desarrollo de múltiples proyectos y aplicaciones que comparten:
+el costo de crear un proyecto
 
-* Infraestructura
-* Herramientas de migración de base de datos
-* Convenciones técnicas
-* Flujos de CI/CD
-* Filosofía de automatización
+el costo de modificarlo
 
-El objetivo principal **no es solo ejecutar código**, sino **reducir la carga cognitiva**, preservar contexto y permitir que el desarrollo escale sin que la mente humana se convierta en el cuello de botella.
+el costo de descartarlo
 
-Este repositorio está pensado para ser entendido no solo por desarrolladores humanos, sino también por **LLMs y agentes automáticos**, que deben poder obtener contexto rápidamente y operar con seguridad.
+El objetivo final no es producir código, sino convertir exploración en conocimiento reutilizable, y conocimiento en ventaja competitiva sostenible.
 
----
+Este sistema está diseñado para:
 
-## 2. Principios rectores
+Aumentar el área de exposición a la suerte, permitiendo probar más ideas, con menor riesgo, en menos tiempo.
 
-1. **Separación clara de responsabilidades**
+1. Contexto comercial y estratégico
 
-   * Las herramientas no deben conocerse entre sí más de lo estrictamente necesario.
-   * El orquestador coordina, las herramientas ejecutan.
+Una empresa de software está estructuralmente limitada por:
 
-2. **Contexto explícito > Conocimiento implícito**
+horas disponibles
 
-   * Las reglas del sistema deben vivir en archivos, no en la cabeza del desarrollador.
+atención humana
 
-3. **Automatización progresiva y modular**
+riesgo de concentración en pocos clientes grandes
 
-   * Primero scripts simples
-   * Luego micro‑agentes
-   * Nunca magia
+Este monorepo es una respuesta directa a ese problema.
 
-4. **Idempotencia y reproducibilidad**
+Lo que habilita
 
-   * Cualquier entorno debe poder reconstruirse desde cero.
+Crear y adaptar proyectos en horas, no semanas
 
-5. **Optimización del ciclo de feedback**
+Atender muchos clientes pequeños y medianos
 
-   * Cambios pequeños
-   * Migraciones incrementales
-   * Validación inmediata
+Explorar ideas sin compromiso previo
 
----
+Abandonar iniciativas sin costo emocional ni técnico
 
-## 3. Organización por carpetas (alto nivel)
+Ventaja competitiva resultante
 
-```
+Costos operativos minúsculos
+
+Alta personalización con bajo esfuerzo marginal
+
+Menor dependencia de clientes individuales
+
+Capacidad real de decir “no” a malos clientes
+
+Mayor resiliencia financiera
+
+Mayor opcionalidad estratégica
+
+Este monorepo convierte el desarrollo de software en un portafolio de opciones, no en apuestas únicas.
+
+2. Filosofía central
+
+El software deja de ser un producto aislado y pasa a ser:
+
+un sistema de experimentación continua
+
+La IA no es el producto.
+La IA es el acelerador del ciclo completo.
+
+Cada proyecto:
+
+es un experimento
+
+deja infraestructura reutilizable
+
+mejora el sistema general, incluso si fracasa
+
+Nada se pierde.
+
+3. Propósito del monorepo (operativo)
+
+Este monorepo existe para centralizar, orquestar y estandarizar múltiples proyectos que comparten:
+
+infraestructura
+
+convenciones técnicas
+
+herramientas de migración
+
+flujos de CI/CD
+
+filosofía de automatización
+
+El objetivo no es solo ejecutar código, sino:
+
+reducir la fricción cognitiva y técnica al mínimo posible
+
+Este repositorio está pensado para ser entendido tanto por:
+
+desarrolladores humanos
+
+como por LLMs y agentes automáticos
+
+El contexto debe ser explícito, legible y accionable.
+
+4. Principios rectores
+
+Flexibilidad por encima de optimización prematura
+
+Es más importante poder cambiar que hacerlo perfecto.
+
+Costo marginal cercano a cero
+
+Crear un proyecto nuevo debe ser trivial.
+
+Destruirlo también.
+
+Contexto explícito > conocimiento tribal
+
+Las reglas viven en archivos, no en personas.
+
+Separación estricta de responsabilidades
+
+El orquestador coordina.
+
+Las herramientas ejecutan.
+
+El conocimiento queda persistido.
+
+Ciclos de realimentación cortos
+
+Ver resultados rápido reduce dolor y riesgo.
+
+Todo experimento deja código
+
+El aprendizaje se convierte en infraestructura.
+
+5. Organización del monorepo (alto nivel)
 monorepo/
 │
 ├── orchestrator/
@@ -56,13 +139,13 @@ monorepo/
 │   ├── registry/
 │   └── docs/
 │
-├── projects/
-│   ├── proyecto_a/
-│   │   └──proyecto_a/
-│   │       ├── apps/
-│   │       ├── docker/
-│   │       └── liquibase/
-│   └── proyecto_b/
+├── backend/
+│   ├── projects/
+│   │   └── proyecto_x/
+│   └── apps/
+│
+├── frontend/
+│   └── proyectos/
 │
 ├── docker/
 │   ├── postgres/
@@ -72,190 +155,131 @@ monorepo/
 │   └── gitlab/
 │
 └── README.md
-```
 
----
 
-## 4. El orquestador (pieza central)
+La estructura favorece:
 
-El **orquestador** es el "director supremo" del monorepo.
+reutilización
 
-### Responsabilidades
+aislamiento
 
-* Conocer **qué proyectos existen**
-* Conocer **qué apps componen cada proyecto**
-* Decidir **qué cambios aplicar y dónde**
-* Coordinar herramientas externas (Liquibase, Docker, CI)
+copia barata de funcionalidad entre proyectos
 
-### Lo que NO hace
+6. El orquestador (órgano ejecutivo)
 
-* No define lógica de negocio
-* No contiene SQL ni XML de migraciones
-* No ejecuta cambios directamente sin delegar
+El orquestador es el punto de control del sistema.
 
-### Registry
+No es inteligente por sí mismo.
+Es intencionalmente simple.
 
-El `registry`:
+Responsabilidades
 
-* Es una **fuente de verdad** del monorepo
-* Define relaciones entre proyectos, apps y bases de datos
-* **No pertenece a Liquibase** ni a Docker
-* Es consumido por el orquestador
+Saber qué proyectos existen
 
----
+Saber cómo levantarlos, crearlos y destruirlos
 
-## 5. Liquibase
+Coordinar herramientas externas
 
-Liquibase se utiliza como **motor de migraciones de base de datos**.
+Validar precondiciones
 
-### Filosofía de uso
+Lo que NO hace
 
-* Migraciones **incrementales**
-* Nunca destructivas por defecto
-* Cambios pequeños y explícitos
+No define lógica de negocio
 
-### Organización
+No decide políticas
 
-* Cada app posee sus propios changelogs
-* Existen master changelogs generados automáticamente
-* Liquibase **no conoce el registry**
+No “piensa”
 
-Liquibase recibe:
+Pensar es responsabilidad humana o de agentes especializados.
 
-* Un changelog
-* Una base de datos
+7. Registry (memoria estructural)
 
-El *qué* y el *dónde* son decisiones del orquestador.
+El registry es:
 
----
+la fuente de verdad del monorepo
 
-## 6. Docker
+el mapa entre proyectos, apps y recursos
 
-Docker se utiliza para:
+independiente de herramientas específicas
 
-* Bases de datos locales
-* Ejecución aislada de Liquibase
-* Reproducibilidad total del entorno
+No pertenece a:
 
-### Beneficios clave
+Django
 
-* Ciclo de feedback extremadamente corto
-* Desarrollo local idéntico a CI
-* Eliminación de dependencias globales
+Liquibase
 
-El patrón buscado es:
+Docker
 
-> *Modificar changelog → ejecutar Liquibase → ver el cambio inmediatamente*
+Pertenece al sistema, no a una tecnología.
 
----
+8. Liquibase, Docker y CI
 
-## 7. Integración con GitLab CI
+Estas herramientas cumplen un rol claro:
 
-GitLab CI se utiliza como:
+Liquibase: evolución explícita del estado
 
-* Verificador de consistencia
-* Ejecutor automático de migraciones
-* Guardia de integridad del monorepo
+Docker: entornos reproducibles
 
-### Principios
+CI: verificador de consistencia
 
-* Lo que corre en CI debe poder correrse localmente
-* Ninguna magia específica de CI
-* Variables sensibles desacopladas del código
+Ninguna toma decisiones estratégicas.
+Todas obedecen al orquestador.
 
----
+9. Scripts y micro-agentes
+Scripts
 
-## 8. Scripts
+determinísticos
 
-Los scripts son **herramientas determinísticas**.
+predecibles
 
-### Características
+sin interpretación
 
-* Entrada y salida clara
-* Sin razonamiento complejo
-* Repetibles
-* Predecibles
+Micro-agentes
 
-### Uso típico
+aplican reglas existentes
 
-* Generar estructuras de carpetas
-* Validar estado del repo
-* Invocar herramientas externas
+interpretan contexto local
 
-Cuando un script comienza a requerir:
+explican decisiones
 
-* heurísticas
-* interpretación
-* contexto amplio
+dejan huellas claras
 
-➡️ deja de ser script y pasa a ser micro‑agente.
+Cuando algo requiere criterio global:
+➡️ vuelve al humano.
 
----
+10. Qué optimiza realmente este sistema
 
-## 9. Micro‑agentes
+No optimiza:
 
-Los micro‑agentes son unidades de automatización **ligeramente inteligentes**.
+líneas de código
 
-### Qué son
+performance micro
 
-* Más que una función
-* Mucho menos que un sistema autónomo
-* Especialistas en tareas acotadas
+elegancia aislada
 
-### Qué hacen
+Optimiza:
 
-* Aplican reglas existentes
-* Interpretan contexto local
-* Explican decisiones
-* Dejan TODOs cuando hay ambigüedad
+velocidad de aprendizaje
 
-### Qué NO hacen
+cantidad de intentos
 
-* No crean políticas nuevas
-* No toman decisiones globales
-* No modifican el registry sin supervisión
+capacidad de abandonar
 
-### Ejemplos
+reutilización de conocimiento
 
-* Modelo → changelog Liquibase
-* App nueva → estructura + registro
-* Sincronización de master changelogs
+11. Resumen ejecutivo
 
----
+Este monorepo no es un repositorio.
 
-## 10. Filosofía general
+Es un sistema de exploración de software diseñado para:
 
-Este monorepo está diseñado para:
+reducir el costo de intentar
 
-* Proteger la capacidad cognitiva del desarrollador
-* Externalizar decisiones repetitivas
-* Permitir que humanos y LLMs colaboren
+aumentar la superficie de suerte
 
-La automatización no busca reemplazar criterio humano, sino:
+transformar aprendizaje en código
 
-> **liberar al humano para pensar en problemas de mayor alcance**
+convertir flexibilidad en poder de negociación
 
----
-
-## 11. Posibles mejoras futuras
-
-* Agentes con memoria local (design docs)
-* Validadores automáticos de consistencia
-* Simulación de impacto de migraciones
-* Generación asistida de documentación
-* Orquestación multi‑cliente / multi‑entorno
-
----
-
-## 12. Resumen ejecutivo
-
-Este monorepo no es solo un repositorio de código.
-
-Es un **sistema de coordinación** entre:
-
-* proyectos
-* herramientas
-* personas
-* agentes
-
-Diseñado para escalar **en complejidad sin escalar en caos**.
+No buscamos predecir el próximo éxito.
+Buscamos construir el sistema donde el éxito sea estadísticamente inevitable.
