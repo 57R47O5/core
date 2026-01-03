@@ -1,0 +1,28 @@
+project:
+  name: elecciones
+
+backend:
+  enabled: true
+  python: "3.14"
+  requirements: backend/requirements.txt
+  django:
+    apps:
+      - base
+      - auditoria
+    cors:
+      origins:
+        - http://localhost:3000
+    database:
+      engine: django.db.backends.postgresql
+      host: localhost
+      port: 5433
+      user: postgres
+      password: 142857
+
+frontend:
+  enabled: true
+  stack: react-vite
+  port: 3000
+
+liquibase:
+  enabled: true
