@@ -9,22 +9,27 @@ param (
 $backendPath  = Join-Path $repoRoot "backend\projects\$project"
 $frontendPath = Join-Path $repoRoot "frontend\proyectos\$project"
 
-if (Test-Path $backendPath -or Test-Path $frontendPath) {
-    Write-Host "El proyecto '$project' ya existe"
+if ((Test-Path $backendPath) -or (Test-Path $frontendPath)) {
+    Write-Host "❌ El proyecto '$project' ya existe"
     exit 1
 }
 
-$generator = Join-Path $repoRoot "backend\scripts\generador_proyectos.py"
+$helper = Join-Path $repoRoot "orchestrator\scripts\orc_create_project.py"
 
-if (!(Test-Path $generator)) {
-    Write-Host "No se encontró el generador en $generator"
+if (!(Test-Path $helper)) {
+    Write-Host "❌ No se encontró el helper $helper"
     exit 1
 }
 
-Write-Host "Creando proyecto '$project'"
+Write-Host "🐗 Orc creando proyecto '$project' desde orc.yaml"
+Write-Host ""
 
 try {
-    python $generator --project $project
+    python $helper $project
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "Error del generador"
+    }
 }
 catch {
     Write-Host "❌ Error creando el proyecto '$project'"
@@ -32,8 +37,6 @@ catch {
 }
 
 Write-Host ""
-Write-Host "Proyecto '$project' creado correctamente"
+Write-Host "✅ Proyecto '$project' creado correctamente"
 Write-Host "Podés levantarlo con:"
 Write-Host "  orc up $project"
-
-exit 0

@@ -57,10 +57,27 @@ def run(cmd: Union[str, Sequence[str]], cwd=None, env=None, input_text=None, **k
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--project", required=False)
+
+    parser.add_argument("--project", required=True)
+
     parser.add_argument("--backend", action="store_true")
     parser.add_argument("--frontend", action="store_true")
+
+    # Backend
+    parser.add_argument("--backend-port", type=int, default=8000)
+
+    # Frontend
+    parser.add_argument("--frontend-port", type=int, default=3000)
+
+    # Database
+    parser.add_argument("--db-host", required=True)
+    parser.add_argument("--db-port", required=True)
+    parser.add_argument("--db-name", required=True)
+    parser.add_argument("--db-user", required=True)
+    parser.add_argument("--db-password", required=True)
+
     return parser.parse_args()
+
 
 
 # ==============================
@@ -217,9 +234,13 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'base.User'
 
-ALLOWED_HOSTS = ["localhost","127.0.0.1"]
-CORS_ALLOWED_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000"]
-CSRF_TRUSTED_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
+CORS_ALLOWED_ORIGINS = [
+    f"http://localhost:{os.getenv('FRONTEND_PORT', '3000')}",
+]
+
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 CORS_ALLOW_CREDENTIALS=True
 """
 
@@ -269,48 +290,45 @@ def configure_vscode(project_dir):
 # Environment & DB
 # ==============================
 
-def create_env_file(project_dir, db_name):
-    """
-    Genera el archivo .env del proyecto.
-    """
+def create_env_file(project_dir, args):
     secret_key = secrets.token_urlsafe(50)
 
     (project_dir / ".env").write_text(
         f"""# DJANGO
 SECRET_KEY={secret_key}
 DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
 
 # DATABASE
 DB_ENGINE=django.db.backends.postgresql
-POSTGRES_DB={db_name}
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=142857
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5433
+POSTGRES_DB={args.db_name}
+POSTGRES_USER={args.db_user}
+POSTGRES_PASSWORD={args.db_password}
+POSTGRES_HOST={args.db_host}
+POSTGRES_PORT={args.db_port}
 
-# CORS
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-CSRF_TRUSTED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-CORS_ALLOW_CREDENTIALS=True
+# BACKEND
+BACKEND_PORT={args.backend_port}
+
+# FRONTEND
+FRONTEND_PORT={args.frontend_port}
 """,
         encoding="utf8",
     )
 
-
-def create_postgres_schema(schema_name):
+def create_postgres_schema(args):
     """
     Crea un schema PostgreSQL si no existe.
     """
+    schema_name = args.project
     try:
         import psycopg2  # type: ignore
 
         conn = psycopg2.connect(
-            dbname="postgres",   
-            user="postgres",
-            password="142857",
-            host="localhost",
-            port="5433",
+            dbname="postgres",
+            user=args.db_user,
+            password=args.db_password,
+            host=args.db_host,
+            port=args.db_port,
         )
         conn.autocommit = True
         cur = conn.cursor()
@@ -424,14 +442,15 @@ def main():
     if args.backend:
         create_virtualenv(project_dir)
         install_dependencies(project_dir)
-        create_django_project(project_name, project_dir)
-        configure_settings(project_name, project_dir)
+        create_django_project(args.project, project_dir)
+        configure_settings(args.project, project_dir)
         configure_vscode(project_dir)
-        create_env_file(project_dir, project_name)
-        create_postgres_schema(project_name)
-        register_project_in_liquibase(project_name)
+        create_env_file(project_dir, args)
+        create_postgres_schema(args)
+        register_project_in_liquibase(args.project)
+
     if args.frontend:
-        create_frontend_project(project_name)
+        create_frontend_project(args.project)
 
     print("\n🎉 Proyecto creado correctamente")
     print("📌 El schema será gestionado por Liquibase")
