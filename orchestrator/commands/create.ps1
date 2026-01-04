@@ -24,15 +24,11 @@ if (!(Test-Path $helper)) {
 Write-Host "🐗 Orc creando proyecto '$project' desde orc.yaml"
 Write-Host ""
 
-try {
-    python $helper $project
+python $helper $project
+$exitCode = $LASTEXITCODE
 
-    if ($LASTEXITCODE -ne 0) {
-        throw "Error del generador"
-    }
-}
-catch {
-    Write-Host "❌ Error creando el proyecto '$project'"
+if ($exitCode -ne 0) {
+    Write-Host "❌ El helper falló (exit code $exitCode)"
     exit 1
 }
 
