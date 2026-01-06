@@ -348,5 +348,27 @@ function Test-OrcProjectAgainstRegistry {
     }
 }
 
+function Show-OrcProjects {
+    Write-Host "Proyectos registrados:"
+    Write-Host ""
+
+    try {
+        $projects = Get-OrcProjects
+    }
+    catch {
+        Write-Host "Error leyendo registry"
+        Write-Host $_
+        exit 1
+    }
+
+    if ($projects.Count -eq 0) {
+        Write-Host " (ninguno)"
+        return
+    }
+
+    foreach ($p in $projects) {
+        Write-Host " - $p"
+    }
+}
 
 

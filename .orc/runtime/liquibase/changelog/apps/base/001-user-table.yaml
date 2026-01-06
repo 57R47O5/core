@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: changelog/apps/base/user.xml
