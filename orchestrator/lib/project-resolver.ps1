@@ -4,12 +4,8 @@ function Resolve-OrcProject {
         [string]$Project
     )
 
-    $scriptRoot = $PSScriptRoot
-    $orcRoot   = Split-Path $scriptRoot -Parent 
-    $repoRoot   = Split-Path $orcRoot -Parent 
-
-    $backendPath  = Join-Path $repoRoot "backend\projects\$Project"
-    $frontendPath = Join-Path $repoRoot "frontend\proyectos\$Project"
+    $repoRoot = Resolve-OrcRepoRoot
+    $spec     = Get-OrcProjectSpec -Project $Project
 
     $result = @{
         Name         = $Project
@@ -19,18 +15,26 @@ function Resolve-OrcProject {
         Type         = @()
     }
 
-    if (Test-Path $backendPath) {
-        $result.BackendPath = $backendPath
-        $result.Type += "backend"
-    }
+    foreach ($type in $spec.ExpectedPaths.Keys) {
+        $relativePath = $spec.ExpectedPaths[$type]
+        $absolutePath = Join-Path $repoRoot $relativePath
 
-    if (Test-Path $frontendPath) {
-        $result.FrontendPath = $frontendPath
-        $result.Type += "frontend"
+        if (Test-Path $absolutePath) {
+            switch ($type) {
+                "backend" {
+                    $result.BackendPath = $absolutePath
+                }
+                "frontend" {
+                    $result.FrontendPath = $absolutePath
+                }
+            }
+
+            $result.Type += $type
+        }
     }
 
     if ($result.Type.Count -eq 0) {
-        throw "Proyecto '$Project' no encontrado ni en backend ni en frontend"
+        throw "Proyecto '$Project' definido pero no presente en el filesystem"
     }
 
     return $result
