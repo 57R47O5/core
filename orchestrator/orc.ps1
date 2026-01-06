@@ -2,14 +2,20 @@ param (
     [Parameter(Mandatory = $true)]
     [string]$command,
     
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $false)]
     [string]$project,
 
     [Parameter(Mandatory = $false)]
     [string]$target
     )
+
+if ($command -eq "registry") {
+    $target  = $project
+    $project = $null
+}
     
 ."$PSScriptRoot\lib\project-resolver.ps1"
+."$PSScriptRoot\lib\librarian.ps1"
 
 $SupportedCommands = @(
     "up",
@@ -18,7 +24,9 @@ $SupportedCommands = @(
     "status",
     "doctor",
     "create",
-    "destroy"
+    "destroy",
+    "projects",
+    "registry"
 )
 
 $scriptRoot = $PSScriptRoot
@@ -284,6 +292,29 @@ if ($command -eq "status") {
     exit 0
 }
 
+function Show-OrcProjects {
+    Write-Host "Proyectos registrados:"
+    Write-Host ""
+
+    try {
+        $projects = Get-OrcProjects
+    }
+    catch {
+        Write-Host "Error leyendo registry"
+        Write-Host $_
+        exit 1
+    }
+
+    if ($projects.Count -eq 0) {
+        Write-Host " (ninguno)"
+        return
+    }
+
+    foreach ($p in $projects) {
+        Write-Host " - $p"
+    }
+}
+
 switch ($command) {
     "doctor" {
         . "$PSScriptRoot\commands\doctor.ps1"
@@ -295,8 +326,26 @@ switch ($command) {
     "destroy" {
         . "$PSScriptRoot\commands\destroy.ps1" -project $project -repoRoot $repoRoot
     }
+    "projects" {
+    Show-OrcProjects
+    }
+    "registry" {
+        switch ($target) {
+            "status" {
+                . "$PSScriptRoot\commands\registry-status.ps1" -RepoRoot $repoRoot
+            }
+            "sync" {
+                . "$PSScriptRoot\commands\registry-sync.ps1" -RepoRoot $repoRoot
+            }
+            default {
+                Write-Host "Uso:"
+                Write-Host "  orc registry status"
+                Write-Host "  orc registry sync"
+                exit 1
+            }
+        }
+    }
 }
-
 
 
 

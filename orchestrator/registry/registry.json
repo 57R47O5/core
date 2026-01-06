@@ -1,0 +1,17 @@
+﻿{
+    "projects":  {
+                     "elecciones":  {
+                                        "apps":  [
+                                                     "auditoria",
+                                                     "base"
+                                                 ]
+                                    },
+                     "carteles":  {
+                                      "apps":  [
+                                                   "auditoria",
+                                                   "base",
+                                                   "carteles"
+                                               ]
+                                  }
+                 }
+}
