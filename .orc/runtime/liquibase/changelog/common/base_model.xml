@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+      http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.25.xsd">
+
+    <!--
+      BaseModel definition
+      Mirrors Django BaseModel (SafeDeleteModel)
+      This file is a reference – columns are copied into createTable
+    -->
+
+    <property name="base.pk.type" value="INTEGER"/>
+    <property name="base.bool.type" value="BOOLEAN"/>
+    <property name="base.ts.type" value="TIMESTAMP WITH TIME ZONE"/>
+
+</databaseChangeLog>

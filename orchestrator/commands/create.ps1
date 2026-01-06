@@ -1,9 +1,14 @@
 param (
-    [Parameter(Mandatory = $true)]
-    [string]$project,
+    # Contexto del orco
+    [Parameter(Mandatory)]
+    [string]$RepoRoot,
 
-    [Parameter(Mandatory = $true)]
-    [string]$repoRoot
+    [Parameter(Mandatory)]
+    [string]$OrcRoot,
+
+    # Argumentos posicionales del comando
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$Args
 )
 
 $backendPath  = Join-Path $repoRoot "backend\projects\$project"
