@@ -14,9 +14,14 @@ $rest    = $Args[1..($Args.Count - 1)]
 # --------------------------------------------------
 # Paths base (NO usar Get-Location)
 # --------------------------------------------------
-$OrcScriptRoot = $PSScriptRoot
-$RepoRoot      = Split-Path $OrcScriptRoot -Parent
-$OrcRoot       = Join-Path $RepoRoot ".orc"
+$OrcScriptRoot = $PSScriptRoot               # orchestrator/
+$OrcRoot       = $OrcScriptRoot              
+$RepoRoot      = Split-Path $OrcRoot -Parent
+$OrcDataRoot   = Join-Path $OrcRoot ".orc"
+
+if (-not (Test-Path $OrcRoot)) {
+    throw "OrcRoot no encontrado en $OrcRoot"
+}
 
 # --------------------------------------------------
 # Load core libs
