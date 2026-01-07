@@ -182,67 +182,168 @@ def create_django_project(project_name: str, project_dir: Path):
 
 def configure_settings(project_name, project_dir):
     """
-    Ajusta settings.py para:
-    - usar .env
-    - soportar monorepo
-    - configurar apps base
-    - configurar base de datos
+    Writes a runtime-driven Django settings.py.
+
+    Infrastructure is NOT defined here.
+    All configuration is provided at runtime via .env (orc-controlled).
     """
+
     settings_path = project_dir / project_name / "settings.py"
-    settings = settings_path.read_text()
 
-    settings = settings.replace(
-        "BASE_DIR = Path(__file__).resolve().parent.parent",
-        """BASE_DIR = Path(__file__).resolve().parent.parent.parent
+    settings = f'''"""
+Django settings for {project_name} project.
 
+Runtime-driven configuration.
+This project does not define infrastructure.
+"""
+
+from pathlib import Path
 import os
 import sys
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
-load_dotenv(BASE_DIR / ".env")
+# -------------------------------------------------------------------
+# Paths
+# -------------------------------------------------------------------
 
-BACKEND_DIR = BASE_DIR.parent
-if str(BACKEND_DIR) not in sys.path:
-    sys.path.insert(0, str(BACKEND_DIR))
-""",
-    )
+# backend/projects/{project_name}/{project_name}/settings.py
+BASE_DIR = Path(__file__).resolve().parent.parent
+BACKEND_DIR = BASE_DIR.parents[1]  # .../backend
+APPS_DIR = BACKEND_DIR / "apps"
+ENV_PATH = BASE_DIR / ".env"
 
-    settings = settings.replace(
-        "INSTALLED_APPS = [",
-        "INSTALLED_APPS = [\n"
-        "    'corsheaders',\n"
-        "    'apps.base',\n"
-        "    'apps.auditoria',",
-    )
+for p in (BACKEND_DIR, APPS_DIR):
+    if str(p) not in sys.path:
+        sys.path.insert(0, str(p))
 
-    settings = settings.replace(
-        "MIDDLEWARE = [",
-        "MIDDLEWARE = [\n    'corsheaders.middleware.CorsMiddleware',",
-    )
+if ENV_PATH.exists():
+    load_dotenv(ENV_PATH)
+else:
+    raise ImproperlyConfigured(f".env file not found at {{ENV_PATH}}")
 
-    settings += """
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE'),
-        'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': os.getenv('POSTGRES_PORT'),
-    }
-}
+# -------------------------------------------------------------------
+# Helpers
+# -------------------------------------------------------------------
 
-AUTH_USER_MODEL = 'base.User'
+def env(name: str) -> str:
+    value = os.getenv(name)
+    if value is None:
+        raise ImproperlyConfigured(f"Missing environment variable: {{name}}")
+    return value
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
-CORS_ALLOWED_ORIGINS = [
-    f"http://localhost:{os.getenv('FRONTEND_PORT', '3000')}",
+# -------------------------------------------------------------------
+# Core settings
+# -------------------------------------------------------------------
+
+SECRET_KEY = env("DJANGO_SECRET_KEY")
+DEBUG = env("DJANGO_DEBUG").lower() == "true"
+ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS").split(",")
+
+
+# -------------------------------------------------------------------
+# Application definition
+# -------------------------------------------------------------------
+
+INSTALLED_APPS = [
+    "corsheaders",
+    "apps.base",
+    "apps.auditoria",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 ]
 
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
-CORS_ALLOW_CREDENTIALS=True
-"""
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+ROOT_URLCONF = "{project_name}.urls"
+
+TEMPLATES = [
+    {{
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {{
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        }},
+    }},
+]
+
+WSGI_APPLICATION = "{project_name}.wsgi.application"
+
+
+# -------------------------------------------------------------------
+# Database (runtime-controlled)
+# -------------------------------------------------------------------
+
+DATABASES = {{
+    "default": {{
+        "ENGINE": env("DB_ENGINE"),
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT"),
+    }}
+}}
+
+
+# -------------------------------------------------------------------
+# Authentication
+# -------------------------------------------------------------------
+
+AUTH_USER_MODEL = "base.User"
+
+AUTH_PASSWORD_VALIDATORS = [
+    {{"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"}},
+    {{"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"}},
+    {{"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"}},
+    {{"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"}},
+]
+
+
+# -------------------------------------------------------------------
+# Internationalization
+# -------------------------------------------------------------------
+
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+
+# -------------------------------------------------------------------
+# Static files
+# -------------------------------------------------------------------
+
+STATIC_URL = "static/"
+
+
+# -------------------------------------------------------------------
+# CORS / CSRF (runtime-controlled)
+# -------------------------------------------------------------------
+
+CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(",")
+CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS").split(",")
+CORS_ALLOW_CREDENTIALS = True
+'''
 
     settings_path.write_text(settings)
 
@@ -289,31 +390,6 @@ def configure_vscode(project_dir):
 # ==============================
 # Environment & DB
 # ==============================
-
-def create_env_file(project_dir, args):
-    secret_key = secrets.token_urlsafe(50)
-
-    (project_dir / ".env").write_text(
-        f"""# DJANGO
-SECRET_KEY={secret_key}
-DEBUG=True
-
-# DATABASE
-DB_ENGINE=django.db.backends.postgresql
-POSTGRES_DB={args.db_name}
-POSTGRES_USER={args.db_user}
-POSTGRES_PASSWORD={args.db_password}
-POSTGRES_HOST={args.db_host}
-POSTGRES_PORT={args.db_port}
-
-# BACKEND
-BACKEND_PORT={args.backend_port}
-
-# FRONTEND
-FRONTEND_PORT={args.frontend_port}
-""",
-        encoding="utf8",
-    )
 
 def create_postgres_schema(args):
     """
@@ -445,7 +521,6 @@ def main():
         create_django_project(args.project, project_dir)
         configure_settings(args.project, project_dir)
         configure_vscode(project_dir)
-        create_env_file(project_dir, args)
         create_postgres_schema(args)
         register_project_in_liquibase(args.project)
 

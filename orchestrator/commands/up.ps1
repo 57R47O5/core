@@ -11,18 +11,81 @@ param (
     [string[]]$Args
 )
 
-if ($Args.Count -lt 1) {
+# -------------------------
+# Modo de ejecución
+# -------------------------
+$mode = "local"
+if ($Args -contains "--docker") {
+    $mode = "docker"
+}
+
+# Filtrar flags para obtener solo el nombre del proyecto
+$filteredArgs = $Args | Where-Object { $_ -ne "--docker" }
+
+if ($filteredArgs.Count -lt 1) {
     Write-Host "Falta el nombre del proyecto"
-    Write-Host "   Uso: orc up <nombre-proyecto>"
+    Write-Host "   Uso: orc up <nombre-proyecto> [--docker]"
     exit 1
 }
 
-$project = $Args[0]
+$project = $filteredArgs[0]
+
+Write-Host "Modo de ejecución: $mode"
+Write-Host "Proyecto: $project"
+Write-Host ""
+
+# -------------------------
+# Runtime Orc
+# -------------------------
+. "$OrcRoot\config\orc.config.ps1"
+. "$OrcRoot\core\context.ps1"
+. "$OrcRoot\core\env.ps1"
+
+$ctx = New-OrcContext `
+    -RuntimeConfig $OrcRuntimeConfig `
+    -ProjectConfig @{
+        Name = $project
+        Mode = $mode
+    } `
+    -Paths @{
+        RepoRoot = $RepoRoot
+        OrcRoot  = $OrcRoot
+    }
+
+# =========================
+# MODO DOCKER
+# =========================
+if ($mode -eq "docker") {
+
+    Write-Host "Levantando proyecto '$project' en modo DOCKER"
+
+    $composePath = Join-Path $RepoRoot "docker"
+
+    if (!(Test-Path $composePath)) {
+        Write-Host "No se encontró el directorio docker en $composePath"
+        exit 1
+    }
+
+    Push-Location $composePath
+
+    docker compose up -d
+
+    Pop-Location
+
+    Write-Host ""
+    Write-Host "Proyecto '$project' levantado (dockerizado)"
+    exit 0
+}
+
+# =========================
+# MODO LOCAL
+# =========================
 
 # ---- Backend ----
-$backendPath  = Join-Path $repoRoot "backend\projects\$project"
+$backendPath  = Join-Path $RepoRoot "backend\projects\$project"
 $venvActivate = Join-Path $backendPath ".venv\Scripts\activate.ps1"
 $managePy     = Join-Path $backendPath "manage.py"
+$pythonExe    = Join-Path $backendPath ".venv\Scripts\python.exe"
 
 if (!(Test-Path $backendPath)) {
     Write-Host "Backend del proyecto '$project' no existe"
@@ -39,24 +102,13 @@ if (!(Test-Path $managePy)) {
     exit 1
 }
 
-# ---- Levantar backend ----
-Write-Host "Levantando backend ($project) en http://localhost:8000"
-
-$pythonExe = Join-Path $backendPath ".venv\Scripts\python.exe"
-
-# ---- Runtime ----
-. "$OrcRoot\config\orc.config.ps1"
-. "$OrcRoot\core\context.ps1"
-. "$OrcRoot\core\env.ps1"
-
-$ctx = New-OrcContext `
-    -RuntimeConfig $OrcRuntimeConfig `
-    -ProjectConfig @{ Name = $project } `
-    -Paths @{ RepoRoot = $RepoRoot }
-
+# ---- Env ----
 New-OrcEnvFile `
     -ctx $ctx `
     -BackendPath $backendPath
+
+# ---- Levantar backend ----
+Write-Host "Levantando backend ($project) en http://localhost:8000"
 
 Start-Process powershell `
     -ArgumentList @(
@@ -69,8 +121,9 @@ Start-Process powershell `
     ) `
     -WindowStyle Normal
 
+
 # ---- Frontend ----
-$frontendPath = Join-Path $repoRoot "frontend\proyectos\$project"
+$frontendPath = Join-Path $RepoRoot "frontend\proyectos\$project"
 
 if (!(Test-Path $frontendPath)) {
     Write-Host "Frontend del proyecto '$project' no existe"
@@ -78,7 +131,6 @@ if (!(Test-Path $frontendPath)) {
     exit 1
 }
 
-# Validación mínima: vite.config.js o package.json
 $packageJson = Join-Path $frontendPath "package.json"
 if (!(Test-Path $packageJson)) {
     Write-Host "No se encontró package.json en $frontendPath"
@@ -88,15 +140,17 @@ if (!(Test-Path $packageJson)) {
 Write-Host "Levantando frontend ($project) en http://localhost:3000"
 
 Start-Process powershell `
-    -ArgumentList `
+    -ArgumentList @(
         "-NoExit",
         "-Command",
-        "cd `"$frontendPath`"; Write-Host 'Ejecutando npm run dev...'; npm run dev" `
+        "cd `"$frontendPath`";
+        Write-Host 'Ejecutando npm run dev...';
+        npm run dev"
+    ) `
     -WindowStyle Normal
 
-
 Write-Host ""
-Write-Host "Proyecto '$project' levantado"
+Write-Host "Proyecto '$project' levantado (local)"
 Write-Host "   Backend : http://localhost:8000"
 Write-Host "   Frontend: http://localhost:3000"
 
