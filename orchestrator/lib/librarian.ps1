@@ -15,16 +15,25 @@ function Get-OrcProjectSpec {
     }
 }
 
-function New-OrcRegistry {
+function Get-OrcRegistryPath {
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [string]$RepoRoot
     )
 
-    $backendProjects = Join-Path $RepoRoot "backend\projects"
-    $backendApps     = Join-Path $RepoRoot "backend\apps"
-    $registryDir     = Join-Path $RepoRoot "orchestrator\registry"
-    $registryPath    = Join-Path $registryDir "registry.json"
+    Join-Path $RepoRoot "orchestrator/registry/registry.json"
+}
+
+function New-OrcRegistry {
+    param(
+        [Parameter(Mandatory)]
+        [string]$RepoRoot
+    )
+
+    $backendProjects = Join-Path $RepoRoot "backend/projects"
+    $backendApps     = Join-Path $RepoRoot "backend/apps"
+    $registryDir     = Join-Path $RepoRoot "orchestrator/registry"
+    $registryPath    = Get-OrcRegistryPath -RepoRoot $RepoRoot
 
     if (!(Test-Path $backendProjects)) {
         throw "No existe backend/projects"
@@ -39,12 +48,11 @@ function New-OrcRegistry {
     }
 
     $apps = Get-ChildItem $backendApps -Directory | Select-Object -ExpandProperty Name
-
-    $projectsData = @{}
+    $projects = @{}
 
     foreach ($projectDir in Get-ChildItem $backendProjects -Directory) {
         $projectName = $projectDir.Name
-        $settingsPy  = Join-Path $projectDir.FullName "$projectName\settings.py"
+        $settingsPy  = Join-Path $projectDir.FullName "$projectName/settings.py"
 
         $usedApps = @()
 
@@ -57,318 +65,213 @@ function New-OrcRegistry {
             }
         }
 
-        $projectsData[$projectName] = @{
+        $projects[$projectName] = @{
             apps = $usedApps
         }
     }
 
     $registry = @{
-        projects = $projectsData
+        projects = $projects
     }
 
-    $json = $registry | ConvertTo-Json -Depth 5
-    Set-Content -Path $registryPath -Value $json -Encoding UTF8
+    $registry | ConvertTo-Json -Depth 5 |
+        Set-Content -Path $registryPath -Encoding UTF8
 
-    Write-Host "Registry generado en $registryPath"
+    $registry
 }
 
-function Test-OrcProjectAgainstSpec {
+function Get-OrcRegistry {
     param(
-        [Parameter(Mandatory = $true)]
-        [string]$Project,
-
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [string]$RepoRoot
     )
 
-    $registryPath = Join-Path $RepoRoot "orchestrator\registry\registry.json"
+    $registryPath = Get-OrcRegistryPath -RepoRoot $RepoRoot
 
     if (!(Test-Path $registryPath)) {
         throw "Registry no encontrado en $registryPath"
     }
 
-    $registry = Get-Content $registryPath -Raw | ConvertFrom-Json
+    try {
+        Get-Content $registryPath -Raw | ConvertFrom-Json
+    }
+    catch {
+        throw "Registry inválido (JSON mal formado)"
+    }
+}
 
-    $existsInRegistry = $registry.projects.PSObject.Properties.Name -contains $Project
+function Test-OrcProjectAgainstSpec {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Project,
+
+        [Parameter(Mandatory)]
+        [string]$RepoRoot
+    )
 
     $spec = Get-OrcProjectSpec -Project $Project
 
-    $pathChecks = @{}
-    $allPathsOk = $true
+    $checks = @{}
+    $ok = $true
 
     foreach ($key in $spec.ExpectedPaths.Keys) {
-        $relativePath = $spec.ExpectedPaths[$key]
-        $fullPath     = Join-Path $RepoRoot $relativePath
-        $exists       = Test-Path $fullPath
+        $relative = $spec.ExpectedPaths[$key]
+        $full     = Join-Path $RepoRoot $relative
+        $exists   = Test-Path $full
 
-        $pathChecks[$key] = @{
-            expected = $relativePath
-            exists   = $exists
+        $checks[$key] = @{
+            Path   = $relative
+            Exists = $exists
         }
 
         if (-not $exists) {
-            $allPathsOk = $false
+            $ok = $false
         }
     }
 
-    return @{
-        Project          = $Project
-        ExistsInRegistry = $existsInRegistry
-        PathChecks       = $pathChecks
-        IsValid          = ($existsInRegistry -and $allPathsOk)
+    @{
+        Project  = $Project
+        IsValid  = $ok
+        Checks   = $checks
     }
 }
 
 function Test-OrcRegistry {
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [string]$RepoRoot
     )
 
-    $registryPath = Join-Path $RepoRoot "orchestrator\registry\registry.json"
-
-    if (!(Test-Path $registryPath)) {
-        return @{
-            RegistryPath = $registryPath
-            Exists       = $false
-            IsValid      = $false
-            Error        = "Registry no encontrado"
-        }
-    }
-
     try {
-        $registry = Get-Content $registryPath -Raw | ConvertFrom-Json
+        $registry = Get-OrcRegistry -RepoRoot $RepoRoot
     }
     catch {
         return @{
-            RegistryPath = $registryPath
-            Exists       = $true
-            IsValid      = $false
-            Error        = "Registry inválido (JSON mal formado)"
+            Exists  = $false
+            IsValid = $false
+            Error   = $_.Exception.Message
         }
     }
 
     if (-not $registry.projects) {
         return @{
-            RegistryPath = $registryPath
-            Exists       = $true
-            IsValid      = $false
-            Error        = "Falta nodo 'projects'"
+            Exists  = $true
+            IsValid = $false
+            Error   = "Falta nodo 'projects'"
         }
     }
 
-    $projectsResult = @{}
+    $projects = @{}
     $allValid = $true
 
-    foreach ($prop in $registry.projects.PSObject.Properties) {
-        $projectName = $prop.Name
-        $projectData = $prop.Value
-
-        $hasAppsArray = $false
-        $appsCount    = 0
-
-        if ($projectData.PSObject.Properties.Name -contains "apps") {
-            if ($projectData.apps -is [System.Collections.IEnumerable]) {
-                $hasAppsArray = $true
-                $appsCount    = @($projectData.apps).Count
-            }
-        }
-
-        $isValid = $hasAppsArray
+    foreach ($p in $registry.projects.PSObject.Properties) {
+        $hasApps = $p.Value.PSObject.Properties.Name -contains "apps"
+        $isValid = $hasApps -and ($p.Value.apps -is [System.Collections.IEnumerable])
 
         if (-not $isValid) {
             $allValid = $false
         }
 
-        $projectsResult[$projectName] = @{
-            HasAppsArray = $hasAppsArray
-            AppsCount    = $appsCount
+        $projects[$p.Name] = @{
+            HasAppsArray = $hasApps
+            AppsCount    = @($p.Value.apps).Count
             IsValid      = $isValid
         }
     }
 
-    return @{
-        RegistryPath = $registryPath
+    @{
         Exists       = $true
-        ProjectCount = $projectsResult.Count
-        Projects     = $projectsResult
         IsValid      = $allValid
+        ProjectCount = $projects.Count
+        Projects     = $projects
     }
 }
 
 function Sync-OrcRegistry {
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [string]$RepoRoot,
 
         [switch]$Write
     )
 
-    $registryPath = Join-Path $RepoRoot "orchestrator\registry\registry.json"
+    $old = $null
+    try { $old = Get-OrcRegistry -RepoRoot $RepoRoot } catch {}
 
-    # 1. Snapshot actual (si existe)
-    $oldRegistry = $null
-    if (Test-Path $registryPath) {
-        try {
-            $oldRegistry = Get-Content $registryPath -Raw | ConvertFrom-Json
-        } catch {
-            throw "Registry existente inválido, no se puede sincronizar"
-        }
+    $new = New-OrcRegistry -RepoRoot $RepoRoot
+
+    if (-not $old) {
+        return @{ Action = "created" }
     }
 
-    # 2. Generar registry nuevo (en memoria)
-    $tempPath = Join-Path $RepoRoot "orchestrator\registry\.registry.tmp.json"
-    New-OrcRegistry -RepoRoot $RepoRoot
-    $newRegistry = Get-Content $registryPath -Raw | ConvertFrom-Json
+    $oldP = $old.projects.PSObject.Properties.Name
+    $newP = $new.projects.PSObject.Properties.Name
 
-    # 3. Comparar
-    $oldProjects = @{}
-    if ($oldRegistry) {
-        foreach ($p in $oldRegistry.projects.PSObject.Properties) {
-            $oldProjects[$p.Name] = $p.Value
-        }
-    }
-
-    $newProjects = @{}
-    foreach ($p in $newRegistry.projects.PSObject.Properties) {
-        $newProjects[$p.Name] = $p.Value
-    }
-
-    $added   = $newProjects.Keys | Where-Object { $_ -notin $oldProjects.Keys }
-    $removed = $oldProjects.Keys | Where-Object { $_ -notin $newProjects.Keys }
-
-    $updated = @()
-    foreach ($name in ($newProjects.Keys | Where-Object { $_ -in $oldProjects.Keys })) {
-        if ((ConvertTo-Json $newProjects[$name]) -ne (ConvertTo-Json $oldProjects[$name])) {
-            $updated += $name
-        }
-    }
-
-    $isDirty = ($added.Count + $removed.Count + $updated.Count) -gt 0
-
-    # 4. Decidir acción
-    if (-not $oldRegistry) {
-        $action = "created"
-    } elseif ($isDirty) {
-        $action = "updated"
-    } else {
-        $action = "unchanged"
-    }
-
-    # 5. Escribir solo si se pide
-    if ($Write -and $isDirty) {
-        $json = $newRegistry | ConvertTo-Json -Depth 5
-        Set-Content -Path $registryPath -Value $json -Encoding UTF8
-    }
-
-    return @{
-        RegistryPath = $registryPath
-        Action       = $action
-        IsDirty      = $isDirty
-        Changes      = @{
-            AddedProjects   = $added
-            RemovedProjects = $removed
-            UpdatedProjects = $updated
-        }
+    @{
+        Action  = "updated"
+        Added   = $newP | Where-Object { $_ -notin $oldP }
+        Removed = $oldP | Where-Object { $_ -notin $newP }
     }
 }
 
+
 function Test-OrcProjectAgainstRegistry {
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [string]$Project,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [string]$RepoRoot
     )
+
+    $registry = Get-OrcRegistry -RepoRoot $RepoRoot
+
+    if (-not $registry.projects.$Project) {
+        return @{
+            Project = $Project
+            IsValid = $false
+            Errors  = @("Proyecto no existe en el registry")
+        }
+    }
 
     $errors   = @()
     $warnings = @()
 
-    $registryPath = Join-Path $RepoRoot "orchestrator\registry\registry.json"
+    $backend  = Join-Path $RepoRoot "backend/projects/$Project"
+    $frontend = Join-Path $RepoRoot "frontend/proyectos/$Project"
 
-    if (!(Test-Path $registryPath)) {
-        throw "Registry no encontrado en $registryPath"
+    if (!(Test-Path $backend)) {
+        $errors += "Backend no existe"
     }
 
-    $registry = Get-Content $registryPath -Raw | ConvertFrom-Json
+    if (!(Test-Path $frontend)) {
+        $warnings += "Frontend no existe"
+    }
 
-    if (-not $registry.projects.$Project) {
-        return @{
-            Project  = $Project
-            IsValid  = $false
-            Errors   = @("Proyecto '$Project' no existe en el registry")
-            Warnings = @()
-            Checked  = @{}
+    $appsRoot = Join-Path $RepoRoot "backend/apps"
+    foreach ($app in $registry.projects.$Project.apps) {
+        if (!(Test-Path (Join-Path $appsRoot $app))) {
+            $errors += "App '$app' no existe"
         }
     }
 
-    $projectEntry = $registry.projects.$Project
-
-    # Paths esperados
-    $backendPath  = Join-Path $RepoRoot "backend\projects\$Project"
-    $frontendPath = Join-Path $RepoRoot "frontend\proyectos\$Project"
-
-    $checked = @{
-        BackendPath  = $false
-        FrontendPath = $false
-        Apps         = @()
-    }
-
-    if (Test-Path $backendPath) {
-        $checked.BackendPath = $true
-    } else {
-        $errors += "Backend no existe: backend/projects/$Project"
-    }
-
-    if (Test-Path $frontendPath) {
-        $checked.FrontendPath = $true
-    } else {
-        $warnings += "Frontend no existe (puede ser intencional)"
-    }
-
-    # Apps
-    $appsRoot = Join-Path $RepoRoot "backend\apps"
-
-    foreach ($app in $projectEntry.apps) {
-        $appPath = Join-Path $appsRoot $app
-        if (Test-Path $appPath) {
-            $checked.Apps += $app
-        } else {
-            $errors += "App '$app' no existe en backend/apps"
-        }
-    }
-
-    return @{
+    @{
         Project  = $Project
         IsValid  = ($errors.Count -eq 0)
         Errors   = $errors
         Warnings = $warnings
-        Checked  = $checked
     }
 }
 
 function Show-OrcProjects {
-    Write-Host "Proyectos registrados:"
-    Write-Host ""
+    param(
+        [Parameter(Mandatory)]
+        [string]$RepoRoot
+    )
 
-    try {
-        $projects = Get-OrcProjects
-    }
-    catch {
-        Write-Host "Error leyendo registry"
-        Write-Host $_
-        exit 1
-    }
-
-    if ($projects.Count -eq 0) {
-        Write-Host " (ninguno)"
-        return
-    }
-
-    foreach ($p in $projects) {
-        Write-Host " - $p"
-    }
+    $registry = Get-OrcRegistry -RepoRoot $RepoRoot
+    $registry.projects.PSObject.Properties.Name
 }
+
 
 

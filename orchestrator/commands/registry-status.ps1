@@ -1,6 +1,14 @@
 param (
-    [Parameter(Mandatory = $true)]
-    [string]$RepoRoot
+    # Contexto del orco
+    [Parameter(Mandatory)]
+    [string]$RepoRoot,
+
+    [Parameter(Mandatory)]
+    [string]$OrcRoot,
+
+    # Argumentos posicionales del comando
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$Args
 )
 
 . "$PSScriptRoot\..\lib\librarian.ps1"
