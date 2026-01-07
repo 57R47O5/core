@@ -1,23 +1,32 @@
-$OrcDockerConfig = @{
-    GlobalNetwork = "orc_global"
+function Get-OrcDockerConfig {
+    param (
+        [Parameter(Mandatory)]
+        $ctx
+    )
 
-    Postgres = @{
-        Name    = "postgres"
-        Image   = "postgres:16"
-        Volume  = "monorepo-pgdata"
-        Port    = 5433
+    $db = $ctx.Runtime.Database
 
-        Env = @{
-            POSTGRES_USER     = "postgres"
-            POSTGRES_PASSWORD = "142857"
-            POSTGRES_DB       = "postgres"
-        }
+    return @{
+        GlobalNetwork = "orc_global"
 
-        Healthcheck = @{
-            Cmd      = "pg_isready -U postgres"
-            Interval = "5s"
-            Timeout  = "5s"
-            Retries  = 5
+        Postgres = @{
+            Name   = "postgres"
+            Image  = "postgres:16"
+            Volume = "monorepo-pgdata"
+            Port   = $db.Port
+
+            Env = @{
+                POSTGRES_USER     = $db.User
+                POSTGRES_PASSWORD = $db.Password
+                POSTGRES_DB       = $db.Name
+            }
+
+            Healthcheck = @{
+                Cmd      = "pg_isready -U $($db.User)"
+                Interval = "5s"
+                Timeout  = "5s"
+                Retries  = 5
+            }
         }
     }
 }

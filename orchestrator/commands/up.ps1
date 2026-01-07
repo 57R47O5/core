@@ -44,6 +44,20 @@ Write-Host "Levantando backend ($project) en http://localhost:8000"
 
 $pythonExe = Join-Path $backendPath ".venv\Scripts\python.exe"
 
+# ---- Runtime ----
+. "$OrcRoot\config\orc.config.ps1"
+. "$OrcRoot\core\context.ps1"
+. "$OrcRoot\core\env.ps1"
+
+$ctx = New-OrcContext `
+    -RuntimeConfig $OrcRuntimeConfig `
+    -ProjectConfig @{ Name = $project } `
+    -Paths @{ RepoRoot = $RepoRoot }
+
+New-OrcEnvFile `
+    -ctx $ctx `
+    -BackendPath $backendPath
+
 Start-Process powershell `
     -ArgumentList @(
         "-NoExit",
