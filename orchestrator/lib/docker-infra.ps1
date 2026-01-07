@@ -1,38 +1,37 @@
 
+. "$PSScriptRoot/../config/docker.config.ps1"
+
+$pg = $OrcDockerConfig.Postgres
+
 function Ensure-GlobalNetwork {
-    param (
-        [Parameter(Mandatory)]
-        [string]$NetworkName
-    )
+
+    $networkName = $OrcDockerConfig.GlobalNetwork
 
     $networks = & docker network ls --format '{{.Name}}'
 
-    if (-not ($networks | Where-Object { $_ -eq $NetworkName })) {
-        Write-Host "[orc] creating docker network '$NetworkName'"
-        docker network create $NetworkName | Out-Null
+    if (-not ($networks | Where-Object { $_ -eq $networkName })) {
+        Write-Host "[orc] creating docker network '$networkName'"
+        docker network create $networkName | Out-Null
     }
 }
 
 function Ensure-GlobalPostgres {
-    param (
-        [Parameter(Mandatory)]
-        [string]$NetworkName
-    )  
 
-    $PostgresName = "postgres"
+    $networkName  = $OrcDockerConfig.GlobalNetwork
+    $postgresName = $OrcDockerConfig.GlobalPostgres.Name
 
-    Ensure-GlobalNetwork -NetworkName $NetworkName
+    Ensure-GlobalNetwork
 
     $containerExists = & docker ps -a --format '{{.Names}}' |
-        Where-Object { $_ -eq $PostgresName }
+        Where-Object { $_ -eq $postgresName }
 
-    $hasHealthcheck = docker inspect $PostgresName `
-    --format '{{if .State.Health}}yes{{else}}no{{end}}' 2>$null
+    $hasHealthcheck = & docker inspect $postgresName `
+        --format '{{if .State.Health}}yes{{else}}no{{end}}' 2>$null
 
-    if ($containerExists -and ($hasHealthcheck -eq "no")) {
-    Write-Host "[orc] postgres exists but has no healthcheck - recreating"
-    docker rm -f $PostgresName | Out-Null
-    $containerExists = $false
+    if ($containerExists -and $hasHealthcheck -eq "no") {
+        Write-Host "[orc] postgres exists but has no healthcheck — recreating"
+        docker rm -f $postgresName | Out-Null
+        $containerExists = $false
     }
 
     if ($containerExists) {
@@ -44,19 +43,18 @@ function Ensure-GlobalPostgres {
 
     $dockerArgs = @(
         "run", "-d",
-        "--name", $PostgresName,
-        "--network", $NetworkName,
-        "-e", "POSTGRES_USER=postgres",
-        "-e", "POSTGRES_PASSWORD=142857",
-        "-e", "POSTGRES_DB=postgres",
-        "-v", "monorepo-pgdata:/var/lib/postgresql/data",
-        "--health-cmd", "pg_isready -U postgres",
-        "--health-interval", "5s",
-        "--health-timeout", "5s",
-        "--health-retries", "5",
-        "postgres:16"
+        "--name",    $postgresName,
+        "--network", $networkName,
+        "-e", "POSTGRES_USER=$($OrcDockerConfig.GlobalPostgres.User)",
+        "-e", "POSTGRES_PASSWORD=$($OrcDockerConfig.GlobalPostgres.Password)",
+        "-e", "POSTGRES_DB=$($OrcDockerConfig.GlobalPostgres.Database)",
+        "-v", "$($OrcDockerConfig.GlobalPostgres.Volume):/var/lib/postgresql/data",
+        "--health-cmd",      $hc.Cmd,
+        "--health-interval", $hc.Interval,
+        "--health-timeout",  $hc.Timeout,
+        "--health-retries",  "$($hc.Retries)",
+        $OrcDockerConfig.GlobalPostgres.Image
     )
-
     Write-Host "[orc] docker $($dockerArgs -join ' ')"
     & docker @dockerArgs
 
@@ -67,12 +65,10 @@ function Ensure-GlobalPostgres {
 
 
 function Wait-GlobalPostgres {
-    $PostgresName = "postgres"
-
     Write-Host "[orc] waiting for global postgres..."
 
     while ($true) {
-        $state = docker inspect $PostgresName `
+        $state = docker inspect $postgresName `
             --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}' `
             2>$null
 

@@ -13,12 +13,6 @@ $DockerInfra = Join-Path $PSScriptRoot "..\lib\docker-infra.ps1"
 . $DockerInfra
 
 # ------------------------------------------------------------
-# Global Params
-# ------------------------------------------------------------
-
-$GlobalNetworkName = "orc_global"
-
-# ------------------------------------------------------------
 # Guard rails
 # ------------------------------------------------------------
 if ($Args.Count -eq 0) {
@@ -29,6 +23,34 @@ if ($Args.Count -eq 0) {
     Write-Host "  orc liquibase update"
     exit 1
 }
+
+# ------------------------------------------------------------
+# Helper para expandir volúmenes
+# ------------------------------------------------------------
+
+function Resolve-DockerVolumes {
+    param (
+        [array]$Volumes,
+        [hashtable]$Context
+    )
+
+    $args = @()
+
+    foreach ($v in $Volumes) {
+        $host = if ($v.HostPath -is [scriptblock]) {
+            & $v.HostPath $Context
+        } else {
+            $v.HostPath
+        }
+
+        $args += "-v"
+        $args += "$host:$($v.ContainerPath)"
+    }
+
+    return $args
+}
+
+
 
 $action = $Args[0]
 $rest   = $Args[1..($Args.Count - 1)]
@@ -65,15 +87,24 @@ $LiquibaseRuntimeDocker = ($LiquibaseRuntime -replace '\\', '/')
 # ------------------------------------------------------------
 # Base docker args (ARRAY — no backticks)
 # ------------------------------------------------------------
+$liquibaseCfg = $OrcDockerConfig.Liquibase
+
 $dockerBaseArgs = @(
     "run", "--rm",
-    "--network", $NetworkName,
-    "-v", "${LiquibaseRuntimeDocker}:/workspace",
-    "-w", "/workspace",
-    "liquibase/liquibase:5.0",
-    "--defaultsFile=liquibase.properties",
-    "--classpath=drivers/postgresql-42.7.8.jar"
+    "--network", $NetworkName
 )
+
+$dockerBaseArgs += Resolve-DockerVolumes `
+    -Volumes $liquibaseCfg.Volumes `
+    -Context @{ LiquibaseRuntimeDocker = $LiquibaseRuntimeDocker }
+
+$dockerBaseArgs += @(
+    "-w", $liquibaseCfg.Workspace.ContainerPath,
+    $liquibaseCfg.Image,
+    "--defaultsFile=$($liquibaseCfg.DefaultsFile)",
+    "--classpath=$($liquibaseCfg.Classpath)"
+)
+
 
 # ------------------------------------------------------------
 # Dispatch liquibase actions
@@ -86,8 +117,8 @@ switch ($action) {
     }
 
     "validate" {
-        Ensure-GlobalNetwork -NetworkName $GlobalNetworkName
-        Ensure-GlobalPostgres -NetworkName $GlobalNetworkName
+        Ensure-GlobalNetwork
+        Ensure-GlobalPostgres
         Wait-GlobalPostgres
 
         Write-Host "[orc] liquibase validate"
@@ -104,8 +135,8 @@ switch ($action) {
 
     "update" {
         # Infra dependency — responsabilidad del orco
-        Ensure-GlobalNetwork -NetworkName $GlobalNetworkName
-        Ensure-GlobalPostgres -NetworkName $GlobalNetworkName
+        Ensure-GlobalNetwork
+        Ensure-GlobalPostgres
         Wait-GlobalPostgres
 
         Write-Host "[orc] liquibase update"
