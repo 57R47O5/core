@@ -1,4 +1,3 @@
-."$PSScriptRoot\lib\docker-infra.ps1"
 
 function Ensure-GlobalNetwork {
     param (
@@ -6,9 +5,9 @@ function Ensure-GlobalNetwork {
         [string]$NetworkName
     )
 
-    if (-not (docker network ls --format "{{.Name}}" |
-        Where-Object { $_ -eq $NetworkName })) {
+    $networks = & docker network ls --format '{{.Name}}'
 
+    if (-not ($networks | Where-Object { $_ -eq $NetworkName })) {
         Write-Host "[orc] creating docker network '$NetworkName'"
         docker network create $NetworkName | Out-Null
     }
@@ -17,15 +16,24 @@ function Ensure-GlobalNetwork {
 function Ensure-GlobalPostgres {
     param (
         [Parameter(Mandatory)]
-        [string]$PostgresName,
-        [Parameter(Mandatory)]
         [string]$NetworkName
-    )
+    )  
+
+    $PostgresName = "postgres"
 
     Ensure-GlobalNetwork -NetworkName $NetworkName
 
-    $containerExists = docker ps -a --format "{{.Names}}" |
+    $containerExists = & docker ps -a --format '{{.Names}}' |
         Where-Object { $_ -eq $PostgresName }
+
+    $hasHealthcheck = docker inspect $PostgresName `
+    --format '{{if .State.Health}}yes{{else}}no{{end}}' 2>$null
+
+    if ($containerExists -and ($hasHealthcheck -eq "no")) {
+    Write-Host "[orc] postgres exists but has no healthcheck - recreating"
+    docker rm -f $PostgresName | Out-Null
+    $containerExists = $false
+    }
 
     if ($containerExists) {
         Write-Host "[orc] global postgres already exists"
@@ -38,7 +46,6 @@ function Ensure-GlobalPostgres {
         "run", "-d",
         "--name", $PostgresName,
         "--network", $NetworkName,
-        "-p", "5433:5432",
         "-e", "POSTGRES_USER=postgres",
         "-e", "POSTGRES_PASSWORD=142857",
         "-e", "POSTGRES_DB=postgres",
@@ -58,11 +65,9 @@ function Ensure-GlobalPostgres {
     }
 }
 
+
 function Wait-GlobalPostgres {
-    param (
-        [Parameter(Mandatory)]
-        [string]$PostgresName
-    )
+    $PostgresName = "postgres"
 
     Write-Host "[orc] waiting for global postgres..."
 
@@ -77,7 +82,7 @@ function Wait-GlobalPostgres {
                 return
             }
             "no-healthcheck" {
-                Write-Error "[orc] postgres has no healthcheck — invalid contract"
+                Write-Error "[orc] postgres has no healthcheck - invalid contract"
                 exit 1
             }
             default {
