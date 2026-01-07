@@ -8,31 +8,26 @@ param (
 
     # Argumentos posicionales del comando
     [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]]$Args
+    [string[]]$args
 )
 
-# -------------------------
-# Modo de ejecución
-# -------------------------
-$mode = "local"
-if ($Args -contains "--docker") {
-    $mode = "docker"
-}
 
-# Filtrar flags para obtener solo el nombre del proyecto
-$filteredArgs = $Args | Where-Object { $_ -ne "--docker" }
-
-if ($filteredArgs.Count -lt 1) {
+if ($args.Count -lt 1) {
     Write-Host "Falta el nombre del proyecto"
-    Write-Host "   Uso: orc up <nombre-proyecto> [--docker]"
+    Write-Host "Uso: orc up <proyecto> [--docker]"
     exit 1
 }
 
-$project = $filteredArgs[0]
+$project = $args[0]
+
+$mode = "local"
+if ($args -contains "--docker") {
+    $mode = "docker"
+}
 
 Write-Host "Modo de ejecución: $mode"
 Write-Host "Proyecto: $project"
-Write-Host ""
+
 
 # -------------------------
 # Runtime Orc
@@ -40,17 +35,33 @@ Write-Host ""
 . "$OrcRoot\config\orc.config.ps1"
 . "$OrcRoot\core\context.ps1"
 . "$OrcRoot\core\env.ps1"
+. "$OrcRoot\core\runtime.ps1"
 
-$ctx = New-OrcContext `
-    -RuntimeConfig $OrcRuntimeConfig `
+# -------------------------------------------------------------------
+# Runtime
+# -------------------------------------------------------------------
+$runtime = Resolve-OrcRuntime `
+    -Mode        $mode `
+    -ProjectName $project `
+    -RepoRoot    $RepoRoot `
+    -OrcRoot     $OrcRoot
+
+# -------------------------------------------------------------------
+# Context
+# -------------------------------------------------------------------
+$contexto = New-OrcContext `
+    -RuntimeConfig $runtime `
     -ProjectConfig @{
         Name = $project
-        Mode = $mode
     } `
     -Paths @{
         RepoRoot = $RepoRoot
         OrcRoot  = $OrcRoot
     }
+
+Write-Host $contexto
+
+$ctx =  $contexto
 
 # =========================
 # MODO DOCKER
@@ -87,6 +98,7 @@ $venvActivate = Join-Path $backendPath ".venv\Scripts\activate.ps1"
 $managePy     = Join-Path $backendPath "manage.py"
 $pythonExe    = Join-Path $backendPath ".venv\Scripts\python.exe"
 
+Write-Host $backendPath
 if (!(Test-Path $backendPath)) {
     Write-Host "Backend del proyecto '$project' no existe"
     exit 1
