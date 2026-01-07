@@ -9,17 +9,25 @@ from pathlib import Path
 import os
 import sys
 from django.core.exceptions import ImproperlyConfigured
-
+from dotenv import load_dotenv
 # -------------------------------------------------------------------
 # Paths
 # -------------------------------------------------------------------
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+# backend/projects/elecciones/elecciones/settings.py
+BASE_DIR = Path(__file__).resolve().parent.parent
+BACKEND_DIR = BASE_DIR.parents[1]  # .../backend
+APPS_DIR = BACKEND_DIR / "apps"
+ENV_PATH = BASE_DIR / ".env"
 
-BACKEND_DIR = BASE_DIR.parent
-if str(BACKEND_DIR) not in sys.path:
-    sys.path.insert(0, str(BACKEND_DIR))
+for p in (BACKEND_DIR, APPS_DIR):
+    if str(p) not in sys.path:
+        sys.path.insert(0, str(p))
 
+if ENV_PATH.exists():
+    load_dotenv(ENV_PATH)
+else:
+    raise ImproperlyConfigured(f".env file not found at {ENV_PATH}")
 
 # -------------------------------------------------------------------
 # Helpers
