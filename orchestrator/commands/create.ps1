@@ -11,6 +11,14 @@ param (
     [string[]]$Args
 )
 
+if ($Args.Count -lt 1) {
+    Write-Host "Falta el nombre del proyecto"
+    Write-Host "   Uso: orc create <nombre-proyecto>"
+    exit 1
+}
+
+$project = $Args[0]
+
 $backendPath  = Join-Path $repoRoot "backend\projects\$project"
 $frontendPath = Join-Path $repoRoot "frontend\proyectos\$project"
 
