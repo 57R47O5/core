@@ -9,11 +9,8 @@ param (
     [string]$LiquibaseRuntime
 )
 
-$DockerInfra = Join-Path $PSScriptRoot "..\lib\docker-infra.ps1"
-. $DockerInfra
-
 # ------------------------------------------------------------
-# Guard rails
+# Guard rails iniciales
 # ------------------------------------------------------------
 if ($Args.Count -eq 0) {
     Write-Host "Uso:"
@@ -24,10 +21,20 @@ if ($Args.Count -eq 0) {
     exit 1
 }
 
-# ------------------------------------------------------------
-# Helper para expandir volúmenes
-# ------------------------------------------------------------
+if (-not (Test-Path $LiquibaseRuntime)) {
+    Write-Error "[orc] Liquibase runtime no existe: $LiquibaseRuntime"
+    exit 1
+}
 
+# ------------------------------------------------------------
+# Infra docker (network, postgres, config)
+# ------------------------------------------------------------
+$DockerInfra = Join-Path $PSScriptRoot "..\lib\docker-infra.ps1"
+. $DockerInfra
+
+# ------------------------------------------------------------
+# Helper para volúmenes docker
+# ------------------------------------------------------------
 function Resolve-DockerVolumes {
     param (
         [array]$Volumes,
@@ -50,10 +57,11 @@ function Resolve-DockerVolumes {
     return $args
 }
 
-
-
+# ------------------------------------------------------------
+# Acción
+# ------------------------------------------------------------
 $action = $Args[0]
-$rest   = $Args[1..($Args.Count - 1)]
+$rest   = if ($Args.Count -gt 1) { $Args[1..($Args.Count - 1)] } else { @() }
 
 Write-Host "[liquibase] action: $action"
 if ($rest.Count -gt 0) {
@@ -61,31 +69,12 @@ if ($rest.Count -gt 0) {
 }
 
 # ------------------------------------------------------------
-# Runtime paths (orc owns filesystem)
-# ------------------------------------------------------------
-$LiquibaseRuntime = Join-Path $OrcRoot "runtime\liquibase"
-
-New-Item -ItemType Directory -Force -Path $LiquibaseRuntime | Out-Null
-
-# ------------------------------------------------------------
-# Prepare runtime content
-# ------------------------------------------------------------
-Copy-Item (Join-Path $RepoRoot "docker\liquibase\liquibase.properties") `
-          $LiquibaseRuntime -Force
-
-Copy-Item (Join-Path $RepoRoot "docker\liquibase\changelog") `
-          $LiquibaseRuntime -Recurse -Force
-
-Copy-Item (Join-Path $RepoRoot "docker\liquibase\drivers") `
-          $LiquibaseRuntime -Recurse -Force
-
-# ------------------------------------------------------------
-# Docker paths MUST be Unix style
+# Docker paths (unix style)
 # ------------------------------------------------------------
 $LiquibaseRuntimeDocker = ($LiquibaseRuntime -replace '\\', '/')
 
 # ------------------------------------------------------------
-# Base docker args (ARRAY — no backticks)
+# Docker base args
 # ------------------------------------------------------------
 $liquibaseCfg = $OrcDockerConfig.Liquibase
 
@@ -105,52 +94,63 @@ $dockerBaseArgs += @(
     "--classpath=$($liquibaseCfg.Classpath)"
 )
 
-
 # ------------------------------------------------------------
-# Dispatch liquibase actions
+# Ejecución segura (garantiza Pop-Location)
 # ------------------------------------------------------------
-switch ($action) {
+Push-Location $LiquibaseRuntime
 
-    "version" {
-        Write-Host "[orc] liquibase version"
-        & docker @($dockerBaseArgs + @("--version"))
+try {
+
+    switch ($action) {
+
+        "version" {
+            Write-Host "[orc] liquibase version"
+            & docker @($dockerBaseArgs + @("--version"))
+        }
+
+        "validate" {
+            Ensure-GlobalNetwork
+            Ensure-GlobalPostgres
+            Wait-GlobalPostgres
+
+            Write-Host "[orc] liquibase validate"
+            & docker @(
+                $dockerBaseArgs +
+                @(
+                    "validate",
+                    "--log-level=DEBUG",
+                    "--log-file=/workspace/liquibase-debug.log"
+                )
+            )
+        }
+
+        "status" {
+            Write-Host "[orc] liquibase status"
+            & docker @($dockerBaseArgs + @("status"))
+        }
+
+        "update" {
+            Ensure-GlobalNetwork
+            Ensure-GlobalPostgres
+            Wait-GlobalPostgres
+
+            Write-Host "[orc] liquibase update"
+            & docker @($dockerBaseArgs + @("update"))
+        }
+
+        default {
+            Write-Error "Acción liquibase no soportada: $action"
+            exit 1
+        }
     }
 
-    "validate" {
-        Ensure-GlobalNetwork
-        Ensure-GlobalPostgres
-        Wait-GlobalPostgres
-
-        Write-Host "[orc] liquibase validate"
-        & docker @($dockerBaseArgs + @("validate"))
-        "--log-level=DEBUG",
-        "--log-file=$RepoRoot/liquibase-debug.log"
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
     }
 
-    "status" {
-        Write-Host "[orc] liquibase status"
-        & docker @($dockerBaseArgs + @("status"))
-
-    }
-
-    "update" {
-        # Infra dependency — responsabilidad del orco
-        Ensure-GlobalNetwork
-        Ensure-GlobalPostgres
-        Wait-GlobalPostgres
-
-        Write-Host "[orc] liquibase update"
-        & docker @($dockerBaseArgs + @("update"))
-    }
-
-    default {
-        Write-Host "Acción liquibase no soportada: $action"
-        exit 1
-    }
 }
-
-if ($LASTEXITCODE -ne 0) {
-    exit $LASTEXITCODE
+finally {
+    Pop-Location
 }
 
 exit 0
