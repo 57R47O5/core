@@ -1,7 +1,8 @@
-
+Set-StrictMode -Version Latest
 . "$PSScriptRoot/../config/docker.config.ps1"
 
 $pg = $OrcDockerConfig.Postgres
+$hc = $pg.Healthcheck
 
 function Ensure-GlobalNetwork {
 
@@ -18,7 +19,7 @@ function Ensure-GlobalNetwork {
 function Ensure-GlobalPostgres {
 
     $networkName  = $OrcDockerConfig.GlobalNetwork
-    $postgresName = $OrcDockerConfig.GlobalPostgres.Name
+    $postgresName = $pg.Name
 
     Ensure-GlobalNetwork
 
@@ -45,15 +46,15 @@ function Ensure-GlobalPostgres {
         "run", "-d",
         "--name",    $postgresName,
         "--network", $networkName,
-        "-e", "POSTGRES_USER=$($OrcDockerConfig.GlobalPostgres.User)",
-        "-e", "POSTGRES_PASSWORD=$($OrcDockerConfig.GlobalPostgres.Password)",
-        "-e", "POSTGRES_DB=$($OrcDockerConfig.GlobalPostgres.Database)",
-        "-v", "$($OrcDockerConfig.GlobalPostgres.Volume):/var/lib/postgresql/data",
+        "-e", "POSTGRES_USER=$($pg.User)",
+        "-e", "POSTGRES_PASSWORD=$($pg.Password)",
+        "-e", "POSTGRES_DB=$($pg.Database)",
+        "-v", "$($pg.Volume):/var/lib/postgresql/data",
         "--health-cmd",      $hc.Cmd,
         "--health-interval", $hc.Interval,
         "--health-timeout",  $hc.Timeout,
         "--health-retries",  "$($hc.Retries)",
-        $OrcDockerConfig.GlobalPostgres.Image
+        $pg.Image
     )
     Write-Host "[orc] docker $($dockerArgs -join ' ')"
     & docker @dockerArgs
@@ -62,7 +63,6 @@ function Ensure-GlobalPostgres {
         exit $LASTEXITCODE
     }
 }
-
 
 function Wait-GlobalPostgres {
     Write-Host "[orc] waiting for global postgres..."
