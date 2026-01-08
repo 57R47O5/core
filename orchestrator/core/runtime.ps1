@@ -14,32 +14,53 @@ function Resolve-OrcRuntime {
         [string]$OrcRoot
     )
 
+    # --- valores comunes ---
+    $dbName = $ProjectName
+    $dbUser = "postgres"
+    $dbPass = "postgres"
+    $dbPort = 5432
+
+    # --- runtime base (NO romper contrato actual) ---
+    $runtime = @{
+        Mode    = $Mode
+        Project = @{
+            Name = $ProjectName
+        }
+        Database = @{
+            Engine   = "django.db.backends.postgresql"
+            Name     = $dbName
+            User     = $dbUser
+            Password = $dbPass
+            Port     = $dbPort
+        }
+    }
+
     switch ($Mode) {
 
         "local" {
-            return @{
-                Database = @{
-                    Engine   = "django.db.backends.postgresql"
-                    Name     = $ProjectName
-                    User     = "postgres"
-                    Password = "postgres"
-                    Host     = "localhost"
-                    Port     = 5432
-                }
+            # Django local
+            $runtime.Database.Host = "localhost"
+
+            # Liquibase (infra, dockerizada)
+            $runtime.Liquibase = @{
+                Host           = "postgres"
+                ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
+                WorkDir        = Join-Path $OrcRoot ".orc/runtime/liquibase/$ProjectName"
             }
         }
 
         "docker" {
-            return @{
-                Database = @{
-                    Engine   = "django.db.backends.postgresql"
-                    Name     = $ProjectName
-                    User     = "postgres"
-                    Password = "postgres"
-                    Host     = "postgres"
-                    Port     = 5432
-                }
+            # Django docker
+            $runtime.Database.Host = "postgres"
+
+            # Liquibase (mismo entorno de red)
+            $runtime.Liquibase = @{
+                Host           = "postgres"
+                ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
+                WorkDir        = Join-Path $OrcRoot ".orc/runtime/liquibase/$ProjectName"
             }
         }
     }
+
+    return $runtime
 }

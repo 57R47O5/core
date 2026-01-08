@@ -45,6 +45,47 @@ if ($exitCode -ne 0) {
     exit 1
 }
 
+# --------------------------------------------------
+# Runtime
+# --------------------------------------------------
+. "$OrcRoot\core\context.ps1"
+. "$OrcRoot\core\runtime.ps1"
+
+$runtime = Resolve-OrcRuntime `
+    -Mode        "docker" `
+    -ProjectName $project `
+    -RepoRoot    $RepoRoot `
+    -OrcRoot     $OrcRoot
+
+$lbRuntimeDir = $runtime.Liquibase.WorkDir
+New-Item -ItemType Directory -Force -Path $lbRuntimeDir | Out-Null
+
+$lbPropsPath = Join-Path $lbRuntimeDir "liquibase.properties"
+
+@"
+changeLogFile=${($runtime.Liquibase.ChangeLogFile)}
+url=jdbc:postgresql://${($runtime.Liquibase.Host)}:5432/${($runtime.Database.Name)}
+username=${($runtime.Database.User)}
+password=${($runtime.Database.Password)}
+driver=org.postgresql.Driver
+defaultSchemaName=public
+"@ | Set-Content -Path $lbPropsPath -Encoding UTF8
+
+Write-Host ""
+Write-Host "🐗 Inicializando base de datos con Liquibase"
+
+# Delegamos en el orco (fuente única)
+& "$OrcRoot\orc.ps1" liquibase update `
+    -RepoRoot        $RepoRoot `
+    -LiquibaseRuntime $lbRuntimeDir
+
+$exitCode = $LASTEXITCODE
+
+if ($exitCode -ne 0) {
+    Write-Host "❌ Liquibase falló (exit code $exitCode)"
+    exit 1
+}
+
 Write-Host ""
 Write-Host "✅ Proyecto '$project' creado correctamente"
 Write-Host "Podés levantarlo con:"
