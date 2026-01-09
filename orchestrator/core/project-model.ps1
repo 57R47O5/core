@@ -38,31 +38,35 @@ function Resolve-ProjectModel {
             Password = $dbPass
             Port     = $dbPort
         }
+        Liquibase = @{
+        }
     }
-
+    
     switch ($Mode) {
-
+        
         "local" {
             # Django local
             $projectModel.Database.Host = "localhost"
-
+            
             # Liquibase (infra, dockerizada)
             $projectModel.Liquibase = @{
                 Host           = "postgres"
                 ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
                 WorkDir        = Join-Path $OrcRoot ".orc/runtime/liquibase/$ProjectName"
+                WorkDirDocker = Join-Path $RepoRoot "docker/liquibase/changelog/projects/$ProjectName"
             }
         }
-
+        
         "docker" {
             # Django docker
             $projectModel.Database.Host = "postgres"
-
+            
             # Liquibase (mismo entorno de red)
             $projectModel.Liquibase = @{
                 Host           = "postgres"
                 ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
                 WorkDir        = Join-Path $OrcRoot ".orc/runtime/liquibase/$ProjectName"
+                WorkDirDocker = Join-Path $RepoRoot "docker/liquibase/changelog/projects/$ProjectName"
             }
         }
     }

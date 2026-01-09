@@ -5,6 +5,13 @@ function Get-OrcDockerConfig {
     )
 
     $db = $ctx.ProjectModel.Database
+    $projectModel=$ctx.ProjectModel
+    $lbRuntime = $projectModel.Liquibase.WorkDirDocker
+
+    if (-not $lbRuntime) {
+        throw "[orc] Liquibase.WorkDirDocker no definido en ProjectModel"
+    }
+
 
     return @{
         GlobalNetwork = "orc_global"
@@ -30,19 +37,24 @@ function Get-OrcDockerConfig {
         }
 
         Liquibase = @{
-            Image = "liquibase/liquibase:4.27"
-
+            Image = "liquibase/liquibase:5.0"
+            
             Workspace = @{
                 ContainerPath = "/workspace"
             }
-
+            
             DefaultsFile = "/workspace/liquibase.properties"
-            Classpath    = "/workspace/drivers"
+            
+            Classpath = "/liquibase/lib"
 
             Volumes = @(
                 @{
-                    HostPath = { param($ctx) $ctx.LiquibaseRuntimeDocker }
+                    HostPath = $lbRuntime
                     ContainerPath = "/workspace"
+                }
+                @{
+                    HostPath      = Join-Path $RepoRoot "docker/liquibase/drivers"
+                    ContainerPath = "/liquibase/lib"
                 }
             )
         }

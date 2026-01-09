@@ -1,7 +1,7 @@
 function Get-LiquibaseConfig {
     param (
         [Parameter(Mandatory)]
-        $ctx
+        [hashtable]$ctx
     )
 
     if (-not $ctx.ProjectModel) {
@@ -12,24 +12,40 @@ function Get-LiquibaseConfig {
         throw "ctx.OrcDockerConfig es obligatorio"
     }
 
-    $db = $ctx.ProjectModel.Database
+    $project = $ctx.ProjectModel
+    $docker  = $ctx.OrcDockerConfig
+    $db      = $project.Database
+    $lb      = $docker.Liquibase
+
+    if (-not $lb) {
+        throw "Liquibase no definido en OrcDockerConfig"
+    }
+
+    $volumes = $lb.Volumes
+
+    
+    if ($volumes -is [hashtable]) {
+        $volumes = @($volumes)
+    }
+
+    if (-not ($volumes -is [object[]])) {
+        throw "[orc] Liquibase.Volumes debe ser array o hashtable"
+    }
 
     return @{
-        Image = "liquibase/liquibase:5.0"
+        Image = $lb.Image
 
-        Workspace = @{
-            ContainerPath = "/workspace"
+        Workspace = $lb.Workspace
+
+        Volumes = $lb.Volumes
+
+        Classpath    = $lb.Classpath
+        DefaultsFile = $lb.DefaultsFile
+
+        Runtime = @{
+            ProjectRoot = $project.Paths.RepoRoot
+            Liquibase   = $project.Liquibase
         }
-
-        Volumes = @(
-            @{
-                HostPath      = { param($ctx) $ctx.LiquibaseRuntimeDocker }
-                ContainerPath = "/workspace"
-            }
-        )
-
-        DefaultsFile = "liquibase.properties"
-        Classpath    = "drivers/postgresql-42.7.8.jar"
 
         Db = @{
             Host     = $db.Host
