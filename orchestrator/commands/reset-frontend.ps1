@@ -1,46 +1,26 @@
 param (
-    # Contexto del orco
     [Parameter(Mandatory)]
-    [string]$RepoRoot,
+    [hashtable]$Context,
 
-    [Parameter(Mandatory)]
-    [string]$OrcRoot,
-
-    # Argumentos posicionales del comando
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$Args
 )
 
-$project = Resolve-OrcProject `
-    -RepoRoot $RepoRoot `
-    -Args     $Args `
-    -Required
+$projectModel  = $Context.ProjectModel
+$project      = $projectModel.Project
+$ProjectName  = $project.Name
+$FrontendPath = $projectModel.Project.FrontendPath
 
-if ($Args.Count -lt 1) {
-    Write-Host "Falta el nombre del proyecto"
-    Write-Host "   Uso: orc up <nombre-proyecto>"
+if (!(Test-Path $FrontendPath)) {
+    Write-Host "Frontend del proyecto '$ProjectName' no existe"
     exit 1
 }
 
-$project = $Args[0]
+Write-Host "Reseteando frontend del proyecto '$ProjectName'"
+Write-Host "$FrontendPath"
 
-if ($target -ne "frontend") {
-    Write-Host "Reset solo soporta 'frontend' por ahora"
-    exit 1
-}
-
-$frontendPath = Join-Path $repoRoot "frontend\proyectos\$project"
-
-if (!(Test-Path $frontendPath)) {
-    Write-Host "Frontend del proyecto '$project' no existe"
-    exit 1
-}
-
-Write-Host "Reseteando frontend del proyecto '$project'"
-Write-Host "$frontendPath"
-
-$nodeModules = Join-Path $frontendPath "node_modules"
-$lockFile = Join-Path $frontendPath "package-lock.json"
+$nodeModules = Join-Path $FrontendPath "node_modules"
+$lockFile = Join-Path $FrontendPath "package-lock.json"
 
 if (Test-Path $nodeModules) {
     Write-Host "Eliminando node_modules"
@@ -53,9 +33,9 @@ if (Test-Path $lockFile) {
 }
 
 Write-Host "Reinstalando dependencias"
-Push-Location $frontendPath
+Push-Location $FrontendPath
 npm install
 Pop-Location
 
-Write-Host "Frontend '$project' reseteado correctamente"
+Write-Host "Frontend '$ProjectName' reseteado correctamente"
 exit 0

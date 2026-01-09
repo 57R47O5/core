@@ -62,18 +62,12 @@ function Resolve-OrcProject {
         }
     }
     
-
     if (-not $foundAny) {
         if ($Required) {
             throw "[orc] Proyecto '$projectName' no existe en el filesystem"
         }
-        return $null
     }
     
-
-    if ($result.Type.Count -eq 0) {
-        throw "[orc] Proyecto '$projectName' definido pero no presente en el filesystem"
-    }
 
     return $result
 }

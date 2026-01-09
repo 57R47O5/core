@@ -10,6 +10,15 @@ if ($Args.Count -eq 0) {
 
 $command = $Args[0]
 $rest    = if ($Args.Count -gt 1) { $Args[1..($Args.Count - 1)] } else { @() }
+$projectName = if (-not $rest -or $rest.Count -eq 0) {
+    $null
+}
+elseif ($rest -is [array]) {
+    $rest[0]
+}
+else {
+    $rest
+}
 
 # --------------------------------------------------
 # Paths base
@@ -32,22 +41,31 @@ if (-not (Test-Path $OrcRoot)) {
 . "$OrcScriptRoot\core\project-model.ps1"
 
 # --------------------------------------------------
-# Resolver proyecto y modo
+# Resolver  modo
 # --------------------------------------------------
-$project = Resolve-OrcProject `
-    -RepoRoot $RepoRoot `
-    -Args     $rest
 
 $mode = Resolve-OrcMode -Args $rest
+
+
+# --------------------------------------------------
+# El orco identifica si el comando se aplica a  un proyecto
+# preexistente
+# --------------------------------------------------
+
+$projectRequired = switch ($command) {
+    "create"  { $false }
+    default   { $true }
+}
 
 # --------------------------------------------------
 # Construcción del modelo de proyecto (UNA SOLA VEZ)
 # --------------------------------------------------
 $projectModel = Resolve-ProjectModel `
     -Mode        $mode `
-    -ProjectName $project.Name `
+    -ProjectName $projectName `
     -RepoRoot    $RepoRoot `
-    -OrcRoot     $OrcRoot
+    -OrcRoot     $OrcRoot `
+    -ProjectRequired $projectRequired
 
 # --------------------------------------------------
 # Contexto único
@@ -55,7 +73,6 @@ $projectModel = Resolve-ProjectModel `
 $ctx = @{
     RepoRoot    = $RepoRoot
     OrcRoot     = $OrcRoot
-    ProjectRoot = $project.Path
     ProjectModel= $projectModel
 }
 

@@ -9,9 +9,12 @@ param (
 $projectModel  = $Context.ProjectModel
 $repoRoot = $Context.RepoRoot
 $project  = $projectModel.Project
+$ProjectName  = $project.Name
 
+# Aca hay un problema
+# Test-Path : Cannot bind argument to parameter 'Path' because it is null
 if ((Test-Path $project.BackendPath) -or (Test-Path $project.FrontendPath)) {
-    Write-Host "❌ El proyecto '$project' ya existe"
+    Write-Host "❌ El proyecto '$ProjectName' ya existe"
     exit 1
 }
 
@@ -22,10 +25,10 @@ if (!(Test-Path $helper)) {
     exit 1
 }
 
-Write-Host "🐗 Orc creando proyecto '$project' desde orc.yaml"
+Write-Host "🐗 Orc creando proyecto '$ProjectName' desde orc.yaml"
 Write-Host ""
 
-python $helper $project
+python $helper $ProjectName
 $exitCode = $LASTEXITCODE
 
 if ($exitCode -ne 0) {
@@ -34,6 +37,6 @@ if ($exitCode -ne 0) {
 }
 
 Write-Host ""
-Write-Host "✅ Proyecto '$project' creado correctamente"
+Write-Host "✅ Proyecto '$ProjectName' creado correctamente"
 Write-Host "Podés levantarlo con:"
-Write-Host "  orc up $project"
+Write-Host "  orc up $ProjectName"

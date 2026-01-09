@@ -1,10 +1,10 @@
 function Ensure-LiquibaseWorkspace {
     param (
         [Parameter(Mandatory)]
-        [string]$ProjectRoot
+        [string]$Root
     )
 
-    $lbRoot = Join-Path $ProjectRoot ".orco\liquibase"
+    $lbRoot = Join-Path $Root ".orco\liquibase"
 
     if (-not (Test-Path $lbRoot)) {
         New-Item -ItemType Directory -Path $lbRoot | Out-Null

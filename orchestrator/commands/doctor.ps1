@@ -1,21 +1,25 @@
-function Invoke-OrcDoctor {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Project
-    )
+param (
+    [Parameter(Mandatory)]
+    [hashtable]$Context,
+
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$Args
+)
+
+$projectModel  = $Context.ProjectModel
+$project      = $projectModel.Project
+$ProjectName  = $project.Name
 
     Write-Host ""
-    Write-Host "ORC DOCTOR - $Project"
+    Write-Host "ORC DOCTOR - $ProjectName"
     Write-Host "============================="
 
-    $context = Resolve-OrcProject -Project $Project
-
-    if ($context.BackendPath) {
-        Write-Host "🔎 Backend encontrado en $($context.BackendPath)"
+    if ($Context.BackendPath) {
+        Write-Host "🔎 Backend encontrado en $($Context.BackendPath)"
     }
 
-    if ($context.FrontendPath) {
-        Write-Host "🔎 Frontend encontrado en $($context.FrontendPath)"
+    if ($Context.FrontendPath) {
+        Write-Host "🔎 Frontend encontrado en $($Context.FrontendPath)"
     }
 
     $composePath = Join-Path $projectPath "docker-compose.yml"
@@ -59,7 +63,7 @@ function Invoke-OrcDoctor {
     }
 
     # 6. Contenedores del proyecto
-    $containers = docker ps -a --filter "name=$Project" --format "{{.Names}}"
+    $containers = docker ps -a --filter "name=$ProjectName" --format "{{.Names}}"
 
     if (-not $containers) {
         Write-Host "No hay contenedores creados para este proyecto"
@@ -69,7 +73,7 @@ function Invoke-OrcDoctor {
     }
 
     # 7. Contenedores corriendo
-    $running = docker ps --filter "name=$Project" --format "{{.Names}}"
+    $running = docker ps --filter "name=$ProjectName" --format "{{.Names}}"
 
     if ($running) {
         Write-Host "Contenedores corriendo:"
