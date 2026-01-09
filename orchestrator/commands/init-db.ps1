@@ -1,20 +1,14 @@
 param (
-    # Contexto del orco
     [Parameter(Mandatory)]
-    [string]$RepoRoot,
+    [hashtable]$Context,
 
-    [Parameter(Mandatory)]
-    [string]$OrcRoot,
-
-    # Argumentos posicionales
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$Args
 )
 
-$project = Resolve-OrcProject `
-    -RepoRoot $RepoRoot `
-    -Args     $Args `
-    -Required
+$projectModel  = $Context.ProjectModel
+$orcRoot  = $Context.OrcRoot
+$repoRoot = $Context.RepoRoot
 
 if ($Args.Count -lt 1) {
     Write-Host "Uso:"
@@ -34,7 +28,7 @@ Write-Host "Modo: $mode"
 Write-Host ""
 
 . "$OrcRoot\core\context.ps1"
-. "$OrcRoot\core\runtime.ps1"
+. "$OrcRoot\core\project-model.ps1"
 
 $backendPath = Join-Path $RepoRoot "backend\projects\$project"
 
@@ -43,21 +37,15 @@ if (-not (Test-Path $backendPath)) {
     exit 1
 }
 
-$runtime = Resolve-OrcRuntime `
-    -Mode        $mode `
-    -ProjectName $project `
-    -RepoRoot    $RepoRoot `
-    -OrcRoot     $OrcRoot
-
-if (-not $runtime.Liquibase) {
-    Write-Error "[orc] Runtime no define configuración de Liquibase"
+if (-not $projectModel.Liquibase) {
+    Write-Error "[orc] El modelo del proyecto no define configuración de Liquibase"
     exit 1
 }
 
 Write-Host "🐗 Inicializando base de datos con Liquibase"
 Write-Host ""
 
-$lbDir = $runtime.Liquibase.WorkDir
+$lbDir = $projectModel.Liquibase.WorkDir
 
 try {
     New-Item -ItemType Directory -Force -Path $lbDir | Out-Null
@@ -69,7 +57,7 @@ try {
 & "$OrcRoot\commands\liquibase.ps1" `
     -Args @("update") `
     -RepoRoot $RepoRoot `
-    -LiquibaseRuntime $runtime.Liquibase.WorkDir
+    -LiquibaseRuntime $projectModel.Liquibase.WorkDir
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "❌ init-db falló"

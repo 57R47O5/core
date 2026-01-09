@@ -4,7 +4,7 @@ function Get-OrcDockerConfig {
         $ctx
     )
 
-    $db = $ctx.Runtime.Database
+    $db = $ctx.ProjectModel.Database
 
     return @{
         GlobalNetwork = "orc_global"

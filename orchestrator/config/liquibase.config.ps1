@@ -4,15 +4,15 @@ function Get-LiquibaseConfig {
         $ctx
     )
 
-    if (-not $ctx.Runtime) {
-        throw "ctx.Runtime es obligatorio"
+    if (-not $ctx.ProjectModel) {
+        throw "ctx.ProjectModel es obligatorio"
     }
 
     if (-not $ctx.OrcDockerConfig) {
         throw "ctx.OrcDockerConfig es obligatorio"
     }
 
-    $db = $ctx.Runtime.Database
+    $db = $ctx.ProjectModel.Database
 
     return @{
         Image = "liquibase/liquibase:5.0"

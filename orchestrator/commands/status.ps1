@@ -6,8 +6,8 @@ param (
     [string[]]$Args
 )
 
-$runtime  = $Context.Runtime
-$project = $runtime.Project
+$projectModel  = $Context.ProjectModel
+$project = $projectModel.Project
 
 Write-Host ""
 Write-Host "ORC STATUS - $project"
@@ -17,19 +17,19 @@ Write-Host ""
 
 Write-Host "Backend:"
 
-if (Test-Path $runtime.Project.BackendPath) {
+if (Test-Path $projectModel.Project.BackendPath) {
     Write-Host "  Proyecto encontrado"
 } else {
     Write-Host "  Proyecto NO existe"
 }
 
-if (Test-Path $runtime.Backend.ManagePy) {
+if (Test-Path $projectModel.Backend.ManagePy) {
     Write-Host "  manage.py presente"
 } else {
     Write-Host "  manage.py ausente"
 }
 
-if (Test-Path $runtime.Backend.VenvPath) {
+if (Test-Path $projectModel.Backend.VenvPath) {
     Write-Host "  Virtualenv presente"
 } else {
     Write-Host "  Virtualenv ausente"
@@ -48,7 +48,7 @@ Write-Host ""
 # ---------- Frontend ----------
 Write-Host "Frontend:"
 
-if (Test-Path $runtime.Project.FrontendPath) {
+if (Test-Path $projectModel.Project.FrontendPath) {
     Write-Host "  Proyecto frontend encontrado"
 } else {
     Write-Host "  Proyecto frontend NO existe"

@@ -20,14 +20,11 @@ function Resolve-OrcProject {
     }
 
     $projectName = $Args[0]
-
     $spec = Get-OrcProjectSpec `
         -RepoRoot $RepoRoot `
-        -Project  $projectName
-
-    if (-not $spec) {
-        throw "[orc] Proyecto no definido: $projectName"
-    }
+        -Project $projectName 
+    
+    $foundAny = $false
 
     $result = @{
         Name         = $projectName
@@ -38,12 +35,13 @@ function Resolve-OrcProject {
         Type         = @()
         Spec         = $spec
     }
-
+    
     foreach ($type in $spec.ExpectedPaths.Keys) {
         $relativePath = $spec.ExpectedPaths[$type]
         $absolutePath = Join-Path $RepoRoot $relativePath
-
+        
         if (Test-Path $absolutePath) {
+            $foundAny=$true
             switch ($type) {
                 "backend" {
                     $result.BackendPath = $absolutePath
@@ -63,6 +61,15 @@ function Resolve-OrcProject {
             }
         }
     }
+    
+
+    if (-not $foundAny) {
+        if ($Required) {
+            throw "[orc] Proyecto '$projectName' no existe en el filesystem"
+        }
+        return $null
+    }
+    
 
     if ($result.Type.Count -eq 0) {
         throw "[orc] Proyecto '$projectName' definido pero no presente en el filesystem"

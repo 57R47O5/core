@@ -6,12 +6,11 @@ param (
     [string[]]$Args
 )
 
-$runtime  = $Context.Runtime
-$orcRoot  = $Context.OrcRoot
-$repoRoot = $Context.RepoRoot
-$project  = $runtime.Project
+$projectModel  = $Context.ProjectModel
+$project  = $projectModel.Project
+$ProjectName  = $project.Name
 
-Write-Host "Deteniendo proyecto '$project'"
+Write-Host "Deteniendo proyecto '$ProjectName'"
 
 # ---- Backend ----
 Write-Host "Deteniendo backend (manage.py runserver)"
@@ -39,6 +38,6 @@ Get-CimInstance Win32_Process |
     }
 
 Write-Host ""
-Write-Host "Proyecto '$project' detenido"
+Write-Host "Proyecto '$ProjectName' detenido"
 
 exit 0
