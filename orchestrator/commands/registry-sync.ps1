@@ -11,6 +11,11 @@ param (
     [string[]]$Args
 )
 
+$project = Resolve-OrcProject `
+    -RepoRoot $RepoRoot `
+    -Args     $Args `
+    -Required
+
 . "$PSScriptRoot\..\lib\librarian.ps1"
 
 Write-Host "Orc registry sync"

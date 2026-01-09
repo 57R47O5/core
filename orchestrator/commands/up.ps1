@@ -1,33 +1,17 @@
 param (
-    # Contexto del orco
     [Parameter(Mandatory)]
-    [string]$RepoRoot,
+    [hashtable]$Context,
 
-    [Parameter(Mandatory)]
-    [string]$OrcRoot,
-
-    # Argumentos posicionales del comando
     [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]]$args
+    [string[]]$Args
 )
 
+$runtime  = $Context.Runtime
+$orcRoot  = $Context.OrcRoot
+$repoRoot = $Context.RepoRoot
 
-if ($args.Count -lt 1) {
-    Write-Host "Falta el nombre del proyecto"
-    Write-Host "Uso: orc up <proyecto> [--docker]"
-    exit 1
-}
-
-$project = $args[0]
-
-$mode = "local"
-if ($args -contains "--docker") {
-    $mode = "docker"
-}
-
-Write-Host "Modo de ejecución: $mode"
-Write-Host "Proyecto: $project"
-
+Write-Host "Modo de ejecución: $runtime.Mode"
+Write-Host "Proyecto: $runtime.Project"
 
 # -------------------------
 # Runtime Orc
@@ -37,38 +21,12 @@ Write-Host "Proyecto: $project"
 . "$OrcRoot\core\env.ps1"
 . "$OrcRoot\core\runtime.ps1"
 
-# -------------------------------------------------------------------
-# Runtime
-# -------------------------------------------------------------------
-$runtime = Resolve-OrcRuntime `
-    -Mode        $mode `
-    -ProjectName $project `
-    -RepoRoot    $RepoRoot `
-    -OrcRoot     $OrcRoot
-
-# -------------------------------------------------------------------
-# Context
-# -------------------------------------------------------------------
-$contexto = New-OrcContext `
-    -RuntimeConfig $runtime `
-    -ProjectConfig @{
-        Name = $project
-    } `
-    -Paths @{
-        RepoRoot = $RepoRoot
-        OrcRoot  = $OrcRoot
-    }
-
-Write-Host $contexto
-
-$ctx =  $contexto
-
 # =========================
 # MODO DOCKER
 # =========================
-if ($mode -eq "docker") {
+if ($runtime.Mode -eq "docker") {
 
-    Write-Host "Levantando proyecto '$project' en modo DOCKER"
+    Write-Host "Levantando proyecto '$runtime.Project' en modo DOCKER"
 
     $composePath = Join-Path $RepoRoot "docker"
 
@@ -84,7 +42,7 @@ if ($mode -eq "docker") {
     Pop-Location
 
     Write-Host ""
-    Write-Host "Proyecto '$project' levantado (dockerizado)"
+    Write-Host "Proyecto '$runtime.Project' levantado (dockerizado)"
     exit 0
 }
 
@@ -93,10 +51,12 @@ if ($mode -eq "docker") {
 # =========================
 
 # ---- Backend ----
-$backendPath  = Join-Path $RepoRoot "backend\projects\$project"
-$venvActivate = Join-Path $backendPath ".venv\Scripts\activate.ps1"
-$managePy     = Join-Path $backendPath "manage.py"
-$pythonExe    = Join-Path $backendPath ".venv\Scripts\python.exe"
+$project      = $runtime.Project
+$backendPath  = $runtime.Project.BackendPath
+$FrontendPath = $runtime.Project.FrontendPath
+$PythonExe    = $runtime.Backend.PythonExe
+$venvActivate = $runtime.Backend.ActivatePs
+$managePy     = $runtime.Backend.ManagePy
 
 Write-Host $backendPath
 if (!(Test-Path $backendPath)) {
@@ -116,8 +76,7 @@ if (!(Test-Path $managePy)) {
 
 # ---- Env ----
 New-OrcEnvFile `
-    -ctx $ctx `
-    -BackendPath $backendPath
+    -ctx $Contex
 
 # ---- Levantar backend ----
 Write-Host "Levantando backend ($project) en http://localhost:8000"
@@ -129,23 +88,22 @@ Start-Process powershell `
         "cd `"$backendPath`";
         Write-Host 'Activando venv...';
         . `"$venvActivate`";
-        & `"$pythonExe`" manage.py runserver"
+        & `"$PythonExe`" manage.py runserver"
     ) `
     -WindowStyle Normal
 
 
 # ---- Frontend ----
-$frontendPath = Join-Path $RepoRoot "frontend\proyectos\$project"
 
-if (!(Test-Path $frontendPath)) {
+if (!(Test-Path $FrontendPath)) {
     Write-Host "Frontend del proyecto '$project' no existe"
-    Write-Host "   Esperado en: $frontendPath"
+    Write-Host "   Esperado en: $project.FrontendPath"
     exit 1
 }
 
-$packageJson = Join-Path $frontendPath "package.json"
+$packageJson = Join-Path $FrontendPath "package.json"
 if (!(Test-Path $packageJson)) {
-    Write-Host "No se encontró package.json en $frontendPath"
+    Write-Host "No se encontró package.json en $project.FrontendPath"
     exit 1
 }
 
@@ -155,7 +113,7 @@ Start-Process powershell `
     -ArgumentList @(
         "-NoExit",
         "-Command",
-        "cd `"$frontendPath`";
+        "cd `"$FrontendPath`";
         Write-Host 'Ejecutando npm run dev...';
         npm run dev"
     ) `

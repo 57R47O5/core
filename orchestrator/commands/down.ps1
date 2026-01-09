@@ -1,23 +1,15 @@
 param (
-    # Contexto del orco
     [Parameter(Mandatory)]
-    [string]$RepoRoot,
+    [hashtable]$Context,
 
-    [Parameter(Mandatory)]
-    [string]$OrcRoot,
-
-    # Argumentos posicionales del comando
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$Args
 )
 
-if ($Args.Count -lt 1) {
-    Write-Host "Falta el nombre del proyecto"
-    Write-Host "   Uso: orc down <nombre-proyecto>"
-    exit 1
-}
-
-$project = $Args[0]
+$runtime  = $Context.Runtime
+$orcRoot  = $Context.OrcRoot
+$repoRoot = $Context.RepoRoot
+$project  = $runtime.Project
 
 Write-Host "Deteniendo proyecto '$project'"
 

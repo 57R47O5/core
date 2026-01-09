@@ -14,6 +14,8 @@ function Resolve-OrcRuntime {
         [string]$OrcRoot
     )
 
+. "$OrcRoot\core\backend-runtime.ps1"
+
     # --- valores comunes ---
     $dbName = $ProjectName
     $dbUser = "postgres"
@@ -60,6 +62,19 @@ function Resolve-OrcRuntime {
                 WorkDir        = Join-Path $OrcRoot ".orc/runtime/liquibase/$ProjectName"
             }
         }
+    }
+
+    $project = Resolve-OrcProject `
+        -RepoRoot $RepoRoot `
+        -Args     @($ProjectName) `
+        -Required
+
+    $runtime.Project = $project
+
+    if ($project.BackendPath) {
+        $runtime.Backend = Resolve-OrcBackendRuntime `
+            -Project $project `
+            -Mode    $Mode
     }
 
     return $runtime

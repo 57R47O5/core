@@ -1,48 +1,35 @@
 param (
-    # Contexto del orco
     [Parameter(Mandatory)]
-    [string]$RepoRoot,
+    [hashtable]$Context,
 
-    [Parameter(Mandatory)]
-    [string]$OrcRoot,
-
-    # Argumentos posicionales del comando
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$Args
 )
 
-if ($Args.Count -lt 1) {
-    Write-Host "Falta el nombre del proyecto"
-    Write-Host "   Uso: orc up <nombre-proyecto>"
-    exit 1
-}
-
-$project = $Args[0]
+$runtime  = $Context.Runtime
+$project = $runtime.Project
 
 Write-Host ""
 Write-Host "ORC STATUS - $project"
 Write-Host ""
 
 # ---------- Backend ----------
-$backendPath = Join-Path $repoRoot "backend\projects\$project"
-$managePy = Join-Path $backendPath "manage.py"
-$venvPath = Join-Path $backendPath ".venv"
 
 Write-Host "Backend:"
 
-if (Test-Path $backendPath) {
+if (Test-Path $runtime.Project.BackendPath) {
     Write-Host "  Proyecto encontrado"
 } else {
     Write-Host "  Proyecto NO existe"
 }
 
-if (Test-Path $managePy) {
+if (Test-Path $runtime.Backend.ManagePy) {
     Write-Host "  manage.py presente"
 } else {
     Write-Host "  manage.py ausente"
 }
 
-if (Test-Path $venvPath) {
+if (Test-Path $runtime.Backend.VenvPath) {
     Write-Host "  Virtualenv presente"
 } else {
     Write-Host "  Virtualenv ausente"
@@ -59,11 +46,9 @@ if ($djangoRunning) {
 Write-Host ""
 
 # ---------- Frontend ----------
-$frontendPath = Join-Path $repoRoot "frontend\proyectos\$project"
-
 Write-Host "Frontend:"
 
-if (Test-Path $frontendPath) {
+if (Test-Path $runtime.Project.FrontendPath) {
     Write-Host "  Proyecto frontend encontrado"
 } else {
     Write-Host "  Proyecto frontend NO existe"

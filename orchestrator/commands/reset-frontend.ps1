@@ -11,6 +11,11 @@ param (
     [string[]]$Args
 )
 
+$project = Resolve-OrcProject `
+    -RepoRoot $RepoRoot `
+    -Args     $Args `
+    -Required
+
 if ($Args.Count -lt 1) {
     Write-Host "Falta el nombre del proyecto"
     Write-Host "   Uso: orc up <nombre-proyecto>"
