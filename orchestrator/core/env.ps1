@@ -4,13 +4,13 @@ function New-OrcEnvFile {
         $ctx
     )
 
-    $runtime = $ctx.Runtime
-    $db = $runtime.Database
-    $project  = $runtime.Project
+    $projectModel = $ctx.ProjectModel
+    $db = $projectModel.Database
+    $project  = $projectModel.Project
     $envPath = Join-Path $project.BackendPath ".env"
 
-    if (-not $ctx.Runtime.Database) {
-        throw "Runtime.Database no está definido en el contexto"
+    if (-not $projectModel.Database) {
+        throw "projectModel.Database no está definido en el contexto"
     }
 
     Write-Host "Generando .env (DB_HOST=$($db.Host))"

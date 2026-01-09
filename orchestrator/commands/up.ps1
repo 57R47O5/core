@@ -6,27 +6,30 @@ param (
     [string[]]$Args
 )
 
-$runtime  = $Context.Runtime
+$projectModel  = $Context.ProjectModel
 $orcRoot  = $Context.OrcRoot
 $repoRoot = $Context.RepoRoot
+$project      = $projectModel.Project
+$ProjectName  = $project.Name
+$modo = $projectModel.Mode
 
-Write-Host "Modo de ejecución: $runtime.Mode"
-Write-Host "Proyecto: $runtime.Project"
+Write-Host "Modo de ejecución: $modo"
+Write-Host "Proyecto: $ProjectName"
 
 # -------------------------
-# Runtime Orc
+# Orc Project Model
 # -------------------------
 . "$OrcRoot\config\orc.config.ps1"
 . "$OrcRoot\core\context.ps1"
 . "$OrcRoot\core\env.ps1"
-. "$OrcRoot\core\runtime.ps1"
+. "$OrcRoot\core\project-model.ps1"
 
 # =========================
 # MODO DOCKER
 # =========================
-if ($runtime.Mode -eq "docker") {
+if ($projectModel.Mode -eq "docker") {
 
-    Write-Host "Levantando proyecto '$runtime.Project' en modo DOCKER"
+    Write-Host "Levantando proyecto '$projectModel.Project' en modo DOCKER"
 
     $composePath = Join-Path $RepoRoot "docker"
 
@@ -42,7 +45,7 @@ if ($runtime.Mode -eq "docker") {
     Pop-Location
 
     Write-Host ""
-    Write-Host "Proyecto '$runtime.Project' levantado (dockerizado)"
+    Write-Host "Proyecto '$projectModel.Project' levantado (dockerizado)"
     exit 0
 }
 
@@ -51,16 +54,15 @@ if ($runtime.Mode -eq "docker") {
 # =========================
 
 # ---- Backend ----
-$project      = $runtime.Project
-$backendPath  = $runtime.Project.BackendPath
-$FrontendPath = $runtime.Project.FrontendPath
-$PythonExe    = $runtime.Backend.PythonExe
-$venvActivate = $runtime.Backend.ActivatePs
-$managePy     = $runtime.Backend.ManagePy
+$backendPath  = $projectModel.Project.BackendPath
+$FrontendPath = $projectModel.Project.FrontendPath
+$PythonExe    = $projectModel.Backend.PythonExe
+$venvActivate = $projectModel.Backend.ActivatePs
+$managePy     = $projectModel.Backend.ManagePy
 
 Write-Host $backendPath
 if (!(Test-Path $backendPath)) {
-    Write-Host "Backend del proyecto '$project' no existe"
+    Write-Host "Backend del proyecto '$ProjectName' no existe"
     exit 1
 }
 
@@ -76,10 +78,10 @@ if (!(Test-Path $managePy)) {
 
 # ---- Env ----
 New-OrcEnvFile `
-    -ctx $Contex
+    -ctx $Context
 
 # ---- Levantar backend ----
-Write-Host "Levantando backend ($project) en http://localhost:8000"
+Write-Host "Levantando backend ($ProjectName) en http://localhost:8000"
 
 Start-Process powershell `
     -ArgumentList @(
@@ -96,18 +98,18 @@ Start-Process powershell `
 # ---- Frontend ----
 
 if (!(Test-Path $FrontendPath)) {
-    Write-Host "Frontend del proyecto '$project' no existe"
-    Write-Host "   Esperado en: $project.FrontendPath"
+    Write-Host "Frontend del proyecto '$ProjectName' no existe"
+    Write-Host "   Esperado en: $FrontendPath"
     exit 1
 }
 
 $packageJson = Join-Path $FrontendPath "package.json"
 if (!(Test-Path $packageJson)) {
-    Write-Host "No se encontró package.json en $project.FrontendPath"
+    Write-Host "No se encontró package.json en $FrontendPath"
     exit 1
 }
 
-Write-Host "Levantando frontend ($project) en http://localhost:3000"
+Write-Host "Levantando frontend ($ProjectName) en http://localhost:3000"
 
 Start-Process powershell `
     -ArgumentList @(
@@ -120,7 +122,7 @@ Start-Process powershell `
     -WindowStyle Normal
 
 Write-Host ""
-Write-Host "Proyecto '$project' levantado (local)"
+Write-Host "Proyecto '$ProjectName' levantado (local)"
 Write-Host "   Backend : http://localhost:8000"
 Write-Host "   Frontend: http://localhost:3000"
 

@@ -6,10 +6,8 @@ param (
     [string[]]$Args
 )
 
-$runtime  = $Context.Runtime
+$projectModel  = $Context.ProjectModel
 $orcRoot  = $Context.OrcRoot
-$repoRoot = $Context.RepoRoot
-$project  = $runtime.Project
 
 # --------------------------------------------------
 # Guard rails
@@ -25,41 +23,19 @@ if ($Args.Count -eq 0) {
 
 $action = $Args | Where-Object { $_ -notmatch '^--' } | Select-Object -Last 1
 
-# --------------------------------------------------
-# Proyecto y modo
-# --------------------------------------------------
-$project = Resolve-OrcProject `
-    -RepoRoot $RepoRoot `
-    -Args     $Args `
-    -Required
-
-$mode = Resolve-OrcMode -Args $Args
-
-# --------------------------------------------------
-# Runtime (FUENTE ÚNICA DE VERDAD)
-# --------------------------------------------------
-. "$OrcRoot\core\context.ps1"
-. "$OrcRoot\core\runtime.ps1"
-
-$runtime = Resolve-OrcRuntime `
-    -Mode        $mode `
-    -ProjectName $project.Name `
-    -RepoRoot    $RepoRoot `
-    -OrcRoot     $OrcRoot
-
 Write-Host "[orc] liquibase"
-Write-Host "  Project: $($runtime.Project.Name)"
-Write-Host "  Mode:    $($runtime.Mode)"
+Write-Host "  Project: $($projectModel.Project.Name)"
+Write-Host "  Mode:    $($projectModel.Mode)"
 Write-Host "  Action:  $action"
 Write-Host ""
 
 # --------------------------------------------------
-# Docker config (derivada del runtime)
+# Docker config (derivada del projectModel)
 # --------------------------------------------------
 . "$OrcRoot\config\docker.config.ps1"
 
 $OrcDockerConfig = Get-OrcDockerConfig -ctx @{
-    Runtime = $runtime
+    ProjectModel = $projectModel
 }
 
 if (-not $OrcDockerConfig) {
@@ -80,7 +56,7 @@ $liqRoot = Join-Path $OrcRoot "lib\liquibase"
 # Liquibase config (UNIFICADA)
 # --------------------------------------------------
 $cfg = Get-LiquibaseConfig -ctx @{
-    Runtime         = $runtime
+    ProjectModel         = $projectModel
     OrcDockerConfig = $OrcDockerConfig
 }
 

@@ -6,10 +6,8 @@ param (
     [string[]]$Args
 )
 
-$runtime  = $Context.Runtime
-$orcRoot  = $Context.OrcRoot
-$repoRoot = $Context.RepoRoot
-$project  = $runtime.Project
+$projectModel  = $Context.ProjectModel
+$project  = $projectModel.Project
 $projectName = $project.Name
 $backendPath = $project.BackendPath
 $FrontendPath = $project.FrontendPath

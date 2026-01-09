@@ -17,7 +17,6 @@ $rest    = if ($Args.Count -gt 1) { $Args[1..($Args.Count - 1)] } else { @() }
 $OrcScriptRoot = $PSScriptRoot          # orchestrator/
 $OrcRoot       = $OrcScriptRoot
 $RepoRoot      = Split-Path $OrcRoot -Parent
-$OrcDataRoot   = Join-Path $OrcRoot ".orc"
 
 if (-not (Test-Path $OrcRoot)) {
     throw "OrcRoot no encontrado en $OrcRoot"
@@ -30,7 +29,7 @@ if (-not (Test-Path $OrcRoot)) {
 . "$OrcScriptRoot\lib\librarian.ps1"
 . "$OrcScriptRoot\lib\orc-mode.ps1"
 . "$OrcScriptRoot\core\context.ps1"
-. "$OrcScriptRoot\core\runtime.ps1"
+. "$OrcScriptRoot\core\project-model.ps1"
 
 # --------------------------------------------------
 # Resolver proyecto y modo
@@ -39,13 +38,12 @@ $project = Resolve-OrcProject `
     -RepoRoot $RepoRoot `
     -Args     $rest
 
-$mode = Resolve-OrcMode `
-    -Args $rest
+$mode = Resolve-OrcMode -Args $rest
 
 # --------------------------------------------------
-# Construcción del runtime (UNA SOLA VEZ)
+# Construcción del modelo de proyecto (UNA SOLA VEZ)
 # --------------------------------------------------
-$runtime = Resolve-OrcRuntime `
+$projectModel = Resolve-ProjectModel `
     -Mode        $mode `
     -ProjectName $project.Name `
     -RepoRoot    $RepoRoot `
@@ -58,7 +56,7 @@ $ctx = @{
     RepoRoot    = $RepoRoot
     OrcRoot     = $OrcRoot
     ProjectRoot = $project.Path
-    Runtime     = $runtime
+    ProjectModel= $projectModel
 }
 
 # --------------------------------------------------

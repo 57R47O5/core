@@ -1,4 +1,4 @@
-function Resolve-OrcRuntime {
+function Resolve-ProjectModel {
     param (
         [Parameter(Mandatory)]
         [ValidateSet("local", "docker")]
@@ -19,11 +19,11 @@ function Resolve-OrcRuntime {
     # --- valores comunes ---
     $dbName = $ProjectName
     $dbUser = "postgres"
-    $dbPass = "postgres"
+    $dbPass = "142857"
     $dbPort = 5432
 
     # --- runtime base (NO romper contrato actual) ---
-    $runtime = @{
+    $projectModel = @{
         Mode    = $Mode
         Project = @{
             Name = $ProjectName
@@ -41,10 +41,10 @@ function Resolve-OrcRuntime {
 
         "local" {
             # Django local
-            $runtime.Database.Host = "localhost"
+            $projectModel.Database.Host = "localhost"
 
             # Liquibase (infra, dockerizada)
-            $runtime.Liquibase = @{
+            $projectModel.Liquibase = @{
                 Host           = "postgres"
                 ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
                 WorkDir        = Join-Path $OrcRoot ".orc/runtime/liquibase/$ProjectName"
@@ -53,10 +53,10 @@ function Resolve-OrcRuntime {
 
         "docker" {
             # Django docker
-            $runtime.Database.Host = "postgres"
+            $projectModel.Database.Host = "postgres"
 
             # Liquibase (mismo entorno de red)
-            $runtime.Liquibase = @{
+            $projectModel.Liquibase = @{
                 Host           = "postgres"
                 ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
                 WorkDir        = Join-Path $OrcRoot ".orc/runtime/liquibase/$ProjectName"
@@ -69,13 +69,13 @@ function Resolve-OrcRuntime {
         -Args     @($ProjectName) `
         -Required
 
-    $runtime.Project = $project
+    $projectModel.Project = $project
 
     if ($project.BackendPath) {
-        $runtime.Backend = Resolve-OrcBackendRuntime `
+        $projectModel.Backend = Resolve-OrcBackendRuntime `
             -Project $project `
             -Mode    $Mode
     }
 
-    return $runtime
+    return $projectModel
 }

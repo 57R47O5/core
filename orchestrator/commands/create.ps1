@@ -6,10 +6,9 @@ param (
     [string[]]$Args
 )
 
-$runtime  = $Context.Runtime
-$orcRoot  = $Context.OrcRoot
+$projectModel  = $Context.ProjectModel
 $repoRoot = $Context.RepoRoot
-$project  = $runtime.Project
+$project  = $projectModel.Project
 
 if ((Test-Path $project.BackendPath) -or (Test-Path $project.FrontendPath)) {
     Write-Host "❌ El proyecto '$project' ya existe"
