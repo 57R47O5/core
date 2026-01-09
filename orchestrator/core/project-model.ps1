@@ -11,7 +11,10 @@ function Resolve-ProjectModel {
         [string]$RepoRoot,
 
         [Parameter(Mandatory)]
-        [string]$OrcRoot
+        [string]$OrcRoot,
+
+        [Parameter(Mandatory)]
+        [bool]$ProjectRequired
     )
 
 . "$OrcRoot\core\backend-runtime.ps1"
@@ -67,7 +70,7 @@ function Resolve-ProjectModel {
     $project = Resolve-OrcProject `
         -RepoRoot $RepoRoot `
         -Args     @($ProjectName) `
-        -Required
+        -Required:($ProjectRequired)
 
     $projectModel.Project = $project
 
