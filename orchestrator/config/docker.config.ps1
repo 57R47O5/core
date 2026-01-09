@@ -28,5 +28,23 @@ function Get-OrcDockerConfig {
                 Retries  = 5
             }
         }
+
+        Liquibase = @{
+            Image = "liquibase/liquibase:4.27"
+
+            Workspace = @{
+                ContainerPath = "/workspace"
+            }
+
+            DefaultsFile = "/workspace/liquibase.properties"
+            Classpath    = "/workspace/drivers"
+
+            Volumes = @(
+                @{
+                    HostPath = { param($ctx) $ctx.LiquibaseRuntimeDocker }
+                    ContainerPath = "/workspace"
+                }
+            )
+        }
     }
 }

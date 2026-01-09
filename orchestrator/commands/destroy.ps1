@@ -1,29 +1,20 @@
 param (
-    # Contexto del orco
     [Parameter(Mandatory)]
-    [string]$RepoRoot,
+    [hashtable]$Context,
 
-    [Parameter(Mandatory)]
-    [string]$OrcRoot,
-
-    # Argumentos posicionales del comando
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$Args
 )
 
-if ($Args.Count -lt 1) {
-    Write-Host "Falta el nombre del proyecto"
-    Write-Host "   Uso: orc destroy <nombre-proyecto>"
-    exit 1
-}
+$runtime  = $Context.Runtime
+$orcRoot  = $Context.OrcRoot
+$repoRoot = $Context.RepoRoot
+$project  = $runtime.Project
+$projectName = $project.Name
+$backendPath = $project.BackendPath
+$FrontendPath = $project.FrontendPath
 
-$project = $Args[0]
-
-$backendPath   = Join-Path $repoRoot "backend\projects\$project"
-$frontendPath  = Join-Path $repoRoot "frontend\proyectos\$project"
-$liquibasePath = Join-Path $repoRoot "docker\liquibase\changelog\projects\$project"
-
-Write-Host "Destruyendo proyecto '$project'"
+Write-Host "Destruyendo proyecto '$projectName'"
 
 if (Test-Path $backendPath) {
     Write-Host "Eliminando backend..."
@@ -35,12 +26,12 @@ if (Test-Path $frontendPath) {
     Remove-Item -Recurse -Force $frontendPath
 }
 
-if (Test-Path $liquibasePath) {
+if (Test-Path $project.LiquibasePath) {
     Write-Host "Eliminando configuración Liquibase..."
-    Remove-Item -Recurse -Force $liquibasePath
+    Remove-Item -Recurse -Force $project.LiquibasePath
 }
 
 Write-Host ""
-Write-Host "Proyecto '$project' destruido"
+Write-Host "Proyecto '$projectName' destruido"
 
 exit 0

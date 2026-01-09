@@ -1,18 +1,17 @@
 function New-OrcEnvFile {
     param (
         [Parameter(Mandatory)]
-        $ctx,
-
-        [Parameter(Mandatory)]
-        [string]$BackendPath
+        $ctx
     )
+
+    $runtime = $ctx.Runtime
+    $db = $runtime.Database
+    $project  = $runtime.Project
+    $envPath = Join-Path $project.BackendPath ".env"
 
     if (-not $ctx.Runtime.Database) {
         throw "Runtime.Database no está definido en el contexto"
     }
-
-    $db = $ctx.Runtime.Database
-    $envPath = Join-Path $BackendPath ".env"
 
     Write-Host "Generando .env (DB_HOST=$($db.Host))"
 

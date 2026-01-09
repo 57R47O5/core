@@ -4,6 +4,14 @@ function Get-LiquibaseConfig {
         $ctx
     )
 
+    if (-not $ctx.Runtime) {
+        throw "ctx.Runtime es obligatorio"
+    }
+
+    if (-not $ctx.OrcDockerConfig) {
+        throw "ctx.OrcDockerConfig es obligatorio"
+    }
+
     $db = $ctx.Runtime.Database
 
     return @{

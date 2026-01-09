@@ -9,13 +9,13 @@ if ($Args.Count -eq 0) {
 }
 
 $command = $Args[0]
-$rest    = $Args[1..($Args.Count - 1)]
+$rest    = if ($Args.Count -gt 1) { $Args[1..($Args.Count - 1)] } else { @() }
 
 # --------------------------------------------------
-# Paths base (NO usar Get-Location)
+# Paths base
 # --------------------------------------------------
-$OrcScriptRoot = $PSScriptRoot               # orchestrator/
-$OrcRoot       = $OrcScriptRoot              
+$OrcScriptRoot = $PSScriptRoot          # orchestrator/
+$OrcRoot       = $OrcScriptRoot
 $RepoRoot      = Split-Path $OrcRoot -Parent
 $OrcDataRoot   = Join-Path $OrcRoot ".orc"
 
@@ -28,9 +28,41 @@ if (-not (Test-Path $OrcRoot)) {
 # --------------------------------------------------
 . "$OrcScriptRoot\lib\project-resolver.ps1"
 . "$OrcScriptRoot\lib\librarian.ps1"
+. "$OrcScriptRoot\lib\orc-mode.ps1"
+. "$OrcScriptRoot\core\context.ps1"
+. "$OrcScriptRoot\core\runtime.ps1"
 
 # --------------------------------------------------
-# Supported commands
+# Resolver proyecto y modo
+# --------------------------------------------------
+$project = Resolve-OrcProject `
+    -RepoRoot $RepoRoot `
+    -Args     $rest
+
+$mode = Resolve-OrcMode `
+    -Args $rest
+
+# --------------------------------------------------
+# Construcción del runtime (UNA SOLA VEZ)
+# --------------------------------------------------
+$runtime = Resolve-OrcRuntime `
+    -Mode        $mode `
+    -ProjectName $project.Name `
+    -RepoRoot    $RepoRoot `
+    -OrcRoot     $OrcRoot
+
+# --------------------------------------------------
+# Contexto único
+# --------------------------------------------------
+$ctx = @{
+    RepoRoot    = $RepoRoot
+    OrcRoot     = $OrcRoot
+    ProjectRoot = $project.Path
+    Runtime     = $runtime
+}
+
+# --------------------------------------------------
+# Dispatch
 # --------------------------------------------------
 $commandFile = Join-Path $OrcScriptRoot "commands\$command.ps1"
 
@@ -39,12 +71,8 @@ if (-not (Test-Path $commandFile)) {
     exit 1
 }
 
-# --------------------------------------------------
-# Dispatch
-# --------------------------------------------------
 & $commandFile `
-    -RepoRoot $RepoRoot `
-    -OrcRoot  $OrcRoot `
+    -Context  $ctx `
     -Args     $rest
 
 exit $LASTEXITCODE

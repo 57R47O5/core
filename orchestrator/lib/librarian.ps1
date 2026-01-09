@@ -1,6 +1,9 @@
 function Get-OrcProjectSpec {
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
+        [string]$RepoRoot,
+
+        [Parameter(Mandatory)]
         [string]$Project
     )
 
@@ -11,6 +14,7 @@ function Get-OrcProjectSpec {
         ExpectedPaths = @{
             backend  = "backend/projects/$Project"
             frontend = "frontend/proyectos/$Project"
+            liquibase = "docker/liquibase/changelog/projects/$Project"
         }
     }
 }
@@ -213,7 +217,6 @@ function Sync-OrcRegistry {
         Removed = $oldP | Where-Object { $_ -notin $newP }
     }
 }
-
 
 function Test-OrcProjectAgainstRegistry {
     param(
