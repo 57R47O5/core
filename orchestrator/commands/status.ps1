@@ -8,9 +8,10 @@ param (
 
 $projectModel  = $Context.ProjectModel
 $project = $projectModel.Project
+$ProjectName  = $project.Name
 
 Write-Host ""
-Write-Host "ORC STATUS - $project"
+Write-Host "ORC STATUS - $ProjectName"
 Write-Host ""
 
 # ---------- Backend ----------
