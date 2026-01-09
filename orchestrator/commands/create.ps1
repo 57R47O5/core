@@ -11,10 +11,18 @@ $repoRoot = $Context.RepoRoot
 $project  = $projectModel.Project
 $ProjectName  = $project.Name
 
-# Aca hay un problema
-# Test-Path : Cannot bind argument to parameter 'Path' because it is null
-if ((Test-Path $project.BackendPath) -or (Test-Path $project.FrontendPath)) {
-    Write-Host "❌ El proyecto '$ProjectName' ya existe"
+$conflicts = @()
+
+if ($project.BackendPath -and (Test-Path $project.BackendPath)) {
+    $conflicts += "backend"
+}
+
+if ($project.FrontendPath -and (Test-Path $project.FrontendPath)) {
+    $conflicts += "frontend"
+}
+
+if ($conflicts.Count -gt 0) {
+    Write-Host "❌ El proyecto '$ProjectName' ya existe ($($conflicts -join ', '))"
     exit 1
 }
 

@@ -7,8 +7,7 @@ param (
 )
 
 $projectModel  = $Context.ProjectModel
-$orcRoot  = $Context.OrcRoot
-$repoRoot = $Context.RepoRoot
+$RepoRoot = $Context.RepoRoot
 
 if ($Args.Count -lt 1) {
     Write-Host "Uso:"
@@ -47,6 +46,8 @@ Write-Host ""
 
 $lbDir = $projectModel.Liquibase.WorkDir
 
+Write-Host "Context: $Context"
+
 try {
     New-Item -ItemType Directory -Force -Path $lbDir | Out-Null
 } catch {
@@ -55,9 +56,8 @@ try {
 }
 
 & "$OrcRoot\commands\liquibase.ps1" `
-    -Args @("update") `
-    -RepoRoot $RepoRoot `
-    -LiquibaseRuntime $projectModel.Liquibase.WorkDir
+    -Context $Context `
+    -Args    @("update")
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "❌ init-db falló"

@@ -33,6 +33,7 @@ Write-Host ""
 # Docker config (derivada del projectModel)
 # --------------------------------------------------
 . "$OrcRoot\config\docker.config.ps1"
+. "$OrcRoot\config\liquibase.config.ps1"
 
 $OrcDockerConfig = Get-OrcDockerConfig -ctx @{
     ProjectModel = $projectModel
@@ -47,16 +48,15 @@ if (-not $OrcDockerConfig) {
 # --------------------------------------------------
 $liqRoot = Join-Path $OrcRoot "lib\liquibase"
 
-. "$liqRoot\liquibase.config.ps1"
 . "$liqRoot\liquibase.docker.ps1"
 . "$liqRoot\liquibase.actions.ps1"
 . "$liqRoot\liquibase.validate.ps1"
 
 # --------------------------------------------------
-# Liquibase config (UNIFICADA)
+# Liquibase config
 # --------------------------------------------------
 $cfg = Get-LiquibaseConfig -ctx @{
-    ProjectModel         = $projectModel
+    ProjectModel    = $projectModel
     OrcDockerConfig = $OrcDockerConfig
 }
 
