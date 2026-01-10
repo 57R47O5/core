@@ -1,13 +1,12 @@
 function Ensure-PostgresDatabase {
     param (
         [Parameter(Mandatory)]
-        [hashtable]$ProjectModel,
-
-        [Parameter(Mandatory)]
-        [string]$NetworkName
+        [hashtable]$Context
     )
 
+    $ProjectModel = $Context.ProjectModel
     $db = $ProjectModel.Database
+    $NetworkName = $Context.Docker.NetworkName
 
     Write-Host "🐘 Verificando base de datos '$($db.Name)'..."
     $pgHost = if ($db.Host -eq "localhost") { "postgres" } else { $db.Host }
@@ -59,17 +58,15 @@ function Ensure-PostgresDatabase {
     Write-Host "✅ Base de datos '$($db.Name)' creada correctamente"
 }
 
-function Remove-PostgresDatabase {
+function Ensure-PostgresDatabase {
     param (
         [Parameter(Mandatory)]
-        [hashtable]$ProjectModel,
-
-        [Parameter(Mandatory)]
-        [string]$NetworkName
+        [hashtable]$Context
     )
 
+    $ProjectModel = $Context.ProjectModel
     $db = $ProjectModel.Database
-    $pgHost = if ($db.Host -eq "localhost") { "postgres" } else { $db.Host }
+    $NetworkName = $Context.Docker.NetworkName
 
     Write-Host "Verificando existencia de la base '$($db.Name)'..."
 
@@ -79,7 +76,7 @@ function Remove-PostgresDatabase {
         "-e", "PGPASSWORD=$($db.Password)",
         "postgres:16",
         "psql",
-        "-h", $pgHost,
+        "-h", $db.Host,
         "-U", $db.User,
         "-d", "postgres",
         "-t",
@@ -102,7 +99,7 @@ function Remove-PostgresDatabase {
         "-e", "PGPASSWORD=$($db.Password)",
         "postgres:16",
         "psql",
-        "-h", $pgHost,
+        "-h", $db.Host,
         "-U", $db.User,
         "-d", "postgres",
         "-c",

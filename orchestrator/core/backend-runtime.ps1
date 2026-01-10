@@ -1,10 +1,7 @@
 function Resolve-OrcBackendRuntime {
     param (
         [Parameter(Mandatory)]
-        $Project,
-
-        [Parameter(Mandatory)]
-        [string]$Mode
+        $Project
     )
 
     $root = $Project.BackendPath
@@ -18,6 +15,5 @@ function Resolve-OrcBackendRuntime {
         PythonExe  = Join-Path $venvPath "Scripts\python.exe"
         ManagePy   = Join-Path $root "manage.py"
         Exists     = Test-Path $venvPath
-        Mode       = $Mode
     }
 }

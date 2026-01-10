@@ -27,7 +27,7 @@ Write-Host ""
 . "$OrcRoot\core\project-model.ps1"
 . "$OrcRoot\lib\postgres-db.ps1"
 
-$backendPath = Join-Path $RepoRoot "backend\projects\$project"
+$backendPath = $projectModel.BackendPath
 
 if (-not (Test-Path $backendPath)) {
     Write-Error "❌ El proyecto '$project' no existe (backend no encontrado)"
@@ -54,8 +54,7 @@ try {
 }
 
 Ensure-PostgresDatabase `
-    -ProjectModel $projectModel `
-    -NetworkName  "orc_global"
+    -Context $Context
 
 & "$OrcRoot\commands\liquibase.ps1" `
     -Context $Context `

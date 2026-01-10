@@ -14,7 +14,6 @@ $ProjectName  = $project.Name
 $modo = $projectModel.Mode
 
 Write-Host "Modo de ejecución: $modo"
-Write-Host "Proyecto: $ProjectName"
 
 # -------------------------
 # Orc Project Model

@@ -18,59 +18,40 @@ function Resolve-ProjectModel {
     )
 
 . "$OrcRoot\core\backend-runtime.ps1"
+. "$OrcRoot\core\database-model.ps1"
 
     # --- valores comunes ---
     $dbName = $ProjectName
     $dbUser = "postgres"
     $dbPass = "142857"
     $dbPort = 5432
+    
 
+    $databaseModel = New-DatabaseModel -Config @{
+        Name        = $dbName
+        Engine      = "postgres"
+        Host        = "postgres"
+        Port        = $dbPort
+        User        = $dbUser
+        Password    = $dbPass
+        NetworkName = ""
+    }
+    
     # --- runtime base (NO romper contrato actual) ---
     $projectModel = @{
         Mode    = $Mode
         Project = @{
             Name = $ProjectName
         }
-        Database = @{
-            Engine   = "django.db.backends.postgresql"
-            Name     = $dbName
-            User     = $dbUser
-            Password = $dbPass
-            Port     = $dbPort
-        }
+        Database = $databaseModel
         Liquibase = @{
         }
     }
     
-    switch ($Mode) {
-        
-        "local" {
-            # Django local
-            $projectModel.Database.Host = "localhost"
-            
-            # Liquibase (infra, dockerizada)
-            $projectModel.Liquibase = @{
-                Host           = "postgres"
-                ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
-                WorkDir        = Join-Path $OrcRoot ".orc/runtime/liquibase/$ProjectName"
-                WorkDirDocker = Join-Path $RepoRoot "docker/liquibase/changelog/projects/$ProjectName"
-            }
-        }
-        
-        "docker" {
-            # Django docker
-            $projectModel.Database.Host = "postgres"
-            
-            # Liquibase (mismo entorno de red)
-            $projectModel.Liquibase = @{
-                Host           = "postgres"
-                ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
-                WorkDir        = Join-Path $OrcRoot ".orc/runtime/liquibase/$ProjectName"
-                WorkDirDocker = Join-Path $RepoRoot "docker/liquibase/changelog/projects/$ProjectName"
-            }
-        }
+    $projectModel.Liquibase = @{
+        ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
     }
-
+  
     $project = Resolve-OrcProject `
         -RepoRoot $RepoRoot `
         -Args     @($ProjectName) `
@@ -80,8 +61,7 @@ function Resolve-ProjectModel {
 
     if ($project.BackendPath) {
         $projectModel.Backend = Resolve-OrcBackendRuntime `
-            -Project $project `
-            -Mode    $Mode
+            -Project $project
     }
 
     return $projectModel

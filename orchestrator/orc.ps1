@@ -74,6 +74,9 @@ $ctx = @{
     RepoRoot    = $RepoRoot
     OrcRoot     = $OrcRoot
     ProjectModel= $projectModel
+    Docker       = @{
+        NetworkName = "orc-$($projectModel.Project.Name)"
+    }
 }
 
 # --------------------------------------------------
