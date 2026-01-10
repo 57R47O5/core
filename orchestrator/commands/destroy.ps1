@@ -33,9 +33,7 @@ if ($confirmation -ne $db.Name) {
 }
 
 Remove-PostgresDatabase `
-    -ProjectModel $projectModel `
-    -NetworkName $Context.NetworkName
-
+    -Context $Context
 
 if (Test-Path $backendPath) {
     Write-Host "Eliminando backend..."

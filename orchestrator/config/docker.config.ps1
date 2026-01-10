@@ -4,8 +4,8 @@ function Get-OrcDockerConfig {
         $ctx
     )
 
-    $db           = $ctx.ProjectModel.Database
     $projectModel = $ctx.ProjectModel
+    $db           = $projectModel.Database
     $changeLog    = $projectModel.Liquibase.ChangeLogFile
 
     if (-not $changeLog) {
