@@ -6,11 +6,11 @@ function Resolve-DockerVolumes {
         [Parameter(Mandatory)]
         [hashtable]$Context
     )
-
-           
+                
     $args = @()
 
     foreach ($vol in $Volumes) {
+
         if (-not $vol.HostPath) {
             throw "Volume.HostPath no definido"
         }

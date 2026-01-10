@@ -43,7 +43,7 @@ function Assert-LiquibaseConfig {
         throw "Liquibase.Db no definido"
     }
 
-    foreach ($field in @("Host", "Port", "Name", "User", "Password")) {
+    foreach ($field in @("Port", "Name", "User", "Password")) {
         if (-not $db.$field) {
             throw "Liquibase.Db.$field no definido"
         }

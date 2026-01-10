@@ -16,14 +16,22 @@ function Get-LiquibaseConfig {
     $docker  = $ctx.OrcDockerConfig
     $db      = $project.Database
     $lb      = $docker.Liquibase
+    $plb     = $project.Liquibase
 
     if (-not $lb) {
         throw "Liquibase no definido en OrcDockerConfig"
     }
 
-    $volumes = $lb.Volumes
+    if (-not $plb) {
+        throw "ProjectModel.Liquibase no definido"
+    }
 
-    
+    if (-not $plb.Host) {
+        throw "ProjectModel.Liquibase.Host no definido"
+    }
+
+    # Normalizar volumes
+    $volumes = $lb.Volumes
     if ($volumes -is [hashtable]) {
         $volumes = @($volumes)
     }
@@ -36,23 +44,24 @@ function Get-LiquibaseConfig {
         Image = $lb.Image
 
         Workspace = $lb.Workspace
+        Volumes   = $volumes
 
-        Volumes = $lb.Volumes
+        ChangeLogFile = $plb.ChangeLogFile
+        Classpath     = $lb.Classpath
+        DefaultsFile  = $lb.DefaultsFile
 
-        Classpath    = $lb.Classpath
-        DefaultsFile = $lb.DefaultsFile
-
-        Runtime = @{
-            ProjectRoot = $project.Paths.RepoRoot
-            Liquibase   = $project.Liquibase
-        }
+        # 🔑 Host correcto para Liquibase
+        Host = $plb.Host
 
         Db = @{
-            Host     = $db.Host
             Port     = $db.Port
             Name     = $db.Name
             User     = $db.User
             Password = $db.Password
+        }
+
+        Runtime = @{
+            Liquibase = $plb
         }
     }
 }

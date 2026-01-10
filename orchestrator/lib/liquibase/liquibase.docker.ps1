@@ -12,6 +12,9 @@ function New-LiquibaseDockerArgs {
         "--network", $NetworkName
     )
 
+    $dockerLib = Join-Path $OrcRoot "lib\docker"
+    . "$dockerLib\docker.volumes.ps1"
+
     $args += Resolve-DockerVolumes `
         -Volumes $LiquibaseConfig.Volumes `
         -Context @{ LiquibaseRuntimeDocker = $LiquibaseConfig.RuntimeDocker }
