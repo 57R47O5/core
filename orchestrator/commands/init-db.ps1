@@ -16,18 +16,16 @@ if ($Args.Count -lt 1) {
 }
 
 $project = $Args[0]
-$mode    = "docker"
-
-if ($Args -contains "--local")  { $mode = "local"  }
-if ($Args -contains "--docker") { $mode = "docker" }
 
 Write-Host "🐗 Orc init-db"
 Write-Host "Proyecto: $project"
-Write-Host "Modo: $mode"
+Write-Host "Modo: $($projectModel.Mode)"
+Write-Host "DB Host: $($projectModel.Database.Host)"
 Write-Host ""
 
 . "$OrcRoot\core\context.ps1"
 . "$OrcRoot\core\project-model.ps1"
+. "$OrcRoot\lib\postgres-db.ps1"
 
 $backendPath = Join-Path $RepoRoot "backend\projects\$project"
 
@@ -54,6 +52,10 @@ try {
     Write-Error "❌ No se pudo preparar Liquibase runtime en $lbDir"
     exit 1
 }
+
+Ensure-PostgresDatabase `
+    -ProjectModel $projectModel `
+    -NetworkName  "orc_global"
 
 & "$OrcRoot\commands\liquibase.ps1" `
     -Context $Context `
