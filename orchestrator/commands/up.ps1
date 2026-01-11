@@ -6,123 +6,156 @@ param (
     [string[]]$Args
 )
 
-$projectModel  = $Context.ProjectModel
-$orcRoot  = $Context.OrcRoot
-$repoRoot = $Context.RepoRoot
-$project      = $projectModel.Project
-$ProjectName  = $project.Name
-$modo = $projectModel.Mode
+$projectModel = $Context.ProjectModel
+$projectName  = $projectModel.Project.Name
+$docker       = $Context.Docker
+$OrcRoot      = $Context.OrcRoot
 
-Write-Host "Modo de ejecución: $modo"
+Write-Host "Levantando proyecto '$projectName'"
 
-# -------------------------
-# Orc Project Model
-# -------------------------
-. "$OrcRoot\config\orc.config.ps1"
-. "$OrcRoot\core\context.ps1"
-. "$OrcRoot\core\env.ps1"
-. "$OrcRoot\core\project-model.ps1"
+. "$OrcRoot\config\docker.config.ps1"
+. "$OrcRoot\core\docker-container.ps1"
+. "$OrcRoot\config\liquibase.config.ps1"
+. "$OrcRoot\commands\docker.ps1"
+. "$OrcRoot\lib\postgres-db.ps1"
 
-# =========================
-# MODO DOCKER
-# =========================
-if ($projectModel.Mode -eq "docker") {
+# --------------------------------------------------
+# Obtener configuración Docker derivada
+# --------------------------------------------------
+$dockerConfig = Get-OrcDockerConfig -ctx $Context
+$networkName  = $docker.NetworkName
 
-    Write-Host "Levantando proyecto '$projectModel.Project' en modo DOCKER"
+# --------------------------------------------------
+# Network
+# --------------------------------------------------
+Write-Host "Asegurando network '$networkName'"
 
-    $composePath = Join-Path $RepoRoot "docker"
+docker network inspect $networkName *> $null
 
-    if (!(Test-Path $composePath)) {
-        Write-Host "No se encontró el directorio docker en $composePath"
-        exit 1
+if ($LASTEXITCODE -ne 0) {
+    Invoke-OrcDocker `
+        -Context $Context `
+        -Args @("network", "create", $networkName) | Out-Null
+}
+
+# --------------------------------------------------
+# Postgres
+# --------------------------------------------------
+Write-Host "Levantando Postgres"
+
+Ensure-DockerContainerAbsent `
+    -Name $dockerConfig.Postgres.Name
+
+$pgArgs = @(
+    "run", "-d",
+    "--name", $dockerConfig.Postgres.Name,
+    "--network", $networkName,
+    "-p", "$($dockerConfig.Postgres.Port):5432",
+    "-v", "$($dockerConfig.Postgres.Volume):/var/lib/postgresql/data"
+)
+
+foreach ($k in $dockerConfig.Postgres.Env.Keys) {
+    $pgArgs += @("-e", "$k=$($dockerConfig.Postgres.Env[$k])")
+}
+
+$pgArgs += $dockerConfig.Postgres.Image
+
+Invoke-OrcDocker `
+    -Context $Context `
+    -Args $pgArgs
+
+# --------------------------------------------------
+# Esperar Postgres
+# --------------------------------------------------
+Write-Host "Esperando Postgres..."
+
+$maxTries = 20
+for ($i = 0; $i -lt $maxTries; $i++) {
+
+    Invoke-OrcDocker `
+        -Context $Context `
+        -Args @( `
+            "exec",
+            $dockerConfig.Postgres.Name,
+            "pg_isready",
+            "-U", $projectModel.Database.User
+        ) *> $null
+
+    if ($LASTEXITCODE -eq 0) {
+        break
     }
 
-    Push-Location $composePath
-
-    docker compose up -d
-
-    Pop-Location
-
-    Write-Host ""
-    Write-Host "Proyecto '$projectModel.Project' levantado (dockerizado)"
-    exit 0
+    Start-Sleep -Seconds 2
 }
 
-# =========================
-# MODO LOCAL
-# =========================
-
-# ---- Backend ----
-$backendPath  = $projectModel.Project.BackendPath
-$FrontendPath = $projectModel.Project.FrontendPath
-$PythonExe    = $projectModel.Backend.PythonExe
-$venvActivate = $projectModel.Backend.ActivatePs
-$managePy     = $projectModel.Backend.ManagePy
-
-Write-Host $backendPath
-if (!(Test-Path $backendPath)) {
-    Write-Host "Backend del proyecto '$ProjectName' no existe"
-    exit 1
+if ($i -eq $maxTries) {
+    throw "Postgres no respondió"
 }
 
-if (!(Test-Path $venvActivate)) {
-    Write-Host "No se encontró el virtualenv en $venvActivate"
-    exit 1
+# --------------------------------------------------
+# Liquibase
+# --------------------------------------------------
+Write-Host "Ejecutando Liquibase"
+
+Ensure-PostgresDatabase `
+    -Context $Context
+
+& "$OrcRoot\commands\liquibase.ps1" `
+    -Context $Context `
+    -Args    @("update")
+# --------------------------------------------------
+# Build Django image 
+# --------------------------------------------------
+Write-Host "Construyendo imagen Django"
+
+Write-Host "Esto hay en dockerConfig"
+$dockerConfig | Format-List *
+
+Invoke-OrcDocker `
+    -Context $Context `
+    -Args @(
+        "build",
+        "-t", $dockerConfig.Django.Image,
+        "-f", $dockerConfig.Django.Dockerfile,
+        $dockerConfig.Django.BuildContext
+    )
+
+# --------------------------------------------------
+# Django
+# --------------------------------------------------
+Write-Host "Levantando Django"
+
+Ensure-DockerContainerAbsent `
+    -Name $dockerConfig.Django.Name
+
+$djangoArgs = @(
+    "run", "-d",
+    "--name", $dockerConfig.Django.Name,
+    "--network", $networkName,
+    "-p", $dockerConfig.Django.Ports[0],
+    "-e", "DJANGO_SETTINGS_MODULE=$projectName.settings",
+    "-e", "BACKEND_DIR=/app"
+)
+
+foreach ($k in $dockerConfig.Django.Env.Keys) {
+    $djangoArgs += @("-e", "$k=$($dockerConfig.Django.Env[$k])")
 }
 
-if (!(Test-Path $managePy)) {
-    Write-Host "manage.py no encontrado en $backendPath"
-    exit 1
+foreach ($v in $dockerConfig.Django.Volumes) {
+    $djangoArgs += @("-v", "$($v.HostPath):$($v.ContainerPath)")
 }
 
-# ---- Env ----
-New-OrcEnvFile `
-    -ctx $Context
+$djangoArgs += $dockerConfig.Django.Image
 
-# ---- Levantar backend ----
-Write-Host "Levantando backend ($ProjectName) en http://localhost:8000"
+Invoke-OrcDocker `
+    -Context $Context `
+    -Args $djangoArgs
 
-Start-Process powershell `
-    -ArgumentList @(
-        "-NoExit",
-        "-Command",
-        "cd `"$backendPath`";
-        Write-Host 'Activando venv...';
-        . `"$venvActivate`";
-        & `"$PythonExe`" manage.py runserver"
-    ) `
-    -WindowStyle Normal
-
-
-# ---- Frontend ----
-
-if (!(Test-Path $FrontendPath)) {
-    Write-Host "Frontend del proyecto '$ProjectName' no existe"
-    Write-Host "   Esperado en: $FrontendPath"
-    exit 1
-}
-
-$packageJson = Join-Path $FrontendPath "package.json"
-if (!(Test-Path $packageJson)) {
-    Write-Host "No se encontró package.json en $FrontendPath"
-    exit 1
-}
-
-Write-Host "Levantando frontend ($ProjectName) en http://localhost:3000"
-
-Start-Process powershell `
-    -ArgumentList @(
-        "-NoExit",
-        "-Command",
-        "cd `"$FrontendPath`";
-        Write-Host 'Ejecutando npm run dev...';
-        npm run dev"
-    ) `
-    -WindowStyle Normal
-
+# --------------------------------------------------
+# Done
+# --------------------------------------------------
 Write-Host ""
-Write-Host "Proyecto '$ProjectName' levantado (local)"
-Write-Host "   Backend : http://localhost:8000"
-Write-Host "   Frontend: http://localhost:3000"
+Write-Host "Proyecto '$projectName' levantado"
+Write-Host "Backend: http://localhost:$($projectModel.Backend.Port)"
 
 exit 0

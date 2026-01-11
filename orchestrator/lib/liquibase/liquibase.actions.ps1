@@ -50,11 +50,7 @@ function Invoke-LiquibaseUpdate {
 
     $db = $LiquibaseConfig.Db
 
-    if (-not $LiquibaseConfig.Host) {
-        throw "LiquibaseConfig.Host no definido"
-    }
-
-    $jdbcUrl = "jdbc:postgresql://$($LiquibaseConfig.Host):$($db.Port)/$($db.Name)"
+    $jdbcUrl = "jdbc:postgresql://$($db.Host):$($db.Port)/$($db.Name)"
 
     $cmd = @(
         "--url=$jdbcUrl",

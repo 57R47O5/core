@@ -67,7 +67,7 @@ Assert-LiquibaseConfig $cfg
 # --------------------------------------------------
 $dockerArgs = New-LiquibaseDockerArgs `
     -LiquibaseConfig $cfg `
-    -NetworkName     $OrcDockerConfig.GlobalNetwork
+    -NetworkName     $Context.Docker.NetworkName
 
 # --------------------------------------------------
 # Dispatch

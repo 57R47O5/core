@@ -13,10 +13,8 @@ function Get-OrcDockerConfig {
     }
 
     return @{
-        GlobalNetwork = "orc_global"
-
         Postgres = @{
-            Name   = "postgres"
+            Name   = $db.Host
             Image  = "postgres:16"
             Volume = "monorepo-pgdata"
             Port   = $db.Port
@@ -36,9 +34,10 @@ function Get-OrcDockerConfig {
         }
 
         Liquibase = @{
+            Name = "liquibase"
             Image = "liquibase/liquibase:5.0"
 
-            # 👈 RELATIVO A /workspace
+            # RELATIVO A /workspace
             ChangeLogFile = $changeLog
 
             Workspace = @{
@@ -58,6 +57,40 @@ function Get-OrcDockerConfig {
                     ContainerPath = "/liquibase/lib"
                 }
             )
+        }
+
+        Django = @{
+            Name = "django"
+            Image = "$($projectModel.Project.Name)-django"
+            BaseImage   = "python:3.12-slim"
+
+            Dockerfile  = "docker\Dockerfile.backend"
+            BuildContext = $Context.RepoRoot
+
+            Workdir = "/app"
+            Command = "python manage.py runserver 0.0.0.0:8000"
+
+            Env = @{
+                DB_ENGINE   = $db.Engine
+                DB_NAME     = $db.Name
+                DB_USER     = $db.User
+                DB_PASSWORD = $db.Password
+                DB_HOST     = $db.Host
+                DB_PORT     = $db.Port
+            }
+
+            Volumes = @(
+                @{
+                    HostPath      = $projectModel.Project.BackendPath
+                    ContainerPath = "/app"
+                }
+            )
+
+            Ports = @(
+                "8000:8000"
+            )
+
+            DependsOn = @("postgres")
         }
     }
 }

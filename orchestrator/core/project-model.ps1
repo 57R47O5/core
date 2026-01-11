@@ -17,7 +17,6 @@ function Resolve-ProjectModel {
         [bool]$ProjectRequired
     )
 
-. "$OrcRoot\core\backend-runtime.ps1"
 . "$OrcRoot\core\database-model.ps1"
 
     # --- valores comunes ---
@@ -29,8 +28,8 @@ function Resolve-ProjectModel {
 
     $databaseModel = New-DatabaseModel -Config @{
         Name        = $dbName
-        Engine      = "postgres"
-        Host        = "postgres"
+        Engine      = "django.db.backends.postgresql"
+        Host        = "$ProjectName-postgres"
         Port        = $dbPort
         User        = $dbUser
         Password    = $dbPass
@@ -49,7 +48,8 @@ function Resolve-ProjectModel {
     }
     
     $projectModel.Liquibase = @{
-        ChangeLogFile  = "changelog/generated/elecciones/master.yaml"
+        Host          = $databaseModel.Host
+        ChangeLogFile = "changelog/generated/elecciones/master.yaml"
     }
   
     $project = Resolve-OrcProject `
@@ -59,9 +59,10 @@ function Resolve-ProjectModel {
 
     $projectModel.Project = $project
 
-    if ($project.BackendPath) {
-        $projectModel.Backend = Resolve-OrcBackendRuntime `
-            -Project $project
+    $projectModel.Backend = @{
+        Type = "django"
+        Path = $backendPath
+        Port = 8000
     }
 
     return $projectModel

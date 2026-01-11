@@ -46,6 +46,7 @@ function Get-LiquibaseConfig {
             Name     = $db.Name
             User     = $db.User
             Password = $db.Password
+            Host     = $db.Host
         }
 
         Runtime = @{

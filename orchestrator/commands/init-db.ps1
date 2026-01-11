@@ -19,7 +19,6 @@ $project = $Args[0]
 
 Write-Host "🐗 Orc init-db"
 Write-Host "Proyecto: $project"
-Write-Host "Modo: $($projectModel.Mode)"
 Write-Host "DB Host: $($projectModel.Database.Host)"
 Write-Host ""
 
@@ -27,7 +26,7 @@ Write-Host ""
 . "$OrcRoot\core\project-model.ps1"
 . "$OrcRoot\lib\postgres-db.ps1"
 
-$backendPath = $projectModel.BackendPath
+$backendPath = $projectModel.Project.BackendPath
 
 if (-not (Test-Path $backendPath)) {
     Write-Error "❌ El proyecto '$project' no existe (backend no encontrado)"
@@ -43,18 +42,18 @@ Write-Host "🐗 Inicializando base de datos con Liquibase"
 Write-Host ""
 
 $lbDir = $projectModel.Liquibase.WorkDir
-
-Write-Host "Context: $Context"
+$projectModel | Format-List *
+Write-Host "Llegamos hasta aqui"
+Write-Host "libDir es $lbDir"
 
 try {
     New-Item -ItemType Directory -Force -Path $lbDir | Out-Null
 } catch {
-    Write-Error "❌ No se pudo preparar Liquibase runtime en $lbDir"
+    Write-Error "No se pudo preparar Liquibase runtime en $lbDir"
     exit 1
 }
 
-Ensure-PostgresDatabase `
-    -Context $Context
+Ensure-PostgresDatabase -Context $Context
 
 & "$OrcRoot\commands\liquibase.ps1" `
     -Context $Context `
