@@ -1,15 +1,27 @@
-param (
-    [Parameter(Mandatory)]
-    [hashtable]$Context,
+function Invoke-OrcDocker {
+    param (
+        [Parameter(Mandatory)]
+        [hashtable]$Context,
 
-    [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]]$Args
-)
+        [Parameter(Mandatory)]
+        [string[]]$Args
+    )
 
-Write-Host "[orc] docker $($Args -join ' ')"
+    Write-Host "[orc] docker $($Args -join ' ')"
 
-& docker @Args
+    # --------------------------------------------------
+    # Guardrail: docker run debe tener --name
+    # --------------------------------------------------
+    if ($Args.Count -gt 0 -and $Args[0] -eq "run") {
+        if ($Args -notcontains "--name") {
+            Write-Error "[orc] docker run sin --name está prohibido. El nombre del contenedor es obligatorio."
+            exit 1
+        }
+    }
 
-if ($LASTEXITCODE -ne 0) {
-    exit $LASTEXITCODE
+    & docker @Args
+
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
 }

@@ -58,7 +58,7 @@ function Ensure-PostgresDatabase {
     Write-Host "✅ Base de datos '$($db.Name)' creada correctamente"
 }
 
-function Ensure-PostgresDatabase {
+function Remove-PostgresDatabase {
     param (
         [Parameter(Mandatory)]
         [hashtable]$Context
@@ -84,7 +84,13 @@ function Ensure-PostgresDatabase {
         "SELECT 1 FROM pg_database WHERE datname='$($db.Name)'"
     )
 
-    $exists = (docker @checkCmd 2>$null).Trim()
+    $output = docker @checkCmd 2>$null
+
+    $exists = if ($null -eq $output) {
+        ""
+    } else {
+        $output.Trim()
+    }
 
     if ($exists -notmatch "1") {
         Write-Host "La base '$($db.Name)' no existe. Nada que destruir."

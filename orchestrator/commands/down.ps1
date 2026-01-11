@@ -6,38 +6,49 @@ param (
     [string[]]$Args
 )
 
-$projectModel  = $Context.ProjectModel
-$project  = $projectModel.Project
-$ProjectName  = $project.Name
+$projectModel = $Context.ProjectModel
+$projectName  = $projectModel.Project.Name
+$docker       = $Context.Docker
 
-Write-Host "Deteniendo proyecto '$ProjectName'"
+. "$OrcRoot\config\docker.config.ps1"
+. "$OrcRoot\config\liquibase.config.ps1"
 
-# ---- Backend ----
-Write-Host "Deteniendo backend (manage.py runserver)"
+Write-Host "Deteniendo proyecto '$projectName'"
 
-Get-CimInstance Win32_Process |
-    Where-Object {
-        $_.CommandLine -match "manage.py runserver"
-    } |
-    ForEach-Object {
-        Write-Host "  ✖ Matando PID $($_.ProcessId)"
-        Stop-Process -Id $_.ProcessId -Force
+$dockerConfig = Get-OrcDockerConfig -ctx $Context
+$networkName  = $docker.NetworkName
+
+# --------------------------------------------------
+# Contenedores a detener (orden inverso a up)
+# --------------------------------------------------
+$containers = @()
+
+if ($dockerConfig.Django) {
+    $containers += "$projectName-backend"
+}
+
+if ($dockerConfig.Postgres) {
+    $containers += $dockerConfig.Postgres.Name
+}
+
+foreach ($name in $containers) {
+    Write-Host "Deteniendo contenedor '$name'"
+
+    docker inspect $name *> $null
+    if ($LASTEXITCODE -eq 0) {
+        docker stop $name | Out-Null
+        docker rm $name   | Out-Null
+    } else {
+        Write-Host " No existe (ok)"
     }
+}
 
-# ---- Frontend ----
-Write-Host "Deteniendo frontend (npm / vite)"
-
-Get-CimInstance Win32_Process |
-    Where-Object {
-        $_.CommandLine -match "npm run dev" -or
-        $_.CommandLine -match "vite"
-    } |
-    ForEach-Object {
-        Write-Host "  ✖ Matando PID $($_.ProcessId)"
-        Stop-Process -Id $_.ProcessId -Force
-    }
+# --------------------------------------------------
+# Network (opcionalmente la dejamos)
+# --------------------------------------------------
+Write-Host "Network '$networkName' se mantiene (orc down no destruye infra)"
 
 Write-Host ""
-Write-Host "Proyecto '$ProjectName' detenido"
+Write-Host "Proyecto '$projectName' detenido"
 
 exit 0

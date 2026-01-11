@@ -207,10 +207,17 @@ from dotenv import load_dotenv
 # Paths
 # -------------------------------------------------------------------
 
-# backend/projects/{project_name}/{project_name}/settings.py
 BASE_DIR = Path(__file__).resolve().parent.parent
-BACKEND_DIR = BASE_DIR.parents[1]  # .../backend
+
+BACKEND_DIR = Path(
+    os.environ.get("BACKEND_DIR", BASE_DIR)
+).resolve()
+
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
 APPS_DIR = BACKEND_DIR / "apps"
+
 ENV_PATH = BASE_DIR / ".env"
 
 for p in (BACKEND_DIR, APPS_DIR):

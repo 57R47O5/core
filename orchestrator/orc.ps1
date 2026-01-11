@@ -82,11 +82,28 @@ $ctx = @{
 # --------------------------------------------------
 # Dispatch
 # --------------------------------------------------
+# 1) Intentar comando plano: commands/up.ps1
 $commandFile = Join-Path $OrcScriptRoot "commands\$command.ps1"
 
 if (-not (Test-Path $commandFile)) {
-    Write-Host "Comando no soportado: $command"
-    exit 1
+
+    # 2) Intentar comando jerárquico: commands/db/db-create.ps1
+    if ($command -like "*-*") {
+        $group = $command.Split('-')[0]
+        $groupedCommandFile = Join-Path $OrcScriptRoot "commands\$group\$command.ps1"
+
+        if (Test-Path $groupedCommandFile) {
+            $commandFile = $groupedCommandFile
+        }
+        else {
+            Write-Host "Comando no soportado: $command"
+            exit 1
+        }
+    }
+    else {
+        Write-Host "Comando no soportado: $command"
+        exit 1
+    }
 }
 
 & $commandFile `

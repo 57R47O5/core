@@ -1,0 +1,28 @@
+# VCS
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.env
+
+# Node
+node_modules/
+
+# IDEs
+.vscode/
+.idea/
+
+# Orco
+.orco/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
