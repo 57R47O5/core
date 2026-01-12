@@ -1,6 +1,5 @@
 import subprocess
 from pathlib import Path
-import secrets
 import argparse
 import shutil
 from typing import Union, Sequence
@@ -32,6 +31,7 @@ def run(cmd: Union[str, Sequence[str]], cwd=None, env=None, input_text=None, **k
     - Si cmd es str → se ejecuta vía shell
     - Si cmd es lista → ejecución directa (recomendado)
     """
+    print("dentro de run")
     print("→", cmd if isinstance(cmd, str) else " ".join(cmd))
 
     process = subprocess.Popen(
@@ -62,19 +62,7 @@ def parse_args():
 
     parser.add_argument("--backend", action="store_true")
     parser.add_argument("--frontend", action="store_true")
-
-    # Backend
-    parser.add_argument("--backend-port", type=int, default=8000)
-
-    # Frontend
-    parser.add_argument("--frontend-port", type=int, default=3000)
-
-    # Database
-    parser.add_argument("--db-host", required=True)
-    parser.add_argument("--db-port", required=True)
-    parser.add_argument("--db-name", required=True)
-    parser.add_argument("--db-user", required=True)
-    parser.add_argument("--db-password", required=True)
+   
 
     return parser.parse_args()
 
@@ -160,11 +148,11 @@ def create_django_project(project_name: str, project_dir: Path):
     """
     Inicializa el proyecto Django usando el Python del venv.
     """
-    python_exe = project_dir / ".venv" / "Scripts" / "python.exe"
+    python_exe = sys.executable
 
     run(
         [
-            str(python_exe),
+            python_exe,
             "-m",
             "django",
             "startproject",
@@ -462,6 +450,15 @@ def register_project_in_liquibase(project_name: str) -> None:
 # Frontend
 # ==============================
 
+def create_frontend_skeleton(project_name):
+    project_dir = FRONTEND_PROJECTS_DIR / project_name
+    project_dir.mkdir(parents=True, exist_ok=True)
+
+    if any(project_dir.iterdir()):
+        raise RuntimeError("El directorio frontend no está vacío")
+
+    return project_dir
+
 def create_frontend_project(project_name):
     project_dir = FRONTEND_PROJECTS_DIR / project_name
     project_dir.mkdir(parents=True, exist_ok=True)
@@ -523,16 +520,16 @@ def main():
     print(f"\n🚀 Creando proyecto '{project_name}'\n")
 
     if args.backend:
-        create_virtualenv(project_dir)
-        install_dependencies(project_dir)
+        # create_virtualenv(project_dir)
+        # install_dependencies(project_dir)
         create_django_project(args.project, project_dir)
         configure_settings(args.project, project_dir)
         configure_vscode(project_dir)
-        create_postgres_schema(args)
-        register_project_in_liquibase(args.project)
+        # create_postgres_schema(args)
+        # register_project_in_liquibase(args.project)
 
     if args.frontend:
-        create_frontend_project(args.project)
+        create_frontend_skeleton(args.project)
 
     print("\n🎉 Proyecto creado correctamente")
     print("📌 El schema será gestionado por Liquibase")

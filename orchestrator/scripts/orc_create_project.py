@@ -18,38 +18,30 @@ def main(project_name: str):
     with ORC_YAML.open("r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
-    backend = cfg.get("backend", {})
-    frontend = cfg.get("frontend", {})
-    db = backend.get("django", {}).get("database", {})
+    backend_cfg = cfg.get("backend", {})
+    frontend_cfg = cfg.get("frontend", {})
 
-    backend_port = backend.get("port", 8000)
-    frontend_port = frontend.get("port", 3000)
+    enable_backend = backend_cfg.get("enabled", True)
+    enable_frontend = frontend_cfg.get("enabled", True)
 
     cmd = [
         sys.executable,
         str(GENERATOR),
-
         "--project", project_name,
-
-        "--backend",
-        "--frontend",
-
-        "--backend-port", str(backend_port),
-        "--frontend-port", str(frontend_port),
-
-        "--db-host", str(db.get("host", "localhost")),
-        "--db-port", str(db.get("port", 5433)),
-        "--db-name", project_name,
-        "--db-user", str(db.get("user", "postgres")),
-        "--db-password", str(db.get("password", "")),
     ]
 
-    print("→ Ejecutando generador:")
+    if enable_backend:
+        cmd.append("--backend")
+
+    if enable_frontend:
+        cmd.append("--frontend")
+
+    print("→ Ejecutando generador (modo create):")
     print(" ".join(cmd))
 
     subprocess.run(cmd, check=True)
 
-    print("✅ Helper finalizó correctamente")
+    print("✅ Proyecto creado (no construido)")
 
 
 if __name__ == "__main__":
