@@ -11,6 +11,8 @@ $repoRoot = $Context.RepoRoot
 $project  = $projectModel.Project
 $ProjectName  = $project.Name
 
+$orcPython = "$RepoRoot\orchestrator\.venv\Scripts\python.exe"
+
 $conflicts = @()
 
 if ($project.BackendPath -and (Test-Path $project.BackendPath)) {
@@ -36,7 +38,7 @@ if (!(Test-Path $helper)) {
 Write-Host "🐗 Orc creando proyecto '$ProjectName' desde orc.yaml"
 Write-Host ""
 
-python $helper $ProjectName
+& $orcPython orchestrator/scripts/orc_create_project.py $ProjectName
 $exitCode = $LASTEXITCODE
 
 if ($exitCode -ne 0) {
