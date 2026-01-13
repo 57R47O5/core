@@ -49,6 +49,7 @@ function Resolve-ProjectModel {
     
     $projectModel.Liquibase = @{
         Host          = $databaseModel.Host
+        SearchPath    = "C:\Users\Seraf\proyectos\liquibase"
         ChangeLogFile = "changelog/generated/elecciones/master.yaml"
     }
   
