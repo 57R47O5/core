@@ -11,6 +11,7 @@ $project  = $projectModel.Project
 $projectName = $project.Name
 $backendPath = $project.BackendPath
 $FrontendPath = $project.FrontendPath
+$OrcRoot = $Context.OrcRoot
 
 . "$OrcRoot\lib\postgres-db.ps1"
 
@@ -32,7 +33,7 @@ if ($confirmation -ne $db.Name) {
     exit 1
 }
 
-# Remove-PostgresDatabase -Context $Context
+Remove-PostgresDatabase -Context $Context
 
 if (Test-Path $backendPath) {
     Write-Host "Eliminando backend..."

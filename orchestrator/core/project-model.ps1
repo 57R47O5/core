@@ -29,7 +29,7 @@ function Resolve-ProjectModel {
     $databaseModel = New-DatabaseModel -Config @{
         Name        = $dbName
         Engine      = "django.db.backends.postgresql"
-        Host        = "$ProjectName-postgres"
+        Host        = "localhost"
         Port        = $dbPort
         User        = $dbUser
         Password    = $dbPass

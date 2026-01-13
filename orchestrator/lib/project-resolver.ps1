@@ -68,6 +68,7 @@ function Resolve-OrcProject {
         }
     }
     
-
+    Write-Host "Dentro de project-resolver.ps1"
+    Write-Host $result.BackendPath
     return $result
 }

@@ -64,59 +64,58 @@ function Remove-PostgresDatabase {
         [hashtable]$Context
     )
 
-    $ProjectModel = $Context.ProjectModel
-    $db = $ProjectModel.Database
-    $NetworkName = $Context.Docker.NetworkName
+    $projectModel = $Context.ProjectModel
+    $db           = $projectModel.Database
 
-    Write-Host "Verificando existencia de la base '$($db.Name)'..."
-
-    $checkCmd = @(
-        "run", "--rm",
-        "--network", $NetworkName,
-        "-e", "PGPASSWORD=$($db.Password)",
-        "postgres:16",
-        "psql",
-        "-h", $db.Host,
-        "-U", $db.User,
-        "-d", "postgres",
-        "-t",
-        "-c",
-        "SELECT 1 FROM pg_database WHERE datname='$($db.Name)'"
-    )
-
-    $output = docker @checkCmd 2>$null
-
-    $exists = if ($null -eq $output) {
-        ""
-    } else {
-        $output.Trim()
+    if (-not $db) {
+        throw "El proyecto no define configuración de base de datos"
     }
 
-    if ($exists -notmatch "1") {
-        Write-Host "La base '$($db.Name)' no existe. Nada que destruir."
+    $psql = Resolve-Psql
+
+    $env:PGPASSWORD = $db.Password
+
+    $commonArgs = @(
+        "-h", $db.Host
+        "-p", ($db.Port ?? 5432)
+        "-U", $db.User
+        "-d", "postgres"
+        "-v", "ON_ERROR_STOP=1"
+        "-t"
+        "-c"
+    )
+
+    # 1. ¿Existe la base?
+    $checkSql = "SELECT 1 FROM pg_database WHERE datname = '$($db.Name)';"
+
+    $check = & $psql @commonArgs $checkSql 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "Error verificando la base de datos:`n$check"
+    }
+
+    if ($check.Trim() -ne "1") {
         return
     }
 
-    Write-Host "Eliminando base de datos '$($db.Name)'..."
+    # 2. Cerrar conexiones activas
+    $terminateSql = @"
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE datname = '$($db.Name)'
+  AND pid <> pg_backend_pid();
+"@
 
-    $dropCmd = @(
-        "run", "--rm",
-        "--network", $NetworkName,
-        "-e", "PGPASSWORD=$($db.Password)",
-        "postgres:16",
-        "psql",
-        "-h", $db.Host,
-        "-U", $db.User,
-        "-d", "postgres",
-        "-c",
-        "DROP DATABASE $($db.Name);"
-    )
-
-    & docker @dropCmd
-
+    & $psql @commonArgs $terminateSql | Out-Null
     if ($LASTEXITCODE -ne 0) {
-        throw "No se pudo eliminar la base de datos '$($db.Name)'"
+        throw "No se pudieron cerrar conexiones activas"
     }
 
-    Write-Host "Base de datos '$($db.Name)' eliminada correctamente"
+    # 3. Eliminar base
+    $dropSql = "DROP DATABASE $($db.Name);"
+
+    $drop = & $psql @commonArgs $dropSql 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "No se pudo eliminar la base '$($db.Name)':`n$drop"
+    }
 }
+

@@ -108,10 +108,9 @@ def create_virtualenv(project_dir: Path):
         check=True,
     )
 
-def install_dependencies(project_dir: Path):
+def copy_requirements(project_dir: Path):
     """
-    Copia el requirements.txt base al proyecto e instala dependencias
-    usando el Python del virtualenv.
+    Copia el requirements.txt base al proyecto.
     """
     python_exe = project_dir / ".venv" / "Scripts" / "python.exe"
 
@@ -126,20 +125,7 @@ def install_dependencies(project_dir: Path):
     # Copiar requirements.txt al proyecto (sobrescribe si existe)
     shutil.copy(base_requirements, target_requirements)
 
-    # Instalar dependencias
-    run(
-        [
-            str(python_exe),
-            "-m",
-            "pip",
-            "install",
-            "-r",
-            "requirements.txt",
-        ],
-        cwd=project_dir,
-        check=True,
-    )
-
+    
 # ==============================
 # Django
 # ==============================
@@ -521,7 +507,7 @@ def main():
 
     if args.backend:
         # create_virtualenv(project_dir)
-        # install_dependencies(project_dir)
+        copy_requirements(project_dir)
         create_django_project(args.project, project_dir)
         configure_settings(args.project, project_dir)
         configure_vscode(project_dir)
