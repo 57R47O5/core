@@ -41,11 +41,6 @@ if (-not $projectModel.Liquibase) {
 Write-Host "🐗 Inicializando base de datos con Liquibase"
 Write-Host ""
 
-$lbDir = $projectModel.Liquibase.WorkDir
-$projectModel | Format-List *
-Write-Host "Llegamos hasta aqui"
-Write-Host "libDir es $lbDir"
-
 try {
     New-Item -ItemType Directory -Force -Path $lbDir | Out-Null
 } catch {
