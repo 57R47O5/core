@@ -38,37 +38,38 @@ $backendPath = $projectModel.Project.BackendPath
 $frontendPath = $projectModel.Project.FrontendPath
 
 if ($backendPath -and (Test-Path $backendPath)) {
+    
+Write-Host "Preparando backend ($backendPath)"
 
-    Write-Host "Preparando backend ($backendPath)"
+$venvPath = Join-Path $backendPath ".venv"
+Write-Host "El entorno virtual está en $venvPath"
 
-    $venvPath = Join-Path $backendPath ".venv"
-    Write-Host "El entorno virtual está en $venvPath"
-
-    if (!(Test-Path $venvPath)) {
-        Write-Host "Creando entorno virtual"
-        & python3.14 -m venv $venvPath
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "Error creando entorno virtual"
-            exit 1
-        }
-    } else {
-        Write-Host "Entorno virtual ya existe"
+if (!(Test-Path $venvPath)) {
+    Write-Host "Creando entorno virtual"
+    & python3.14 -m venv $venvPath
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Error creando entorno virtual"
+        exit 1
     }
-
-    $pip = Join-Path $venvPath "Scripts\pip.exe"
-    $requirements = Join-Path $backendPath "requirements.txt"
-
-    if (Test-Path $requirements) {
-        Write-Host "Instalando dependencias Python"
-        & $pip install -r $requirements
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "Error instalando dependencias Python"
-            exit 1
-        }
-    } else {
-        Write-Host "No se encontró requirements.txt"
-    }
+} else {
+    Write-Host "Entorno virtual ya existe"
 }
+
+$pip = Join-Path $venvPath "Scripts\pip.exe"
+$requirements = Join-Path $backendPath "requirements.txt"
+
+if (Test-Path $requirements) {
+    Write-Host "Instalando dependencias Python"
+    & $pip install -r $requirements
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Error instalando dependencias Python"
+        exit 1
+    }
+} else {
+    Write-Host "No se encontró requirements.txt"
+}
+}
+
 
 # ------------------------------------------------------------
 # Frontend (build)
@@ -76,50 +77,14 @@ if ($backendPath -and (Test-Path $backendPath)) {
 
 if ($frontendPath -and (Test-Path $frontendPath)) {
 
-    Write-Host "Construyendo frontend ($frontendPath)"
+    Write-Host "Inicializando frontend (Python)"
 
-    Push-Location $frontendPath
-
-    $hasPackageJson = Test-Path "package.json"
-
-    if (-not $hasPackageJson) {
-
-        Write-Host "Inicializando frontend con Vite (React)"
-
-        $env:CI = "true"
-
-        npx.cmd create-vite . --template react --yes
-        if ($LASTEXITCODE -ne 0) {
-            Pop-Location
-            throw "Error creando proyecto Vite"
-        }
-
-        npm.cmd install
-        if ($LASTEXITCODE -ne 0) {
-            Pop-Location
-            throw "Error ejecutando npm install"
-        }
-
-        Patch-ViteConfig -ProjectDir $frontendPath
-
+    & python orchestrator\scripts\instalador_frontend.py $projectName
+    if ($LASTEXITCODE -ne 0) {
+        throw "Error creando frontend"
     }
-    else {
-
-        Write-Host "Frontend ya inicializado - instalando dependencias"
-
-        npm.cmd install
-        if ($LASTEXITCODE -ne 0) {
-            Pop-Location
-            throw "Error ejecutando npm install"
-        }
-    }
-
-    Pop-Location
 }
-else {
-    Write-Host "Frontend no configurado para este proyecto"
-}
-
+    
 
 # ------------------------------------------------------------
 # Fin
