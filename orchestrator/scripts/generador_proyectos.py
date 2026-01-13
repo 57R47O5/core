@@ -445,25 +445,6 @@ def create_frontend_skeleton(project_name):
 
     return project_dir
 
-def create_frontend_project(project_name):
-    project_dir = FRONTEND_PROJECTS_DIR / project_name
-    project_dir.mkdir(parents=True, exist_ok=True)
-
-    if any(project_dir.iterdir()):
-        raise RuntimeError("El directorio frontend no está vacío")
-
-    env = os.environ.copy()
-    env["CI"] = "true"
-
-    run(
-    ["npx.cmd", "create-vite", ".", "--template", "react"],
-    cwd=project_dir, env=env,
-    )
-    run(["npm.cmd", "install"], cwd=project_dir, env=env)
-
-    patch_vite_config(project_dir)
-
-    return project_dir
 
 def patch_vite_config(project_dir):
     vite_config = project_dir / "vite.config.js"
