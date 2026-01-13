@@ -21,6 +21,15 @@ if (!(Test-Path $orcPython)) {
 Write-Host "Orc build '$ProjectName'"
 Write-Host ""
 
+
+
+# ------------------------------------------------------------
+# Db
+# ------------------------------------------------------------
+
+. "$OrcRoot\core\ensure-postgres-database.ps1"
+Ensure-PostgresDatabase -Context $Context
+
 # ------------------------------------------------------------
 # Backend (Django)
 # ------------------------------------------------------------
@@ -62,31 +71,55 @@ if ($backendPath -and (Test-Path $backendPath)) {
 }
 
 # ------------------------------------------------------------
-# Frontend
+# Frontend (build)
 # ------------------------------------------------------------
 
 if ($frontendPath -and (Test-Path $frontendPath)) {
 
-    Write-Host "Preparando frontend ($($project.FrontendPath))"
+    Write-Host "Construyendo frontend ($frontendPath)"
 
     Push-Location $frontendPath
-    npm install
-    $exitCode = $LASTEXITCODE
-    Pop-Location
 
-    if ($exitCode -ne 0) {
-        Write-Host "Error instalando dependencias Node"
-        exit 1
+    $hasPackageJson = Test-Path "package.json"
+
+    if (-not $hasPackageJson) {
+
+        Write-Host "Inicializando frontend con Vite (React)"
+
+        $env:CI = "true"
+
+        npx.cmd create-vite . --template react --yes
+        if ($LASTEXITCODE -ne 0) {
+            Pop-Location
+            throw "Error creando proyecto Vite"
+        }
+
+        npm.cmd install
+        if ($LASTEXITCODE -ne 0) {
+            Pop-Location
+            throw "Error ejecutando npm install"
+        }
+
+        Patch-ViteConfig -ProjectDir $frontendPath
+
     }
+    else {
+
+        Write-Host "Frontend ya inicializado - instalando dependencias"
+
+        npm.cmd install
+        if ($LASTEXITCODE -ne 0) {
+            Pop-Location
+            throw "Error ejecutando npm install"
+        }
+    }
+
+    Pop-Location
+}
+else {
+    Write-Host "Frontend no configurado para este proyecto"
 }
 
-
-# ------------------------------------------------------------
-# Db
-# ------------------------------------------------------------
-
-. "$OrcRoot\core\ensure-postgres-database.ps1"
-Ensure-PostgresDatabase -Context $Context
 
 # ------------------------------------------------------------
 # Fin

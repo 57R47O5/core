@@ -8,6 +8,8 @@ function New-OrcEnvFile {
     $db = $projectModel.Database
     $project  = $projectModel.Project
     $envPath = Join-Path $project.BackendPath ".env"
+    $projectPath = Split-Path $project.BackendPath -Parent 
+    $backendPath = Split-Path $projectPath -Parent 
 
     if (-not $projectModel.Database) {
         throw "projectModel.Database no está definido en el contexto"
@@ -34,6 +36,7 @@ function New-OrcEnvFile {
 
         "CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000",
         "CSRF_TRUSTED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000"
+        "BACKEND_DIR=$backendPath"
     )
 
     $env | Set-Content -Path $envPath -Encoding UTF8

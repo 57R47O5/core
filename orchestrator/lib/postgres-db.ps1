@@ -1,63 +1,3 @@
-function Ensure-PostgresDatabase {
-    param (
-        [Parameter(Mandatory)]
-        [hashtable]$Context
-    )
-
-    $ProjectModel = $Context.ProjectModel
-    $db = $ProjectModel.Database
-    $NetworkName = $Context.Docker.NetworkName
-
-    Write-Host "🐘 Verificando base de datos '$($db.Name)'..."
-    $pgHost = if ($db.Host -eq "localhost") { "postgres" } else { $db.Host }
-
-    $checkCmd = @(
-        "run", "--rm",
-        "--network", $NetworkName,
-        "-e", "PGPASSWORD=$($db.Password)",
-        "postgres:16",
-        "psql",
-        "-h", $pgHost,
-        "-U", $db.User,
-        "-d", "postgres",
-        "-t",
-        "-c",
-        "SELECT 1 FROM pg_database WHERE datname='$($db.Name)'"
-    )
-
-    $exists = (docker @checkCmd 2>$null).Trim()
-
-    Write-Host "checkCmd es $($checkCmd -join ' ')"
-    Write-Host "exists es '$exists'"
-
-    if ($exists -match "1") {
-        Write-Host "✅ La base '$($db.Name)' ya existe"
-        return
-    }
-
-    Write-Host "⚠️  La base no existe. Creándola..."
-
-    $createCmd = @(
-        "run", "--rm",
-        "--network", $NetworkName,
-        "-e", "PGPASSWORD=$($db.Password)",
-        "postgres:16",
-        "psql",
-        "-h", $pgHost,
-        "-U", $db.User,
-        "-c",
-        "CREATE DATABASE $($db.Name);"
-    )
-
-    & docker @createCmd
-
-    if ($LASTEXITCODE -ne 0) {
-        throw "❌ No se pudo crear la base de datos '$($db.Name)'"
-    }
-
-    Write-Host "✅ Base de datos '$($db.Name)' creada correctamente"
-}
-
 function Remove-PostgresDatabase {
     param (
         [Parameter(Mandatory)]
@@ -77,7 +17,7 @@ function Remove-PostgresDatabase {
 
     $commonArgs = @(
         "-h", $db.Host
-        "-p", ($db.Port ?? 5432)
+        "-p", ($db.Port)
         "-U", $db.User
         "-d", "postgres"
         "-v", "ON_ERROR_STOP=1"
@@ -113,9 +53,29 @@ WHERE datname = '$($db.Name)'
     # 3. Eliminar base
     $dropSql = "DROP DATABASE $($db.Name);"
 
+    
     $drop = & $psql @commonArgs $dropSql 2>&1
     if ($LASTEXITCODE -ne 0) {
         throw "No se pudo eliminar la base '$($db.Name)':`n$drop"
     }
+    Write-Host "Base de datos eliminada"
 }
 
+function Resolve-Psql {
+    $candidates = @(
+        "C:\Program Files\PostgreSQL\*\bin\psql.exe",
+        "C:\Program Files (x86)\PostgreSQL\*\bin\psql.exe"
+    )
+
+    foreach ($pattern in $candidates) {
+        $match = Get-ChildItem $pattern -ErrorAction SilentlyContinue |
+                 Sort-Object FullName -Descending |
+                 Select-Object -First 1
+
+        if ($match) {
+            return $match.FullName
+        }
+    }
+
+    throw "psql.exe no encontrado. Instalá PostgreSQL o agregá psql al PATH."
+}

@@ -29,6 +29,7 @@ if ($conflicts.Count -gt 0) {
 }
 
 $helper = Join-Path $repoRoot "orchestrator\scripts\orc_create_project.py"
+Write-Host "El helper es $helper"
 
 if (!(Test-Path $helper)) {
     Write-Host "❌ No se encontró el helper $helper"
@@ -38,7 +39,7 @@ if (!(Test-Path $helper)) {
 Write-Host "🐗 Orc creando proyecto '$ProjectName' desde orc.yaml"
 Write-Host ""
 
-& $orcPython orchestrator/scripts/orc_create_project.py $ProjectName
+& $orcPython $helper $ProjectName
 $exitCode = $LASTEXITCODE
 
 if ($exitCode -ne 0) {
