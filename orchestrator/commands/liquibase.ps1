@@ -30,44 +30,13 @@ Write-Host "  Action:  $action"
 Write-Host ""
 
 # --------------------------------------------------
-# Docker config (derivada del projectModel)
-# --------------------------------------------------
-. "$OrcRoot\config\docker.config.ps1"
-. "$OrcRoot\config\liquibase.config.ps1"
-
-$OrcDockerConfig = Get-OrcDockerConfig -ctx @{
-    ProjectModel = $projectModel
-}
-
-if (-not $OrcDockerConfig) {
-    throw "[orc] OrcDockerConfig no pudo construirse"
-}
-
-# --------------------------------------------------
 # Liquibase modules
 # --------------------------------------------------
 $liqRoot = Join-Path $OrcRoot "lib\liquibase"
 
-. "$liqRoot\liquibase.docker.ps1"
 . "$liqRoot\liquibase.actions.ps1"
 . "$liqRoot\liquibase.validate.ps1"
 
-# --------------------------------------------------
-# Liquibase config
-# --------------------------------------------------
-$cfg = Get-LiquibaseConfig -ctx @{
-    ProjectModel    = $projectModel
-    OrcDockerConfig = $OrcDockerConfig
-}
-
-Assert-LiquibaseConfig $cfg
-
-# --------------------------------------------------
-# Docker args
-# --------------------------------------------------
-$dockerArgs = New-LiquibaseDockerArgs `
-    -LiquibaseConfig $cfg `
-    -NetworkName     $Context.Docker.NetworkName
 
 # --------------------------------------------------
 # Dispatch
@@ -76,26 +45,22 @@ switch ($action) {
 
     "version" {
         Invoke-LiquibaseVersion `
-            -DockerArgs $dockerArgs `
-            -LiquibaseConfig $cfg
+            -Context $Context
     }
 
     "validate" {
         Invoke-LiquibaseValidate `
-            -DockerArgs $dockerArgs `
-            -LiquibaseConfig $cfg
+            -Context $Context
     }
 
     "status" {
         Invoke-LiquibaseStatus `
-            -DockerArgs $dockerArgs `
-            -LiquibaseConfig $cfg
+            -Context $Context
     }
 
     "update" {
         Invoke-LiquibaseUpdate `
-            -DockerArgs $dockerArgs `
-            -LiquibaseConfig $cfg
+            -Context $Context
     }
 
     default {
