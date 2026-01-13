@@ -11,9 +11,7 @@ $project  = $projectModel.Project
 $projectName = $project.Name
 $backendPath = $project.BackendPath
 $FrontendPath = $project.FrontendPath
-$OrcRoot = $Context.OrcRoot
 
-. "$OrcRoot\lib\postgres-db.ps1"
 
 Write-Host "Destruyendo proyecto '$projectName'"
 
@@ -33,6 +31,11 @@ if ($confirmation -ne $db.Name) {
     exit 1
 }
 
+$OrcRoot = $Context.OrcRoot
+. "$OrcRoot\lib\postgres-db.ps1"
+if (-not (Get-Command Remove-PostgresDatabase -ErrorAction SilentlyContinue)) {
+    throw "Remove-PostgresDatabase NO fue cargada (postgres-db.ps1)"
+}
 Remove-PostgresDatabase -Context $Context
 
 if (Test-Path $backendPath) {

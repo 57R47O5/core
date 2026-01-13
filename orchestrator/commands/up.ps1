@@ -14,8 +14,40 @@ $backendPath = $projectModel.Project.BackendPath
 $frontendPath = $projectModel.Project.FrontendPath
 
 
-Write-Host "🐗 Levantando proyecto '$projectName'"
+Write-Host "Levantando proyecto '$projectName'"
 Write-Host ""
+# ==================================================
+# Frontend
+# ==================================================
+if ($frontendPath -and (Test-Path $frontendPath)) {
+
+    $nodeModules = Join-Path $frontendPath "node_modules"
+
+    if (!(Test-Path $nodeModules)) {
+        Write-Host "Frontend no construido (node_modules inexistente)"
+        Write-Host "   Ejecutá: orc build $projectName"
+        exit 1
+    }
+
+    Write-Host "Levantando frontend"
+
+    $npmCmd = "npm.cmd"
+
+    Push-Location $frontendPath
+
+    Start-Process `
+    -FilePath "powershell.exe" `
+    -ArgumentList @(
+        "-NoExit",
+        "-Command",
+        "cd '$frontendPath'; npm run dev"
+    )
+
+    Pop-Location
+}
+else {
+    Write-Host "Frontend no configurado para este proyecto"
+}
 
 # ==================================================
 # Backend (Django)
@@ -23,11 +55,14 @@ Write-Host ""
 
 if ($backendPath -and (Test-Path $backendPath)) {
 
-    $venvPath    = Join-Path $backendPath ".env"
+    $venvPath    = Join-Path $backendPath ".venv"
     $pythonExe   = Join-Path $venvPath "Scripts\python.exe"
 
+    . "$OrcRoot\core\env.ps1" 
+    New-OrcEnvFile -ctx $Context
+
     if (!(Test-Path $pythonExe)) {
-        Write-Host "❌ Backend no construido (.env inexistente)"
+        Write-Host "❌ Backend no construido (.venv inexistente)"
         Write-Host "   Ejecutá: orc build $projectName"
         exit 1
     }
@@ -37,48 +72,21 @@ if ($backendPath -and (Test-Path $backendPath)) {
     Push-Location $backendPath
 
     Start-Process `
-        -FilePath $pythonExe `
-        -ArgumentList "manage.py runserver 0.0.0.0:$($projectModel.Backend.Port)" `
-        -NoNewWindow
+    -FilePath "powershell.exe" `
+    -ArgumentList @(
+        "-NoExit",
+        "-Command",
+        "& `"$pythonExe`" manage.py runserver 0.0.0.0:$($projectModel.Backend.Port)"
+    ) `
+    -WindowStyle Normal
 
     Pop-Location
 
-
-    . "$OrcRoot\core\env.ps1" 
-    New-OrcEnvFile -ctx $Context
 }
 else {
-    Write-Host "ℹ️  Backend no configurado para este proyecto"
+    Write-Host "Backend no configurado para este proyecto"
 }
 
-# ==================================================
-# Frontend
-# ==================================================
-
-if ($frontendPath -and (Test-Path $frontendPath)) {
-
-    $nodeModules = Join-Path $frontendPath "node_modules"
-
-    if (!(Test-Path $nodeModules)) {
-        Write-Host "❌ Frontend no construido (node_modules inexistente)"
-        Write-Host "   Ejecutá: orc build $projectName"
-        exit 1
-    }
-
-    Write-Host "⚛️  Levantando frontend"
-
-    Push-Location $frontendPath
-
-    Start-Process `
-        -FilePath "npm" `
-        -ArgumentList "run dev" `
-        -NoNewWindow
-
-    Pop-Location
-}
-else {
-    Write-Host "ℹ️  Frontend no configurado para este proyecto"
-}
 
 # ==================================================
 # Done
