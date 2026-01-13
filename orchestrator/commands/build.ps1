@@ -27,7 +27,7 @@ Write-Host ""
 # Db
 # ------------------------------------------------------------
 
-. "$OrcRoot\core\ensure-postgres-database.ps1"
+. "$OrcRoot\lib\postgres-db.ps1"
 Ensure-PostgresDatabase -Context $Context
 
 # ------------------------------------------------------------
