@@ -17,7 +17,7 @@ function Invoke-LiquibaseUpdate {
     & docker @($DockerArgs + $cmd)
 }
 
-function Invoke-LiquibaseUpdate {
+function Invoke-LiquibaseValidate {
     param (
         [Parameter(Mandatory)]
         [hashtable]$Context
@@ -27,6 +27,7 @@ function Invoke-LiquibaseUpdate {
 
     $cmd = @(
         "--defaultsFile=$($LiquibaseConfig.Defaults)",
+        "--searchPath=$($LiquibaseConfig.SearchPath)",
         "--changeLogFile=$($LiquibaseConfig.ChangeLogFile)",
         "validate"
     )
@@ -48,6 +49,7 @@ function Invoke-LiquibaseUpdate {
         "--url=$jdbcUrl"
         "--username=$($db.User)"
         "--password=$($db.Password)"
+        "--searchPath=$($Context.ProjectModel.Liquibase.SearchPath)",
         "--changeLogFile=$($Context.ProjectModel.Liquibase.ChangeLogFile)"
         "update"
     )
