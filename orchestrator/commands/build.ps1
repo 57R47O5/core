@@ -84,7 +84,24 @@ if ($frontendPath -and (Test-Path $frontendPath)) {
         throw "Error creando frontend"
     }
 }
-    
+ 
+# --------------------------------------------------
+# Liquibase (Fase 1 – local)
+# --------------------------------------------------
+
+Write-Host ""
+Write-Host "[orc] Aplicando migraciones Liquibase"
+
+$liquibaseCmd = Join-Path $Context.OrcRoot "commands\liquibase.ps1"
+
+& $liquibaseCmd `
+    -Context $Context `
+    -Args @("update")
+
+if ($LASTEXITCODE -ne 0) {
+    throw "[orc] Error aplicando migraciones Liquibase"
+}
+
 
 # ------------------------------------------------------------
 # Fin

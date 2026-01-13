@@ -1,11 +1,10 @@
-function Invoke-LiquibaseVersion {
+function Invoke-LiquibaseUpdate {
     param (
         [Parameter(Mandatory)]
-        $DockerArgs,
-
-        [Parameter(Mandatory)]
-        $LiquibaseConfig
+        [hashtable]$Context
     )
+
+    $db = $Context.ProjectModel.Database
 
     $cmd = @(
         "--defaultsFile=$($LiquibaseConfig.Defaults)",
@@ -18,14 +17,13 @@ function Invoke-LiquibaseVersion {
     & docker @($DockerArgs + $cmd)
 }
 
-function Invoke-LiquibaseValidate {
+function Invoke-LiquibaseUpdate {
     param (
         [Parameter(Mandatory)]
-        $DockerArgs,
-
-        [Parameter(Mandatory)]
-        $LiquibaseConfig
+        [hashtable]$Context
     )
+
+    $db = $Context.ProjectModel.Database
 
     $cmd = @(
         "--defaultsFile=$($LiquibaseConfig.Defaults)",
@@ -34,35 +32,30 @@ function Invoke-LiquibaseValidate {
     )
 
     Write-Host "[orc] liquibase validate"
-    Write-Host "[DEBUG] docker $($DockerArgs + $cmd -join ' ')"
-
-    & docker @($DockerArgs + $cmd)
 }
 
 function Invoke-LiquibaseUpdate {
     param (
         [Parameter(Mandatory)]
-        $DockerArgs,
-
-        [Parameter(Mandatory)]
-        $LiquibaseConfig
+        [hashtable]$Context
     )
 
-    $db = $LiquibaseConfig.Db
+    $db = $Context.ProjectModel.Database
 
     $jdbcUrl = "jdbc:postgresql://$($db.Host):$($db.Port)/$($db.Name)"
 
     $cmd = @(
-        "--url=$jdbcUrl",
-        "--username=$($db.User)",
-        "--password=$($db.Password)",
-        "--changeLogFile=$($LiquibaseConfig.ChangeLogFile)",
+        "--url=$jdbcUrl"
+        "--username=$($db.User)"
+        "--password=$($db.Password)"
+        "--changeLogFile=$($Context.ProjectModel.Liquibase.ChangeLogFile)"
         "update"
     )
 
     Write-Host "[orc] liquibase update"
-    Write-Host "[DEBUG] docker $($DockerArgs + $cmd -join ' ')"
+    Write-Host "[DEBUG] liquibase $($cmd -join ' ')"
 
-    & docker @($DockerArgs + $cmd)
+    & liquibase @cmd
 }
+
 
