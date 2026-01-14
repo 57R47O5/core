@@ -13,6 +13,7 @@ $repoRoot     = $Context.RepoRoot
 $projectModel = $Context.ProjectModel
 $project      = $projectModel.Project
 $ProjectName  = $project.Name
+$OrcRoot      = $Context.OrcRoot
 
 $orcPython = Join-Path $repoRoot "orchestrator\.venv\Scripts\python.exe"
 
@@ -23,8 +24,6 @@ if (!(Test-Path $orcPython)) {
 
 Write-Host "Orc build '$ProjectName'"
 Write-Host ""
-
-
 
 # ------------------------------------------------------------
 # Db
@@ -74,19 +73,21 @@ if (Test-Path $requirements) {
 }
 
 
-
 # ------------------------------------------------------------
 # Frontend (build)
 # ------------------------------------------------------------
 
 if ($frontendPath -and (Test-Path $frontendPath)) {
     
-Write-Host "Inicializando frontend (Python)"
+    Write-Host "Inicializando frontend (Python)"
 
-& python orchestrator\scripts\instalador_frontend.py $projectName
-if ($LASTEXITCODE -ne 0) {
-    throw "Error creando frontend"
-}
+    & python orchestrator\scripts\instalador_frontend.py $projectName
+    if ($LASTEXITCODE -ne 0) {
+        throw "Error creando frontend"
+    }
+
+    . "$OrcScriptRoot\orchestrator\scripts\Initialize-FrontendApps.ps1"
+    Initialize-FrontendApps -FrontendPath $frontendPath
 }
 
  
