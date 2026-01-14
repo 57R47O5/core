@@ -1,10 +1,13 @@
 param (
-    [Parameter(Mandatory)]
-    [hashtable]$Context,
-
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$Args
 )
+
+. "$OrcScriptRoot\core\contextualizer.ps1"
+
+$Context = Resolve-OrcContext `
+    -Required $false `
+    -Args    $Args
 
 $projectModel  = $Context.ProjectModel
 $repoRoot = $Context.RepoRoot
