@@ -47,7 +47,7 @@ export default App;
     # Contenido inicial del registry (solo base)
     # --------------------------------------------------
     $registryContent = @"
-import base from "../../src/apps/base";
+import base from "@apps/base";
 
 export default [
   base,
@@ -57,8 +57,6 @@ export default [
     # --------------------------------------------------
     # Escritura de archivos
     # --------------------------------------------------
-    Write-Host "appsJsxContent es $appsJsxContent"
-    Write-Host "registryContent es $registryContent"
     $appsJsxPath = Join-Path $srcPath "App.jsx"
     Set-Content -Path $appsJsxPath -Value $appsJsxContent -Encoding UTF8
 
