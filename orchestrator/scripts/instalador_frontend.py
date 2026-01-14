@@ -9,8 +9,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 BACKEND_PROJECTS_DIR = REPO_ROOT / "backend" / "projects"
 FRONTEND_PROJECTS_DIR = REPO_ROOT / "frontend" / "proyectos"
 
-
-def patch_vite_config(project_dir):
+def patch_vite_config(project_dir: Path):
     vite_config = project_dir / "vite.config.js"
 
     if not vite_config.exists():
@@ -18,18 +17,31 @@ def patch_vite_config(project_dir):
             f"No se encontró vite.config.js en {project_dir}"
         )
 
-    content = vite_config.read_text(encoding="utf-8")
+    vite_config_content = """\
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+import { fileURLToPath } from "url";
 
-    if "server:" in content:
-        # Ya fue modificado antes
-        return
+// Reconstruir __dirname en ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-    patched = content.replace(
-        "export default defineConfig({",
-        "export default defineConfig({\n  server: {\n    port: 3000,\n  },"
-    )
+// https://vite.dev/config/
+export default defineConfig({
+  server: {
+    port: 3000,
+  },
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@apps": path.resolve(__dirname, "../../src/apps"),
+    },
+  },
+});
+"""
 
-    vite_config.write_text(patched, encoding="utf-8")
+    vite_config.write_text(vite_config_content, encoding="utf-8")
 
 
 def run(cmd: Union[str, Sequence[str]], cwd=None, env=None, input_text=None, **kwargs):
