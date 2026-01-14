@@ -3,48 +3,32 @@ param (
     [string[]]$Args
 )
 
-. "$OrcScriptRoot\core\contextualizer.ps1"
+# --------------------------------------------------
+# Paths
+# --------------------------------------------------
+$OrcRoot  = Split-Path $PSScriptRoot -Parent
+$RepoRoot = Split-Path $OrcRoot -Parent
+$AppsRoot = Join-Path $RepoRoot "backend/apps"
 
-$Context = Resolve-OrcContext `
-    -Required $true `
-    -Args    $Args
-
-$projectModel = $Context.ProjectModel
-$appsPath = $projectModel.Project.AppsPath
-
-if (-not (Test-Path $appsPath)) {
-    Write-Error "orc_apps.py no encontrado en: $appsPath"
-    return
+if (-not (Test-Path $AppsRoot)) {
+    Write-Error "backend/apps no existe en $RepoRoot"
+    exit 1
 }
 
-$content = Get-Content $appsPath -Raw
+# --------------------------------------------------
+# Listar apps
+# --------------------------------------------------
+$apps = Get-ChildItem `
+    -Path $AppsRoot `
+    -Directory `
+    | Select-Object -ExpandProperty Name
 
-# Extraer el bloque ORC_APPS = [ ... ]
-if ($content -notmatch '(?s)ORC_APPS\s*=\s*\[(.*?)\]') {
-    Write-Error "No se encontró ORC_APPS en orc_apps.py"
-    return
+if (-not $apps -or $apps.Count -eq 0) {
+    Write-Host "(no hay apps instaladas)"
+    exit 0
 }
 
-$appsBlock = $matches[1]
-
-# Extraer strings "..."
-$apps = [regex]::Matches($appsBlock, '"([^"]+)"') |
-    ForEach-Object { $_.Groups[1].Value }
-
-if ($apps.Count -eq 0) {
-    Write-Host "No hay apps instaladas"
-    return
-}
-
-Write-Host ""
-Write-Host "Apps instaladas en el proyecto '$($projectModel.Project.Name)':"
-Write-Host ""
-
-$i = 1
+Write-Host "Apps disponibles:"
 foreach ($app in $apps) {
-    Write-Host ("{0}. {1}" -f $i, $app)
-    $i++
+    Write-Host " - $app"
 }
-
-Write-Host ""
-Write-Host "$($apps.Count) app(s) instaladas"
