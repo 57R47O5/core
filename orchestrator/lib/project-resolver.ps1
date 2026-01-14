@@ -32,6 +32,7 @@ function Resolve-OrcProject {
         ProjectRoot  = $null
         BackendPath  = $null
         FrontendPath = $null
+        AppsPath     = $null
         Type         = @()
         Spec         = $spec
     }
@@ -61,14 +62,22 @@ function Resolve-OrcProject {
             }
         }
     }
+
+    if ($result.ProjectRoot) {
+        $configPath = Join-Path $result.ProjectRoot "$projectName\config"  
+        $orcAppsPath = Join-Path $configPath "settings\orc_apps.py"
+
+        if (Test-Path $orcAppsPath) {
+            $result.AppsPath = $orcAppsPath
+        }
+    }
     
     if (-not $foundAny) {
         if ($Required) {
             throw "[orc] Proyecto '$projectName' no existe en el filesystem"
         }
     }
-    
-    Write-Host "Dentro de project-resolver.ps1"
-    Write-Host $result.BackendPath
+       
+
     return $result
 }
