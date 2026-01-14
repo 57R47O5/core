@@ -1,7 +1,7 @@
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 
-export default [
+const routes = [
   {
     path: "/login",
     element: <Login />,
@@ -11,3 +11,5 @@ export default [
     element: <Home />,
   },
 ];
+
+export default routes;

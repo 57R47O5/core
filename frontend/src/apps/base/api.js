@@ -1,4 +1,4 @@
-import request from "@/api/requests";
+import request from "../../api/requests";
 
 export const login = async (credentials) => {
   return await request.post("/auth/login/", credentials);

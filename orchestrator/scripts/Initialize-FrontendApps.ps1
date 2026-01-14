@@ -15,13 +15,55 @@ function Initialize-FrontendApps {
         New-Item -ItemType Directory -Path $appsPath | Out-Null
     }
 
-    # Apps.jsx (congelado)
-    $appsJsxPath = Join-Path $srcPath "Apps.jsx"
+    # --------------------------------------------------
+    # Contenido congelado de App.jsx
+    # --------------------------------------------------
+    $appsJsxContent = @"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import apps from "./apps/apps.registry";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {apps.flatMap(app =>
+          app.routes.map(route => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.element}
+            />
+          ))
+        )}
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+"@
+
+    # --------------------------------------------------
+    # Contenido inicial del registry (solo base)
+    # --------------------------------------------------
+    $registryContent = @"
+import base from "../../src/apps/base";
+
+export default [
+  base,
+];
+"@
+
+    # --------------------------------------------------
+    # Escritura de archivos
+    # --------------------------------------------------
+    Write-Host "appsJsxContent es $appsJsxContent"
+    Write-Host "registryContent es $registryContent"
+    $appsJsxPath = Join-Path $srcPath "App.jsx"
     Set-Content -Path $appsJsxPath -Value $appsJsxContent -Encoding UTF8
 
-    # apps.registry.js (puente)
     $registryPath = Join-Path $appsPath "apps.registry.js"
     Set-Content -Path $registryPath -Value $registryContent -Encoding UTF8
 
-    Write-Host "Apps.jsx y apps.registry.js generados correctamente"
+    Write-Host "App.jsx y apps.registry.js generados correctamente"
 }

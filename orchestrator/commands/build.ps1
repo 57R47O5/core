@@ -24,6 +24,8 @@ if (!(Test-Path $orcPython)) {
 
 Write-Host "Orc build '$ProjectName'"
 Write-Host ""
+$backendPath = $projectModel.Project.BackendPath
+$frontendPath = $projectModel.Project.FrontendPath
 
 # ------------------------------------------------------------
 # Db
@@ -36,8 +38,6 @@ Ensure-PostgresDatabase -Context $Context
 # Backend (Django)
 # ------------------------------------------------------------
 
-$backendPath = $projectModel.Project.BackendPath
-$frontendPath = $projectModel.Project.FrontendPath
 
 if ($backendPath -and (Test-Path $backendPath)) {
     
@@ -72,25 +72,23 @@ if (Test-Path $requirements) {
 }
 }
 
-
 # ------------------------------------------------------------
 # Frontend (build)
 # ------------------------------------------------------------
 
 if ($frontendPath -and (Test-Path $frontendPath)) {
-    
-    Write-Host "Inicializando frontend (Python)"
+  
+  Write-Host "Inicializando frontend (Python)"
+  
+  & python orchestrator\scripts\instalador_frontend.py $projectName
+  if ($LASTEXITCODE -ne 0) {
+    throw "Error creando frontend"
+}
 
-    & python orchestrator\scripts\instalador_frontend.py $projectName
-    if ($LASTEXITCODE -ne 0) {
-        throw "Error creando frontend"
-    }
-
-    . "$OrcScriptRoot\orchestrator\scripts\Initialize-FrontendApps.ps1"
+    . "$OrcScriptRoot\scripts\Initialize-FrontendApps.ps1"
     Initialize-FrontendApps -FrontendPath $frontendPath
 }
 
- 
 # --------------------------------------------------
 # Liquibase (Fase 1 – local)
 # --------------------------------------------------
@@ -103,11 +101,10 @@ $liquibaseCmd = Join-Path $Context.OrcRoot "commands\liquibase.ps1"
 & $liquibaseCmd `
     -Context $Context `
     -Args @("update")
-
-if ($LASTEXITCODE -ne 0) {
-    throw "[orc] Error aplicando migraciones Liquibase"
-}
-
+    
+    if ($LASTEXITCODE -ne 0) {
+        throw "[orc] Error aplicando migraciones Liquibase"
+    }
 
 # ------------------------------------------------------------
 # Fin
