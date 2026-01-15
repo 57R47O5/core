@@ -9,13 +9,15 @@ $Context = Resolve-OrcContext `
     -Required $true `
     -Args    $Args
     
-
 $projectModel = $Context.ProjectModel
 $OrcRoot = $Context.OrcRoot
 $project      = $projectModel.Project
 $projectName  = $project.Name
 $backendPath = $projectModel.Project.BackendPath
 $frontendPath = $projectModel.Project.FrontendPath
+$frontendBaseDir = Resolve-Path (
+    Join-Path $frontendPath "..\.."
+)
 
 
 Write-Host "Levantando proyecto '$projectName'"
@@ -23,9 +25,54 @@ Write-Host ""
 # ==================================================
 # Frontend
 # ==================================================
+
+function Initialize-FrontendRuntimeRoutes {
+    param (
+        [Parameter(Mandatory)]
+        [string]$FrontendBaseDir,
+
+        [Parameter(Mandatory)]
+        [string[]]$Apps
+    )
+
+    $srcPath     = Join-Path $FrontendBaseDir "src"
+    $runtimePath = Join-Path $srcPath "runtime"
+
+    Write-Host "Estamos en initialize... etc"
+    Write-Host "runtimePath es  $runtimePath"
+
+    if (!(Test-Path $runtimePath)) {
+        New-Item -ItemType Directory -Path $runtimePath | Out-Null
+    }
+
+    $imports = @()
+    $routes  = @()
+
+    foreach ($app in $Apps) {
+        $imports += "import $app from `"@apps/$app`";"
+        $routes  += "...$app.routes"
+    }
+
+    $content = @"
+$($imports -join "`n")
+
+export default [
+  $($routes -join ",`n  ")
+];
+"@
+
+    Set-Content `
+        -Path (Join-Path $runtimePath "routes.jsx") `
+        -Value $content `
+        -Encoding UTF8
+
+    Write-Host "runtime/routes.jsx generado"
+}
+
+
 if ($frontendPath -and (Test-Path $frontendPath)) {
 
-    $nodeModules = Join-Path $frontendPath "node_modules"
+    $nodeModules = Join-Path $frontendBaseDir "node_modules"
 
     if (!(Test-Path $nodeModules)) {
         Write-Host "Frontend no construido (node_modules inexistente)"
@@ -37,14 +84,14 @@ if ($frontendPath -and (Test-Path $frontendPath)) {
 
     $npmCmd = "npm.cmd"
 
-    Push-Location $frontendPath
+    Push-Location $frontendBaseDir
 
     Start-Process `
     -FilePath "powershell.exe" `
     -ArgumentList @(
         "-NoExit",
         "-Command",
-        "cd '$frontendPath'; npm run dev"
+        "cd '$frontendBaseDir'; npm run dev"
     )
 
     Pop-Location
@@ -58,6 +105,11 @@ else {
 # ==================================================
 
 if ($backendPath -and (Test-Path $backendPath)) {
+
+    $installedApps = @("base")  # mínimo
+    Initialize-FrontendRuntimeRoutes `
+    -FrontendBaseDir $frontendBaseDir `
+    -Apps $installedApps
 
     $venvPath    = Join-Path $backendPath ".venv"
     $pythonExe   = Join-Path $venvPath "Scripts\python.exe"
@@ -91,7 +143,6 @@ else {
     Write-Host "Backend no configurado para este proyecto"
 }
 
-
 # ==================================================
 # Done
 # ==================================================
@@ -105,3 +156,5 @@ if ($frontendPath) {
 }
 
 exit 0
+
+
