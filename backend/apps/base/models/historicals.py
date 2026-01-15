@@ -4,7 +4,7 @@ from django.db.models import signals
 from simple_history.models import HistoricalRecords
 
 
-class NewHistoricalRecords(HistoricalRecords):
+class ORCHistoricalRecords(HistoricalRecords):
     """
     Sobreescribe HistoricalRecords para los siguientes features adicionales:
         - Permite la herencia de HistoricalRecords sobreescribible entre los modelos.

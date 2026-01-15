@@ -8,7 +8,7 @@ from safedelete.managers import SafeDeleteManager
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
 from safedelete.queryset import SafeDeleteQueryset
 
-from .historicals import NewHistoricalRecords
+from .historicals import ORCHistoricalRecords
 
 from .fields import UserForeignKey
 
@@ -48,7 +48,7 @@ def SAFEDELETE_PROTECT(collector, field, sub_objs, using):
         models.PROTECT(collector, field, filtered_subobjs, using)
 
 
-class NewQuerySet(SafeDeleteQueryset):
+class ORCQuerySet(SafeDeleteQueryset):
     def delete(self, force_policy=None):
         if force_policy == HARD_DELETE:
             # Optimización de HARD_DELETE
@@ -90,8 +90,8 @@ class NewQuerySet(SafeDeleteQueryset):
     delete.alters_data = True
 
 
-class NewModelManager(SafeDeleteManager):
-    _queryset_class = NewQuerySet
+class ORCModelManager(SafeDeleteManager):
+    _queryset_class = ORCQuerySet
 
 class BaseModel(SafeDeleteModel):
     id = models.AutoField(primary_key=True)
@@ -108,8 +108,8 @@ class BaseModel(SafeDeleteModel):
     updatedat = models.DateTimeField(
         'Actualizado', auto_now=True, editable=False, null=True)
 
-    objects = NewModelManager()
-    history = NewHistoricalRecords(inherit=True)
+    objects = ORCModelManager()
+    history = ORCHistoricalRecords(inherit=True)
 
     # Django safedelete
     _safedelete_policy = SOFT_DELETE_CASCADE
@@ -130,8 +130,8 @@ class BaseModel(SafeDeleteModel):
         ]
 
 
-class BasicModelManager(NewModelManager):
-    _queryset_class = NewQuerySet
+class BasicModelManager(ORCModelManager):
+    _queryset_class = ORCQuerySet
 
     def get_queryset(self):
         return super().get_queryset().order_by('nombre')
@@ -147,3 +147,34 @@ class BasicModel(BaseModel):
 
     class Meta(BaseModel.Meta):
         abstract = True
+
+class ConstantModel(BasicModel):
+    """
+    Modelo base para constantes del dominio.
+    Las instancias se identifican por `codigo`, no por ID.
+    """
+    codigo = models.CharField(
+        'Código', max_length=50, unique=True, db_index=True
+    )
+    activo = models.BooleanField(default=True)
+
+    class Meta(BasicModel.Meta):
+        abstract = True
+
+class Constant:
+    def __init__(self, codigo):
+        self.codigo = codigo
+        self._cache = None
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+
+        if RELOAD_COMPLEX.get(self.codigo, False) or self._cache is None:
+            self._cache = instance.get(codigo=self.codigo)
+            RELOAD_COMPLEX[self.codigo] = False
+
+        return self._cache
+
+class ConstantModelManager(BasicModelManager):
+    pass
