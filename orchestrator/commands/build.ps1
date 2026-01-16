@@ -75,19 +75,20 @@ if (Test-Path $requirements) {
 # ------------------------------------------------------------
 # Frontend (build)
 # ------------------------------------------------------------
-
+<#
 if ($frontendPath -and (Test-Path $frontendPath)) {
-  
-  Write-Host "Inicializando frontend (Python)"
+    
+Write-Host "Inicializando frontend (Python)"
   
   & python orchestrator\scripts\instalador_frontend.py $projectName
   if ($LASTEXITCODE -ne 0) {
     throw "Error creando frontend"
 }
 
-    . "$OrcScriptRoot\scripts\Initialize-FrontendApps.ps1"
-    Initialize-FrontendApps -FrontendPath $frontendPath
+. "$OrcScriptRoot\scripts\Initialize-FrontendApps.ps1"
+Initialize-FrontendApps -FrontendPath $frontendPath
 }
+#>
 
 # --------------------------------------------------
 # Liquibase (Fase 1 – local)
