@@ -17,6 +17,13 @@ class FieldDefinition:
     unique: bool = False
     args: Dict[str,object] = None
 
+    is_foreign_key: bool = False
+    references_table: str | None = None
+    references_column: str = "id"
+
+    def __str__(self):
+        return self.name
+
 @dataclass
 class DomainModelDefinition:
     """
@@ -44,6 +51,84 @@ class DomainModelDefinition:
         Indica si el modelo define datos iniciales (constantes).
         """
         return bool(self.constants)
+    
+BASE_MODEL_FIELDS = {
+    "BaseModel": [
+        FieldDefinition(
+            name="id",
+            type="AutoField",
+            max_length=None,
+            null=False,
+            primary_key=True,
+            args={}
+        ),
+        FieldDefinition(
+            name="is_deleted",
+            type="BooleanField",
+            max_length=None,
+            null=False,
+            args={"default": False}
+        ),
+        FieldDefinition(
+            name="createdby",
+            type="ForeignKey",
+            null=True,
+            is_foreign_key=True,
+            references_table="auth_user"
+        ),
+        FieldDefinition(
+            name="updatedby",
+            type="ForeignKey",
+            null=True,
+            is_foreign_key=True,
+            references_table="auth_user"
+        ),
+        FieldDefinition(
+            name="createdat",
+            type="DateTimeField",
+            max_length=None,
+            null=True,
+            args={"auto_now_add": True}
+        ),
+        FieldDefinition(
+            name="updatedat",
+            type="DateTimeField",
+            max_length=None,
+            null=True,
+            args={"auto_now": True}
+        ),
+        # createdby / updatedby:
+        # 👉 decisión futura: FK real o placeholder
+    ],
+
+    "BasicModel": [
+        FieldDefinition(
+            name="nombre",
+            type="CharField",
+            max_length=200,
+            null=False,
+            args={}
+        ),
+        FieldDefinition(
+            name="descripcion",
+            type="TextField",
+            max_length=None,
+            null=True,
+            args={}
+        ),
+    ],
+    "ConstantModel": [
+    ],
+
+}
+
+MODEL_INHERITANCE = {
+    "ConstantModel": "BasicModel",
+    "BasicModel": "BaseModel",
+    "BaseModel": None,
+}
+
+
 # --------------------------------------------------
 # Helpers AST
 # --------------------------------------------------
@@ -52,12 +137,10 @@ IGNORED_ATTRIBUTES = {"objects"}
 def _fail(msg):
     raise ConstantModelGenerationError(msg)
 
-
 def _get_str_constant(node, ctx):
     if isinstance(node, ast.Constant) and isinstance(node.value, str):
         return node.value
     _fail(f"{ctx} debe ser un string literal")
-
 
 def _is_false(node):
     return isinstance(node, ast.Constant) and node.value is False
@@ -111,6 +194,30 @@ def find_model_and_manager(tree: ast.Module):
         _fail("No se encontró Manager en el archivo")
 
     return model_class, manager_class
+
+def extract_model_bases(model_class: ast.ClassDef) -> list[str]:
+    bases = []
+
+    for base in model_class.bases:
+        if isinstance(base, ast.Name):
+            bases.append(base.id)
+        elif isinstance(base, ast.Attribute):
+            bases.append(base.attr)
+
+    return bases
+
+def resolve_inherited_fields(base_names: list[str]) -> list[FieldDefinition]:
+    fields = []
+
+    for base in base_names:
+        parent = MODEL_INHERITANCE.get(base)
+
+        if parent:
+            fields.extend(resolve_inherited_fields([parent]))
+
+        fields.extend(BASE_MODEL_FIELDS.get(base, []))
+
+    return fields
 
 def extract_model_meta(model_class: ast.ClassDef) -> str:
     """
@@ -233,9 +340,8 @@ def generate_liquibase_initial_data(
     """
     Genera el changelog XML de Liquibase para los datos iniciales
     de un DomainModelDefinition.
-
-    Requiere que el modelo defina constantes de dominio.
     """
+
     if not definition.has_initial_data:
         _fail(
             f"El modelo {definition.model_name} no define datos iniciales"
@@ -262,9 +368,29 @@ def generate_liquibase_initial_data(
         <column name="descripcion" value="{descripcion}"/>
 """.rstrip())
 
+        # -----------------------------------------
+        # Campos adicionales (incluye FK)
+        # -----------------------------------------
         for field in definition.extra_fields:
+            if field.name in ("id", "codigo", "nombre", "descripcion"):
+                continue
+
+            # ForeignKey
+            if field.is_foreign_key:
+                if not field.null:
+                    _fail(
+                        f"No se puede generar dato inicial para FK no nullable "
+                        f"'{field.name}' en {definition.model_name}"
+                    )
+
+                xml.append(
+                    f'        <column name="{field.name}" value="{""}"/>'
+                )
+                continue
+
+            # Campos normales
             xml.append(
-                f'        <column name="{field}" value=""/>'
+                f'        <column name="{field.name}" value="{""}"/>'
             )
 
         xml.append(f"""
@@ -278,7 +404,9 @@ def generate_liquibase_initial_data(
 """.rstrip())
 
     xml.append("</databaseChangeLog>")
+
     return "\n".join(xml)
+
 
 def resolve_model_file(app_name:str, model_name: str) -> Path:
     model_file = APPS_DIR / app_name / "models" /f"{model_name.lower()}.py"
@@ -317,7 +445,12 @@ def build_domain_model_definition(tree: ast.AST) -> DomainModelDefinition:
     # --------------------------------------------------
     # Campos adicionales
     # --------------------------------------------------
-    extra_fields = extract_extra_fields(model_class)
+    base_names = extract_model_bases(model_class)
+
+    inherited_fields = resolve_inherited_fields(base_names)
+    model_fields = extract_extra_fields(model_class)
+
+    all_fields = inherited_fields + model_fields
 
     # --------------------------------------------------
     # Construcción de la definición
@@ -326,7 +459,7 @@ def build_domain_model_definition(tree: ast.AST) -> DomainModelDefinition:
         model_name=model_class.name,
         db_table=db_table,
         constants=constants,
-        extra_fields=extra_fields,
+        extra_fields=all_fields,
     )
 
 def load_domain_model_definition(
@@ -342,6 +475,8 @@ def load_domain_model_definition(
     return build_domain_model_definition(tree)
 
 FIELD_TYPE_MAP = {
+    "AutoField": lambda f: "int",
+    "ForeignKey": lambda f: "int",
     "CharField": lambda f: f'varchar({f.max_length or 255})',
     "TextField": lambda f: 'text',
     "IntegerField": lambda f: 'int',
@@ -356,7 +491,7 @@ def map_field_type(field: FieldDefinition) -> str:
         return FIELD_TYPE_MAP[field.type](field)
     except KeyError:
         raise Exception(
-            f"Tipo de campo no soportado para Liquibase: {field.type}"
+            f"Tipo de campo no soportado para Liquibase: {field.type}, en el campo {str(field)}"
         )
 
 def generate_column_xml(field:FieldDefinition) -> str:
@@ -376,6 +511,9 @@ def generate_column_xml(field:FieldDefinition) -> str:
 
     if field.primary_key:
         constraints.append('primaryKey="true"')
+
+    if not field.null:
+        constraints.append('nullable="false"')
 
     if field.unique:
         constraints.append('unique="true"')
