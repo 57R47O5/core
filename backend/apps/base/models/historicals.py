@@ -21,7 +21,7 @@ class ORCHistoricalRecords(HistoricalRecords):
     def contribute_to_class(self, cls, name):
         """
         Este código es detectado e invocado automáticamente por django cuando
-        un modelo posee un atributo con una instancia de CBAHistoricalRecords.
+        un modelo posee un atributo con una instancia de ORCHistoricalRecords.
         """
 
         # Asignación de atributos requeridos por HistoricalRecords
@@ -30,7 +30,7 @@ class ORCHistoricalRecords(HistoricalRecords):
         self.cls = cls                  # pylint: disable=attribute-defined-outside-init
         self.add_extra_methods(cls)
 
-        # Códigos sobreescritos del CBAHistoricalRecords
+        # Códigos sobreescritos del ORCHistoricalRecords
 
         # Si la función 'invoke_finalize' no fué registrada
         # en signals.class_prepared
@@ -43,9 +43,9 @@ class ORCHistoricalRecords(HistoricalRecords):
             signals.class_prepared.connect(
                 self.invoke_finalize, weak=False)
 
-        # Asignar/reasignar la instancia CBAHistoricalRecords actual
+        # Asignar/reasignar la instancia ORCHistoricalRecords actual
         # al modelo 'cls'.
-        setattr(cls, '_cba_historical_records', self)
+        setattr(cls, '_orc_historical_records', self)
 
         # Warning del HistoricalRecords
         if cls._meta.abstract and not self.inherit:
@@ -60,17 +60,17 @@ class ORCHistoricalRecords(HistoricalRecords):
         # En esta función se decide si el modelo tendrá un modelo histórico
 
         conditions_are_met = (
-            # el modelo tiene un CBAHistoricalRecords
-            hasattr(sender, '_cba_historical_records')
+            # el modelo tiene un ORCHistoricalRecords
+            hasattr(sender, '_orc_historical_records')
             # el modelo no tiene el history desactivado
-            and (not getattr(sender, '_cba_historical_records').disabled))
+            and (not getattr(sender, '_orc_historical_records').disabled))
 
         if conditions_are_met:
             # invoca el 'finalize' del correspondiente modelo 'sender' para
             # registrar dinámicamente el correspondiente modelo histórico.
 
             # pylint: disable=protected-access
-            sender._cba_historical_records.finalize(sender, **kwargs)
+            sender._orc_historical_records.finalize(sender, **kwargs)
 
     def get_meta_options(self, model):
         """
