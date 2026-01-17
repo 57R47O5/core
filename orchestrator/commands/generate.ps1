@@ -28,7 +28,7 @@ SPLIT = 999999
 app_name = sys.argv[1]
 model_name = sys.argv[2]
 
-schema_xml, data_xml = generate_constant_model_changelog(app_name, model_name)
+schema_xml, data_xml, historical_xml = generate_constant_model_changelog(app_name, model_name)
 
 print(schema_xml)
 print()
@@ -42,31 +42,39 @@ if data_xml:
 #---------------------------------------------------
 # Separacion
 # --------------------------------------------------
-$schemaLines = @()
-$dataLines   = @()
-$inDataPart  = $false
-$separator   = "999999"
+$schemaLines  = @()
+$dataLines    = @()
+$historyLines = @()
+
+$section    = 0   # 0 = schema, 1 = data, 2 = history
+$separator  = "999999"
 
 foreach ($line in $output) {
     if ($line.Trim() -eq $separator) {
-        $inDataPart = $true
+        $section++
         continue
     }
 
-    if (-not $inDataPart) {
-        $schemaLines += $line
-    } else {
-        $dataLines += $line
+    switch ($section) {
+        0 { $schemaLines  += $line }
+        1 { $dataLines    += $line }
+        2 { $historyLines += $line }
     }
 }
 
 $schemaXml = ($schemaLines -join "`n").Trim()
-$dataXml   = if ($dataLines.Count -gt 0) {
+
+$dataXml = if ($dataLines.Count -gt 0) {
     ($dataLines -join "`n").Trim()
 } else {
     $null
 }
 
+$historyXml = if ($historyLines.Count -gt 0) {
+    ($historyLines -join "`n").Trim()
+} else {
+    $null
+}
 
 # --------------------------------------------------
 # Escritura (el único path que conoce PowerShell)
@@ -97,4 +105,12 @@ if ($dataXml) {
 
     Write-Host "Changelog de datos iniciales generado:"
     Write-Host "  $dataFile"
+}
+
+if ($historyXml) {
+    $historyFile = Join-Path $outputDir ($modelName.ToLower() + "-hist.xml")
+    $historyXml | Out-File -FilePath $historyFile -Encoding UTF8 -Force
+
+    Write-Host "Changelog histórico generado:"
+    Write-Host "  $historyFile"
 }
