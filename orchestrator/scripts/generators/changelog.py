@@ -45,12 +45,21 @@ class DomainModelDefinition:
     constants: List[Dict[str, str]]
     extra_fields: List[FieldDefinition]
 
+    inherits_from_base_model: bool
+
     @property
     def has_initial_data(self) -> bool:
         """
         Indica si el modelo define datos iniciales (constantes).
         """
         return bool(self.constants)
+    
+    @property
+    def has_history(self)->bool:
+        """
+        Indica si el modelo necesita una  tabla histórica
+        """
+        return self.inherits_from_base_model
     
 BASE_MODEL_FIELDS = {
     "BaseModel": [
@@ -71,14 +80,14 @@ BASE_MODEL_FIELDS = {
         ),
         FieldDefinition(
             name="createdby",
-            type="ForeignKey",
+            type="CharField",
             null=True,
             is_foreign_key=True,
             references_table="auth_user"
         ),
         FieldDefinition(
             name="updatedby",
-            type="ForeignKey",
+            type="CharField",
             null=True,
             is_foreign_key=True,
             references_table="auth_user"
@@ -97,8 +106,6 @@ BASE_MODEL_FIELDS = {
             null=True,
             args={"auto_now": True}
         ),
-        # createdby / updatedby:
-        # 👉 decisión futura: FK real o placeholder
     ],
 
     "BasicModel": [
@@ -415,7 +422,9 @@ def resolve_model_file(app_name:str, model_name: str) -> Path:
         _fail(f"Modelo '{model_name}' no encontrado en {APPS_DIR}")
     return model_file
 
-def build_domain_model_definition(tree: ast.AST) -> DomainModelDefinition:
+def build_domain_model_definition(
+    tree: ast.AST
+) -> DomainModelDefinition:
     """
     Construye una DomainModelDefinition a partir del AST de un archivo de modelo.
 
@@ -423,10 +432,12 @@ def build_domain_model_definition(tree: ast.AST) -> DomainModelDefinition:
     - localizar el modelo y su manager
     - extraer metadata obligatoria
     - descubrir constantes de dominio
-    - descubrir campos adicionales permitidos
+    - descubrir campos heredados y propios
+    - determinar semántica de auditoría
 
     Falla rápida y ruidosamente si el contrato no se cumple.
     """
+
     # --------------------------------------------------
     # Localización de clases
     # --------------------------------------------------
@@ -443,10 +454,18 @@ def build_domain_model_definition(tree: ast.AST) -> DomainModelDefinition:
     constants = extract_constants(manager_class)
 
     # --------------------------------------------------
-    # Campos adicionales
+    # Herencia
     # --------------------------------------------------
     base_names = extract_model_bases(model_class)
 
+    inherits_from_base_model = any(
+        base in ("BaseModel", "BasicModel")
+        for base in base_names
+    )
+
+    # --------------------------------------------------
+    # Campos
+    # --------------------------------------------------
     inherited_fields = resolve_inherited_fields(base_names)
     model_fields = extract_extra_fields(model_class)
 
@@ -460,6 +479,7 @@ def build_domain_model_definition(tree: ast.AST) -> DomainModelDefinition:
         db_table=db_table,
         constants=constants,
         extra_fields=all_fields,
+        inherits_from_base_model=inherits_from_base_model,
     )
 
 def load_domain_model_definition(
@@ -553,16 +573,77 @@ def generate_model_changelog(definition:DomainModelDefinition) -> str:
 
     return "\n".join(xml)
 
-
-def generate_constant_model_changelog(app_name: str, model_name: str) -> str:
+def generate_historical_model_changelog(
+    definition: DomainModelDefinition
+) -> str:
     """
-    Genera el changelog de datos iniciales para un ConstantModel.
+    Genera el changelog del modelo histórico asociado
+    a un DomainModelDefinition.
+
+    Implementación mínima y extensible.
     """
 
-    definition = load_domain_model_definition(app_name,model_name)
-    
-    return (
-        generate_model_changelog(definition),
-        generate_liquibase_initial_data(definition)  \
-        if definition.has_initial_data else None
+    hist_table = f"hist_{definition.db_table}"
+
+    xml = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<databaseChangeLog '
+        'xmlns="http://www.liquibase.org/xml/ns/dbchangelog" '
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+        'xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog '
+        'http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">',
+        f'''
+<changeSet id="create-{hist_table}" author="orco">
+    <createTable tableName="{hist_table}">
+'''
+    ]
+
+    # --- Campos técnicos del histórico ---
+    xml.append('        <column name="history_id" type="bigint"/>')
+    xml.append('        <column name="history_date" type="timestamp"/>')
+    xml.append('        <column name="history_type" type="char(1)"/>')
+    xml.append('        <column name="history_user" type="varchar(150)"/>')
+
+    # --- Campos del modelo original ---
+    for field in definition.fields:
+        column_type = map_field_type(field)
+
+        attrs = [f'name="{field.name}"', f'type="{column_type}"']
+
+        if not field.null:
+            attrs.append('nullable="false"')
+
+        if field.unique:
+            attrs.append('unique="true"')
+
+        xml.append(
+            f'        <column {" ".join(attrs)}/>'
+        )
+
+    xml.append(f'''
+    </createTable>
+</changeSet>
+</databaseChangeLog>
+''')
+
+    return "\n".join(line.rstrip() for line in xml)
+
+def generate_constant_model_changelog(app_name: str, model_name: str):
+    definition = load_domain_model_definition(app_name, model_name)
+
+    model_xml = generate_model_changelog(definition)
+
+    data_xml = (
+        generate_liquibase_initial_data(definition)
+        if definition.has_initial_data
+        else None
     )
+
+    history_xml = (
+        generate_historical_model_changelog(definition)
+        if definition.has_history
+        else None
+    )
+
+    return model_xml, data_xml, history_xml
+
