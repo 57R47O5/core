@@ -55,26 +55,39 @@ def generate_master_changelog(
             f"{base_name}-hist.xml",
         ]
 
-        for filename in candidates:
-            changelog_file = app_dir / filename
+    for filename in candidates:
+        changelog_file = app_dir / filename
 
-            if not changelog_file.exists():
-                continue
+        if not changelog_file.exists():
+            continue
 
-            relative_path = changelog_file.relative_to(
-                project_root / "liquibase" / "changelog"
-            )
+        # master.yaml vive en:
+        # liquibase/changelog/generated/<project>/master.yaml
+        master_dir = (
+            project_root
+            / "liquibase"
+            / "changelog"
+            / "generated"
+            / project_name
+        )
 
-            logger.info(
-                "Incluyendo %s.%s -> %s",
-                app,
-                base_name,
-                relative_path.as_posix()
-            )
+        relative_path = changelog_file.relative_to(
+            project_root / "liquibase" / "changelog"
+        )
 
-            lines.append(f"  - include:")
-            lines.append(f"      file: {relative_path.as_posix()}")
-            lines.append(f"      relativeToChangelogFile: false")
+        # desde master.yaml necesitamos subir dos niveles
+        include_path = Path("..") / ".." / relative_path
+
+        logger.info(
+            "Incluyendo %s.%s -> %s",
+            app,
+            base_name,
+            include_path.as_posix()
+        )
+
+        lines.append("  - include:")
+        lines.append(f"      file: {include_path.as_posix()}")
+        lines.append("      relativeToChangelogFile: true")
 
     master_path.write_text("\n".join(lines), encoding="utf-8")
 
