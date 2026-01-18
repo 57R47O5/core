@@ -381,6 +381,7 @@ def generate_liquibase_initial_data(
         xml.append(f"""
     <changeSet id="{definition.db_table}-{constant['value'].lower()}" author="orco">
         <insert tableName="{definition.db_table}">
+            <column name="id" valueComputed="nextval('{definition.db_table}_id_seq')"/>
             <column name="codigo" value="{constant['value']}"/>
             <column name="nombre" value="{nombre}"/>
             <column name="descripcion" value="{descripcion}"/>
@@ -574,11 +575,14 @@ def generate_column_xml(field: FieldDefinition) -> str:
     column_xml.append('        </column>')
     return "\n".join(column_xml)
 
-def generate_model_changelog(definition:DomainModelDefinition) -> str:
+def generate_model_changelog(definition: DomainModelDefinition) -> str:
     """
     Genera el changelog estructural (DDL) del modelo.
-    Soporta campos comunes y está pensado para extenderse fácilmente.
+    Incluye creación explícita de la secuencia para el ID.
     """
+
+    table = definition.db_table
+    seq = f"{table}_id_seq"
 
     xml = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -587,16 +591,47 @@ def generate_model_changelog(definition:DomainModelDefinition) -> str:
         'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
         'xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog '
         'http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">',
-        f'<changeSet id="create-{definition.db_table}" author="orco">',
-        f'    <createTable tableName="{definition.db_table}">'
+
+        f'<changeSet id="create-{table}" author="orco">',
+
+        # -----------------------------------------
+        # Secuencia explícita para el ID
+        # -----------------------------------------
+        f'    <createSequence '
+        f'sequenceName="{seq}" '
+        f'startValue="1" />',
+
+        # -----------------------------------------
+        # Tabla
+        # -----------------------------------------
+        f'    <createTable tableName="{table}">',
+
+        # ID
+        f'        <column name="id" type="int">',
+        f'            <constraints primaryKey="true" nullable="false"/>',
+        f'        </column>',
     ]
 
+    # Resto de campos (heredados + extra)
     for field in definition.extra_fields:
+        if field.name == "id":
+            continue
         xml.append(generate_column_xml(field))
 
-    xml.append('    </createTable>')
-    xml.append('</changeSet>')
-    xml.append('</databaseChangeLog>')
+    xml.extend([
+        f'    </createTable>',
+
+        # -----------------------------------------
+        # Default del ID → secuencia
+        # -----------------------------------------
+        f'    <addDefaultValue '
+        f'tableName="{table}" '
+        f'columnName="id" '
+        f'defaultValueComputed="nextval(\'{seq}\')" />',
+
+        f'</changeSet>',
+        '</databaseChangeLog>',
+    ])
 
     return "\n".join(xml)
 
