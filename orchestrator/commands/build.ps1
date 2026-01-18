@@ -30,15 +30,15 @@ $frontendPath = $projectModel.Project.FrontendPath
 # ------------------------------------------------------------
 # Db
 # ------------------------------------------------------------
-<#
+
 . "$OrcRoot\lib\postgres-db.ps1"
 Ensure-PostgresDatabase -Context $Context
-#>
+
 
 # ------------------------------------------------------------
 # Backend (Django)
 # ------------------------------------------------------------
-<#
+
 
 if ($backendPath -and (Test-Path $backendPath)) {
     
@@ -72,25 +72,13 @@ if (Test-Path $requirements) {
     Write-Host "No se encontró requirements.txt"
 }
 }
-#>
+
 
 # ------------------------------------------------------------
 # Frontend (build)
 # ------------------------------------------------------------
-<#
-if ($frontendPath -and (Test-Path $frontendPath)) {
-    
-Write-Host "Inicializando frontend (Python)"
-  
-  & python orchestrator\scripts\instalador_frontend.py $projectName
-  if ($LASTEXITCODE -ne 0) {
-    throw "Error creando frontend"
-}
 
-. "$OrcScriptRoot\scripts\Initialize-FrontendApps.ps1"
-Initialize-FrontendApps -FrontendPath $frontendPath
-}
-#>
+# No instalamos FE
 
 # --------------------------------------------------
 # Liquibase (Fase 1 – local)
