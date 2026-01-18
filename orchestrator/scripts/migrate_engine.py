@@ -4,6 +4,7 @@ import sys
 
 from inspect_orc_apps import get_orc_apps
 from inspect_app_models import get_app_models
+from get_model_fks import get_model_fks
 
 
 def setup_logger(project_root: Path) -> logging.Logger:
@@ -31,7 +32,6 @@ def setup_logger(project_root: Path) -> logging.Logger:
 
     return logger
 
-
 def main(project_name: str):
     project_root = Path.cwd()
     logger = setup_logger(project_root)
@@ -42,7 +42,7 @@ def main(project_name: str):
 
     orc_apps_path = (
         project_root
-        / "backend" 
+        / "backend"
         / "projects"
         / project_name
         / "config"
@@ -56,22 +56,47 @@ def main(project_name: str):
 
     logger.info("Apps detectadas: %s", ", ".join(apps))
 
-    apps_models: list[tuple[str, list[str]]] = []
+    # Nueva estructura canónica:
+    # [(app_name, { model_name: { "fks": [...] } })]
+    apps_models: list[tuple[str, dict[str, dict]]] = []
 
     for app in apps:
         logger.info("Procesando app: %s", app)
 
         models = get_app_models(project_root, app)
-        apps_models.append((app, models))
+
+        app_models: dict[str, dict] = {}
 
         if not models:
             logger.info("  - sin modelos migrables")
+            apps_models.append((app, app_models))
             continue
 
         for model in models:
             logger.info("  - modelo: %s", model)
 
+            fks = get_model_fks(project_root, app, model)
+
+            app_models[model] = {
+                "fks": fks
+            }
+
+            logger.info("    FK %s -> %s", model, fks)
+
+        apps_models.append((app, app_models))
+
+    # Logging estructural final (clave para validar)
+    logger.info("=== Estructura apps_models construida ===")
+    for app, models in apps_models:
+        logger.info("App: %s", app)
+        if not models:
+            logger.info("  (sin modelos)")
+            continue
+        for model, data in models.items():
+            logger.info("  %s -> fks: %s", model, data["fks"])
+
     print_apps_models(apps_models)
+
     logger.info("=== migrate_engine finalizado ===")
 
 def print_apps_models(apps_models: list[tuple[str, list[str]]]) -> None:
@@ -83,6 +108,7 @@ def print_apps_models(apps_models: list[tuple[str, list[str]]]) -> None:
             continue
         for model in models:
             print(f"  - {model}")
+
 
 
 if __name__ == "__main__":
