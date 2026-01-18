@@ -85,7 +85,7 @@ if (-not $schemaXml) {
 }
 
 $projectRoot = Get-Location
-$outputDir = Join-Path $projectRoot "projects/liquibase/changelog/apps/$appName"
+$outputDir = Join-Path $projectRoot "liquibase/changelog/apps/$appName"
 
 if (-not (Test-Path $outputDir)) {
     New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
