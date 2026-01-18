@@ -99,17 +99,28 @@ def main(project_name: str):
 
     logger.info("=== migrate_engine finalizado ===")
 
-def print_apps_models(apps_models: list[tuple[str, list[str]]]) -> None:
-    print("\nEstructura inicial de migración:")
+def print_apps_models(
+    apps_models: list[tuple[str, dict[str, dict]]]
+) -> None:
+
+    print("\n=== Estructura apps_models construida ===")
+
     for app, models in apps_models:
         print(f"\nApp: {app}")
+
         if not models:
             print("  (sin modelos migrables)")
             continue
-        for model in models:
-            print(f"  - {model}")
 
+        for model, meta in models.items():
+            fks = meta.get("fks", [])
 
+            if not fks:
+                print(f"  - {model}")
+            else:
+                print(f"  - {model}")
+                for fk in fks:
+                    print(f"      FK -> {fk}")
 
 if __name__ == "__main__":
     project_name = sys.argv[1] if len(sys.argv) > 1 else None
