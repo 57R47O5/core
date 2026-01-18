@@ -6,10 +6,8 @@ from apps_models import AppsModels
 from inspect_orc_apps import get_orc_apps
 from inspect_app_models import get_app_models
 from get_model_fks import get_model_fks
-from build_app_graph import build_app_graph
-from topo_sort_apps import topo_sort_apps
-from build_model_graph import build_model_graph
-
+from build_execution_plan import build_execution_plan
+from generate_master_changelog import generate_master_changelog
 
 def setup_logger(project_root: Path) -> logging.Logger:
     log_file = project_root / "migrate_engine.log"
@@ -90,36 +88,13 @@ def main(project_name: str):
     logger.info("=== Estructura apps_models construida ===")
 
     # Construcción y ordenamiento de apps
-    app_graph = build_app_graph(apps_models)
-    apps_sorted = topo_sort_apps(app_graph)
+    execution_plan = build_execution_plan(apps_models)
 
-    logger.info("Orden de apps: %s", apps_sorted)
+    for app, model in execution_plan:
+        logger.info("Migrando %s.%s", app, model)
 
-    # Indexamos apps_models para acceso rápido
-    apps_models_map = {
-        app: models
-        for app, models in apps_models
-    }
-
-    # Procesamiento ordenado por app
-    for app in apps_sorted:
-        logger.info("App: %s", app)
-
-        models = apps_models_map.get(app, {})
-
-        if not models:
-            logger.info("  (sin modelos)")
-            continue
-
-        # Grafo intra-app (modelos)
-        model_graph = build_model_graph(models)
-        models_sorted = topo_sort_apps(model_graph)
-
-        logger.info("  Orden de modelos: %s", models_sorted)
-
-        for model in models_sorted:
-            fks = models[model].get("fks", [])
-            logger.info("    %s -> fks: %s", model, fks)
+    generate_master_changelog(project_name, execution_plan, logger)
+    
 
     logger.info("=== migrate_engine finalizado ===")
 
