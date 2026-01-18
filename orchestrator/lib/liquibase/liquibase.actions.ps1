@@ -60,4 +60,29 @@ function Invoke-LiquibaseUpdate {
     & liquibase @cmd
 }
 
+function Invoke-LiquibaseClearChecksums {
+    param (
+        [Parameter(Mandatory)]
+        [hashtable]$Context
+    )
+
+    $db = $Context.ProjectModel.Database
+
+    $jdbcUrl = "jdbc:postgresql://$($db.Host):$($db.Port)/$($db.Name)"
+
+    $cmd = @(
+        "--url=$jdbcUrl"
+        "--username=$($db.User)"
+        "--password=$($db.Password)"
+        "--searchPath=$($Context.ProjectModel.Liquibase.SearchPath)",
+        "--changeLogFile=$($Context.ProjectModel.Liquibase.ChangeLogFile)"
+        "clearCheckSums"
+    )
+
+    Write-Host "[orc] liquibase clearCheckSums"
+    Write-Host "[DEBUG] liquibase $($cmd -join ' ')"
+
+    & liquibase @cmd
+}
+
 
