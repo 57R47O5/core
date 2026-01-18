@@ -10,7 +10,7 @@ from safedelete.queryset import SafeDeleteQueryset
 
 from .historicals import ORCHistoricalRecords
 
-from .fields import UserForeignKey
+from base.middleware.user_middleware import get_current_username
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
@@ -98,11 +98,18 @@ class BaseModel(SafeDeleteModel):
 
     is_deleted = models.BooleanField(
         'Eliminado', editable=False, null=False, blank=False, default=False, db_index=True)
-    createdby = UserForeignKey(
-        verbose_name="CreatedBy", auto_user_add=True, null=False, editable=False)
-    updatedby = UserForeignKey(
-        verbose_name="UpdatedBy", auto_user=True, null=False, editable=False,
-        related_name="%(app_label)s_%(class)s_updatedby")
+    createdby = models.CharField(
+        'Created by',
+        max_length=150,
+        null=False,
+        editable=False
+    )
+    updatedby = models.CharField(
+        'Updated by',
+        max_length=150,
+        null=False,
+        editable=False
+    )
     createdat = models.DateTimeField(
         'Creado', auto_now_add=True, editable=False, null=True)
     updatedat = models.DateTimeField(
@@ -115,6 +122,11 @@ class BaseModel(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
     def save(self, *args, **kwargs):
+        username = get_current_username()
+
+        if not self.pk:
+            self.createdby = username
+        self.updatedby = username
         try:
             super().save(*args, **kwargs)
         except IntegrityError as exc:

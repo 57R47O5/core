@@ -63,3 +63,7 @@ class Moneda(ConstantModel):
     simbolo = models.CharField(max_length=5)
 
     objects = MonedaManager()
+
+    class Meta(models.Meta):
+        db_table = "moneda"
+        managed = False
