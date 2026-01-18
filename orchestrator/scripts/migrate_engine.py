@@ -2,9 +2,13 @@ from pathlib import Path
 import logging
 import sys
 
+from apps_models import AppsModels
 from inspect_orc_apps import get_orc_apps
 from inspect_app_models import get_app_models
 from get_model_fks import get_model_fks
+from build_app_graph import build_app_graph
+from topo_sort_apps import topo_sort_apps
+from build_model_graph import build_model_graph
 
 
 def setup_logger(project_root: Path) -> logging.Logger:
@@ -56,20 +60,16 @@ def main(project_name: str):
 
     logger.info("Apps detectadas: %s", ", ".join(apps))
 
-    # Nueva estructura canónica:
-    # [(app_name, { model_name: { "fks": [...] } })]
-    apps_models: list[tuple[str, dict[str, dict]]] = []
+    apps_models = AppsModels()
 
     for app in apps:
         logger.info("Procesando app: %s", app)
 
         models = get_app_models(project_root, app)
 
-        app_models: dict[str, dict] = {}
-
         if not models:
             logger.info("  - sin modelos migrables")
-            apps_models.append((app, app_models))
+            apps_models.add_app(app)
             continue
 
         for model in models:
@@ -77,27 +77,52 @@ def main(project_name: str):
 
             fks = get_model_fks(project_root, app, model)
 
-            app_models[model] = {
-                "fks": fks
-            }
+            apps_models.add_model(
+                app=app,
+                model=model,
+                meta={
+                    "fks": fks
+                }
+            )
 
             logger.info("    FK %s -> %s", model, fks)
 
-        apps_models.append((app, app_models))
-
-    # Logging estructural final (clave para validar)
     logger.info("=== Estructura apps_models construida ===")
-    for app, models in apps_models:
+
+    # Construcción y ordenamiento de apps
+    app_graph = build_app_graph(apps_models)
+    apps_sorted = topo_sort_apps(app_graph)
+
+    logger.info("Orden de apps: %s", apps_sorted)
+
+    # Indexamos apps_models para acceso rápido
+    apps_models_map = {
+        app: models
+        for app, models in apps_models
+    }
+
+    # Procesamiento ordenado por app
+    for app in apps_sorted:
         logger.info("App: %s", app)
+
+        models = apps_models_map.get(app, {})
+
         if not models:
             logger.info("  (sin modelos)")
             continue
-        for model, data in models.items():
-            logger.info("  %s -> fks: %s", model, data["fks"])
 
-    print_apps_models(apps_models)
+        # Grafo intra-app (modelos)
+        model_graph = build_model_graph(models)
+        models_sorted = topo_sort_apps(model_graph)
+
+        logger.info("  Orden de modelos: %s", models_sorted)
+
+        for model in models_sorted:
+            fks = models[model].get("fks", [])
+            logger.info("    %s -> fks: %s", model, fks)
 
     logger.info("=== migrate_engine finalizado ===")
+
 
 def print_apps_models(
     apps_models: list[tuple[str, dict[str, dict]]]
