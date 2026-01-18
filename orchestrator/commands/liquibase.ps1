@@ -17,7 +17,7 @@ if ($Args.Count -eq 0) {
     Write-Host "  orc liquibase <proyecto> <accion> [--local|--docker]"
     Write-Host ""
     Write-Host "Acciones:"
-    Write-Host "  version | validate | status | update"
+    Write-Host "  version | validate | status | update | clearCheckSums "
     exit 1
 }
 
@@ -60,6 +60,11 @@ switch ($action) {
 
     "update" {
         Invoke-LiquibaseUpdate `
+            -Context $Context
+    }
+
+    "clearCheckSums" {
+        Invoke-LiquibaseClearChecksums `
             -Context $Context
     }
 

@@ -30,14 +30,15 @@ $frontendPath = $projectModel.Project.FrontendPath
 # ------------------------------------------------------------
 # Db
 # ------------------------------------------------------------
-
+<#
 . "$OrcRoot\lib\postgres-db.ps1"
 Ensure-PostgresDatabase -Context $Context
+#>
 
 # ------------------------------------------------------------
 # Backend (Django)
 # ------------------------------------------------------------
-
+<#
 
 if ($backendPath -and (Test-Path $backendPath)) {
     
@@ -71,6 +72,7 @@ if (Test-Path $requirements) {
     Write-Host "No se encontró requirements.txt"
 }
 }
+#>
 
 # ------------------------------------------------------------
 # Frontend (build)
@@ -98,6 +100,14 @@ Write-Host ""
 Write-Host "[orc] Aplicando migraciones Liquibase"
 
 $liquibaseCmd = Join-Path $Context.OrcRoot "commands\liquibase.ps1"
+
+& $liquibaseCmd `
+    -Context $Context `
+    -Args @("clearCheckSums")
+    
+    if ($LASTEXITCODE -ne 0) {
+        throw "[orc] Error limpiando Liquibase CheckSums"
+    }
 
 & $liquibaseCmd `
     -Context $Context `

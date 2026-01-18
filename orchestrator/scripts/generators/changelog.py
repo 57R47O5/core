@@ -3,6 +3,7 @@ from pathlib import Path
 from orchestrator.scripts.generators.paths import APPS_DIR
 from dataclasses import dataclass
 from typing import List, Dict, Optional
+from orchestrator.scripts.setup_logger import setup_logger
 
 class ConstantModelGenerationError(RuntimeError):
     pass
@@ -125,8 +126,18 @@ BASE_MODEL_FIELDS = {
         ),
     ],
     "ConstantModel": [
+        FieldDefinition(
+            name="codigo", 
+            type="CharField", 
+            null= False,
+            unique= True,
+            max_length= 50
+        ),
+        FieldDefinition(
+            name="activo", 
+            type="BooleanField", 
+            null= False),
     ],
-
 }
 
 MODEL_INHERITANCE = {
@@ -368,18 +379,39 @@ def generate_liquibase_initial_data(
         descripcion = f"{definition.model_name} {nombre}"
 
         xml.append(f"""
-<changeSet id="{definition.db_table}-{constant['value'].lower()}" author="orco">
-    <insert tableName="{definition.db_table}">
-        <column name="codigo" value="{constant['value']}"/>
-        <column name="nombre" value="{nombre}"/>
-        <column name="descripcion" value="{descripcion}"/>
-""".rstrip())
+    <changeSet id="{definition.db_table}-{constant['value'].lower()}" author="orco">
+        <insert tableName="{definition.db_table}">
+            <column name="codigo" value="{constant['value']}"/>
+            <column name="nombre" value="{nombre}"/>
+            <column name="descripcion" value="{descripcion}"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+    """.rstrip())
 
         # -----------------------------------------
         # Campos adicionales (incluye FK)
         # -----------------------------------------
         for field in definition.extra_fields:
-            if field.name in ("id", "codigo", "nombre", "descripcion"):
+            if field.name in (
+                "id",
+                "codigo",
+                "nombre",
+                "descripcion",
+                "is_deleted",
+                "createdat",
+                "updatedat",
+                "createdby",
+                "updatedby",
+                "activo",
+            ):
                 continue
 
             # ForeignKey
@@ -391,24 +423,24 @@ def generate_liquibase_initial_data(
                     )
 
                 xml.append(
-                    f'        <column name="{field.name}" value="{""}"/>'
+                    f'        <column name="{field.name}" valueNumeric="null"/>'
                 )
                 continue
 
             # Campos normales
             xml.append(
-                f'        <column name="{field.name}" value="{""}"/>'
+                f'        <column name="{field.name}" value=""/>'
             )
 
         xml.append(f"""
-    </insert>
-    <rollback>
-        <delete tableName="{definition.db_table}">
-            <where>codigo = '{constant['value']}'</where>
-        </delete>
-    </rollback>
-</changeSet>
-""".rstrip())
+        </insert>
+        <rollback>
+            <delete tableName="{definition.db_table}">
+                <where>codigo = '{constant['value']}'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    """.rstrip())
 
     xml.append("</databaseChangeLog>")
 
@@ -514,18 +546,13 @@ def map_field_type(field: FieldDefinition) -> str:
             f"Tipo de campo no soportado para Liquibase: {field.type}, en el campo {str(field)}"
         )
 
-def generate_column_xml(field:FieldDefinition) -> str:
+def generate_column_xml(field: FieldDefinition) -> str:
+    
     liquibase_type = map_field_type(field)
-
-    attrs = [
-        f'name="{field.name}"',
-        f'type="{liquibase_type}"'
+    # Column base (SIN constraints)
+    column_xml = [
+        f'        <column name="{field.name}" type="{liquibase_type}">'
     ]
-
-    if not field.null:
-        attrs.append('nullable="false"')
-
-    column_xml = [f'        <column {" ".join(attrs)}>']
 
     constraints = []
 
@@ -538,6 +565,7 @@ def generate_column_xml(field:FieldDefinition) -> str:
     if field.unique:
         constraints.append('unique="true"')
 
+    # Constraints en su tag correcto
     if constraints:
         column_xml.append(
             f'            <constraints {" ".join(constraints)}/>'
@@ -545,7 +573,6 @@ def generate_column_xml(field:FieldDefinition) -> str:
 
     column_xml.append('        </column>')
     return "\n".join(column_xml)
-
 
 def generate_model_changelog(definition:DomainModelDefinition) -> str:
     """
@@ -609,9 +636,6 @@ def generate_historical_model_changelog(
         column_type = map_field_type(field)
 
         attrs = [f'name="{field.name}"', f'type="{column_type}"']
-
-        if not field.null:
-            attrs.append('nullable="false"')
 
         if field.unique:
             attrs.append('unique="true"')
