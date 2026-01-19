@@ -64,6 +64,6 @@ class Moneda(ConstantModel):
 
     objects = MonedaManager()
 
-    class Meta(models.Meta):
+    class Meta:
         db_table = "moneda"
         managed = False

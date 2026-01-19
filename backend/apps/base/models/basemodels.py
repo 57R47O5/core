@@ -2,11 +2,7 @@
 import logging
 
 from django.db import IntegrityError, models
-from django.db.models.deletion import Collector
-from safedelete import HARD_DELETE
-from safedelete.managers import SafeDeleteManager
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
-from safedelete.queryset import SafeDeleteQueryset
 
 from .historicals import ORCHistoricalRecords
 
@@ -48,52 +44,21 @@ def SAFEDELETE_PROTECT(collector, field, sub_objs, using):
         models.PROTECT(collector, field, filtered_subobjs, using)
 
 
-class ORCQuerySet(SafeDeleteQueryset):
-    def delete(self, force_policy=None):
-        if force_policy == HARD_DELETE:
-            # Optimización de HARD_DELETE
-            # Elimina todas las instancias en un query (en vez de invocar delete() por cada instancia)
+class ORCModelManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
 
-            """Delete the records in the current QuerySet."""
-            assert self.query.can_filter(), \
-                "Cannot use 'limit' or 'offset' with delete."
+class SoftDeleteModel(models.Model):
+    is_deleted = models.BooleanField(default=False)
 
-            if self._fields is not None:
-                raise TypeError("Cannot call delete() after .values() or .values_list()")
+    class Meta:
+        abstract = True
 
-            del_query = self._chain()
+    def delete(self, using=None, keep_parents=False):
+        self.is_deleted = True
+        self.save(update_fields=["is_deleted"])
 
-            # The delete is actually 2 queries - one to find related objects,
-            # and one to delete. Make sure that the discovery of related
-            # objects is performed on the same database as the deletion.
-            del_query._for_write = True
-
-            # Disable non-supported fields.
-            del_query.query.select_for_update = False
-            del_query.query.select_related = False
-            del_query.query.clear_ordering(force_empty=True)
-
-            collector = Collector(using=del_query.db)
-            collector.collect(del_query)
-
-            for instances in collector.data.values():
-                for obj in instances:
-                    setattr(obj, 'history_bulk_delete', True)
-
-            deleted, _rows_count = collector.delete()
-
-            # Clear the result cache, in case this QuerySet gets reused.
-            self._result_cache = None
-            return deleted, _rows_count
-        else:
-            super().delete(force_policy)
-    delete.alters_data = True
-
-
-class ORCModelManager(SafeDeleteManager):
-    _queryset_class = ORCQuerySet
-
-class BaseModel(SafeDeleteModel):
+class BaseModel(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
 
     is_deleted = models.BooleanField(
@@ -143,10 +108,8 @@ class BaseModel(SafeDeleteModel):
 
 
 class BasicModelManager(ORCModelManager):
-    _queryset_class = ORCQuerySet
-
     def get_queryset(self):
-        return super().get_queryset().order_by('nombre')
+        return super().get_queryset().filter(is_deleted=False)
 
 
 class BasicModel(BaseModel):

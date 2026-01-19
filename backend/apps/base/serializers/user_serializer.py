@@ -2,7 +2,6 @@ from django.apps import apps
 from rest_framework import serializers
 
 from apps.base.models.user import User
-from apps.auditoria.models import AuditoriaUsuario
 from apps.base.framework.permissions import get_roles
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -73,14 +72,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         user.set_password(password)
         user.save()
-
-        # AUDITORÍA
-        AuditoriaUsuario.objects.create(
-            usuario=usuario_actor,
-            usuario_afectado=user,
-            accion="CREAR",
-            cambios=validated_data  # campos creados
-        )
         return user
     
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -130,15 +121,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         # Si la contraseña cambió, registrarlo
         if password:
             cambios["password"] = {"antes": "********", "después": "********"}
-
-        # ====== REGISTRAR AUDITORÍA ======
-        if cambios:
-            AuditoriaUsuario.objects.create(
-                usuario=usuario_actor,
-                usuario_afectado=instance,
-                accion="EDITAR",
-                cambios=cambios
-            )
 
         return instance 
     

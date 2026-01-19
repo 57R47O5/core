@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet
+        id="user-rol-006-initial-admin-assignment"
+        author="esteban"
+        context="bootstrap">
+
+        <insert tableName="user_rol">
+
+            <!-- Usuario inicial (creado en 004) -->
+            <column name="user_id" valueNumeric="1"/>
+
+            <!-- Rol admin (creado en 005) -->
+            <column name="rol_id" valueNumeric="1"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueComputed="NOW()"/>
+            <column name="updatedat" valueComputed="NOW()"/>
+
+            <!-- Auditoría bootstrap -->
+            <column name="createdby_id" valueNumeric="1"/>
+            <column name="updatedby_id" valueNumeric="1"/>
+
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -3,7 +3,7 @@ from pathlib import Path
 from orchestrator.scripts.generators.paths import APPS_DIR
 from dataclasses import dataclass
 from typing import List, Dict, Optional
-from orchestrator.scripts.setup_logger import setup_logger
+from orchestrator.utils.naming import to_snake_case, to_pascal_case
 
 class ConstantModelGenerationError(RuntimeError):
     pass
@@ -195,7 +195,7 @@ def find_model_and_manager(tree: ast.Module):
 
         bases = {getattr(base, "id", None) for base in node.bases}
 
-        if "ConstantModel" in bases or "BasicModel" in bases:
+        if "ConstantModel" in bases or "BasicModel" in bases or "BaseModel" in bases:
             if model_class:
                 _fail("Más de un modelo encontrado en el archivo")
             model_class = node
@@ -207,9 +207,6 @@ def find_model_and_manager(tree: ast.Module):
 
     if not model_class:
         _fail("No se encontró ConstantModel o BasicModel en el archivo")
-
-    if not manager_class:
-        _fail("No se encontró Manager en el archivo")
 
     return model_class, manager_class
 
@@ -449,7 +446,7 @@ def generate_liquibase_initial_data(
 
 
 def resolve_model_file(app_name:str, model_name: str) -> Path:
-    model_file = APPS_DIR / app_name / "models" /f"{model_name.lower()}.py"
+    model_file = APPS_DIR / app_name / "models" /f"{to_snake_case(model_name)}.py"
     
     if not model_file.exists():
         _fail(f"Modelo '{model_name}' no encontrado en {APPS_DIR}")
@@ -484,7 +481,7 @@ def build_domain_model_definition(
     # --------------------------------------------------
     # Constantes (datos iniciales)
     # --------------------------------------------------
-    constants = extract_constants(manager_class)
+    constants = extract_constants(manager_class) if  manager_class else []
 
     # --------------------------------------------------
     # Herencia
