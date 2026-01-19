@@ -20,3 +20,28 @@ def to_snake_case(name: str) -> str:
     s2 = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s1)
 
     return s2.lower()
+
+def to_pascal_case(name: str) -> str:
+    """
+    Convierte un nombre en snake_case / kebab-case / lowercase
+    a PascalCase.
+
+    Ejemplos:
+    - moneda -> Moneda
+    - tipo_cambio -> TipoCambio
+    - http_status_code -> HttpStatusCode
+    - tipo-cambio -> TipoCambio
+    """
+    if not name:
+        return ""
+
+    # Normalizamos separadores a _
+    normalized = re.sub(r"[-\s]+", "_", name)
+
+    parts = normalized.split("_")
+
+    return "".join(
+        part[:1].upper() + part[1:].lower()
+        for part in parts
+        if part
+    )
