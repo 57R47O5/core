@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 from apps.base.framework.api.options import BaseOptionsAPIView
 from apps.carteles.permisos import EsMedico
 from apps.base.models.user import User
-from apps.base.serializers import UserCreateSerializer, UserRegisterSerializer, UsuarioUpdateSerializer
+from apps.base.serializers.user_serializer import UserCreateSerializer, UserRegisterSerializer, UsuarioUpdateSerializer
 from apps.base.framework.exceptions import excepcion, ExcepcionValidacion
 from apps.base.framework.permissions import get_roles
 

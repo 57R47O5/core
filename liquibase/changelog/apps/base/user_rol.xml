@@ -28,11 +28,11 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="createdby_id" type="INTEGER">
+            <column name="createdby" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="updatedby_id" type="INTEGER">
+            <column name="updatedby" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
 
@@ -89,7 +89,7 @@
     <changeSet id="user-rol-006-fk-createdby" author="system">
         <addForeignKeyConstraint
             baseTableName="user_rol"
-            baseColumnNames="createdby_id"
+            baseColumnNames="createdby"
             referencedTableName="auth_user"
             referencedColumnNames="id"
             constraintName="fk_user_rol_createdby"/>
@@ -98,7 +98,7 @@
     <changeSet id="user-rol-007-fk-updatedby" author="system">
         <addForeignKeyConstraint
             baseTableName="user_rol"
-            baseColumnNames="updatedby_id"
+            baseColumnNames="updatedby"
             referencedTableName="auth_user"
             referencedColumnNames="id"
             constraintName="fk_user_rol_updatedby"/>

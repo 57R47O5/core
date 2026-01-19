@@ -1,6 +1,6 @@
 from .user import User
 from .rol import Rol
-from .userrol import UserRol
+from .user_rol import UserRol
 from .moneda import  Moneda
 
 __all__ = [

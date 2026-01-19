@@ -4,6 +4,9 @@ from orchestrator.scripts.generators.changelog import (
 )
 from orchestrator.scripts.generators.rest_controller import generate_rest_controller
 from orchestrator.scripts.generators.serializer import generate_serializer
+from orchestrator.scripts.generators.rest_urls import generate_rest_urls
+from orchestrator.scripts.generators.urls import generate_urls
+from orchestrator.scripts.generators.tests import generate_model_tests
 from orchestrator.scripts.generators.paths import REPO_ROOT
 from orchestrator.utils.naming import to_snake_case
 from orchestrator.utils.logger import get_logger
@@ -14,9 +17,12 @@ def main():
     app_name = sys.argv[1]
     model_name = sys.argv[2]
 
-    #generate_changelogs(app_name, model_name)
+    generate_changelogs(app_name, model_name)
     generate_rest_controller(app_name,model_name)
     generate_serializer(app_name, model_name)
+    generate_urls(app_name,model_name)
+    generate_rest_urls(app_name)
+    generate_model_tests(app_name, model_name)
 
     print("[GEN] done")
 

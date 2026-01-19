@@ -252,6 +252,7 @@ from .orc_apps import ORC_APPS
 
 DJANGO_BASE_APPS = [
     "corsheaders",
+    "rest_framework",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

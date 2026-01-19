@@ -2,7 +2,7 @@ from orchestrator.scripts.generators.paths import APPS_DIR
 from orchestrator.utils.naming import to_snake_case, to_pascal_case
 
 SERIALIZER_TEMPLATE = """from rest_framework import serializers
-from backend.apps.{app_name}.models.{model_snake} import {ModelName}
+from apps.{app_name}.models.{model_snake} import {ModelName}
 
 
 class {ModelName}Serializer(serializers.ModelSerializer):
