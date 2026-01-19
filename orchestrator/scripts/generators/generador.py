@@ -2,6 +2,8 @@ import sys
 from orchestrator.scripts.generators.changelog import (
     generate_constant_model_changelog,
 )
+from orchestrator.scripts.generators.rest_controller import generate_rest_controller
+from orchestrator.scripts.generators.serializer import generate_serializer
 from orchestrator.scripts.generators.paths import REPO_ROOT
 from orchestrator.utils.naming import to_snake_case
 from orchestrator.utils.logger import get_logger
@@ -12,7 +14,9 @@ def main():
     app_name = sys.argv[1]
     model_name = sys.argv[2]
 
-    generate_changelogs(app_name, model_name)
+    #generate_changelogs(app_name, model_name)
+    generate_rest_controller(app_name,model_name)
+    generate_serializer(app_name, model_name)
 
     print("[GEN] done")
 
