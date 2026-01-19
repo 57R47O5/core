@@ -34,7 +34,6 @@ $frontendPath = $projectModel.Project.FrontendPath
 . "$OrcRoot\lib\postgres-db.ps1"
 Ensure-PostgresDatabase -Context $Context
 
-
 # ------------------------------------------------------------
 # Backend (Django)
 # ------------------------------------------------------------
@@ -72,6 +71,7 @@ if (Test-Path $requirements) {
     Write-Host "No se encontró requirements.txt"
 }
 }
+
 
 
 # ------------------------------------------------------------
