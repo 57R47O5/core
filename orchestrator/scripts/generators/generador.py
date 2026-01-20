@@ -38,7 +38,7 @@ def main():
 
     generate_form_page(definition)
     generate_frontend_form(definition)
-    # generate_frontend_filter(model_name, fields, base_frontend_path)
+    generate_frontend_filter(definition)
     # generate_frontend_list_page(model_name, fields, base_frontend_path)
 
 

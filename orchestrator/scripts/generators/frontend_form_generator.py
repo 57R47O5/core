@@ -134,7 +134,7 @@ import {{ Button }} from "react-bootstrap";
 {imports_code}
 
 export const {definition.ModelName}Schema = Yup.object().shape({{
-{os.linesep.join(schema_entries)}
+{os.linesep[0].join(schema_entries)}
 }});
 
 export function {definition.ModelName}FormFields({{ prefix = "" }}) {{
@@ -142,7 +142,7 @@ export function {definition.ModelName}FormFields({{ prefix = "" }}) {{
 
   return (
     <>
-    {os.linesep.join(form_fields_jsx)}
+    {os.linesep[0].join(form_fields_jsx)}
     </>
   );
 }}
@@ -162,7 +162,7 @@ export default function {definition.ModelName}Form({{
     >
       {{({{ errors, touched }}) => (
         <Form>
-{os.linesep.join(form_fields_jsx)}
+{os.linesep[0].join(form_fields_jsx)}
           <div className="text-end mt-3">
             <Button type="submit" disabled={{submitting}}>
               {{submitting ? "Guardando..." : submitText}}
@@ -183,92 +183,94 @@ export default function {definition.ModelName}Form({{
 
 
 # ============================================================
-#  NUEVO: GENERADOR DEL FILTER
+#  GENERADOR DEL FILTER
 # ============================================================
 
-def generate_frontend_filter(model_name, fields, base_path):
-    model_kebab = (model_name).replace("_","-")
-    model_folder = f"{base_path}/{model_kebab}"
+def generate_frontend_filter(definition:DomainModelDefinition):
+    model_kebab = (definition.model_name).replace("_","-")
+    model_folder = FRONTEND_DIR / "src" / "apps" / definition.app_name / definition.model_name
     os.makedirs(model_folder, exist_ok=True)
 
-    file_path = f"{model_folder}/{model_name}Filter.jsx"
+    file_path = f"{model_folder}/{definition.ModelName}Filter.jsx"
 
     # Campos iniciales vacíos
     initial_values = []
     jsx_fields = []
 
-    for f in fields:
-        name = f["name"]
-        ftype = f["type"]
-        label = name.replace("_", " ").capitalize()
-        initial_values.append(f"      {name}: \"\",")
+    for field in definition.extra_fields:
+      if not field.appears_in_form:
+        continue
+      name = field.name
+      ftype = field.type
+      label = name.replace("_", " ").capitalize()
+      initial_values.append(f"      {name}: \"\",")
 
-        # Construcción del Field
-        if ftype in ("string", "email", "number"):
-            jsx = f"""
-              <div className="col-md-3 mb-3">
-                <RBForm.Label>{label}</RBForm.Label>
-                <Field name="{name}" className="form-control" />
-              </div>
-            """
+      # Construcción del Field
+      if ftype in ("string", "email", "number"):
+          jsx = f"""
+            <div className="col-md-3 mb-3">
+              <RBForm.Label>{label}</RBForm.Label>
+              <Field name="{name}" className="form-control" />
+            </div>
+          """
 
-        elif ftype in ("date", "datetime"):
-            input_type = "datetime-local" if ftype == "datetime" else "date"
-            jsx = f"""
-              <div className="col-md-3 mb-3">
-                <RBForm.Label>{label}</RBForm.Label>
-                <Field name="{name}" type="{input_type}" className="form-control" />
-              </div>
-            """
+      elif ftype in ("date", "datetime"):
+          input_type = "datetime-local" if ftype == "datetime" else "date"
+          jsx = f"""
+            <div className="col-md-3 mb-3">
+              <RBForm.Label>{label}</RBForm.Label>
+              <Field name="{name}" type="{input_type}" className="form-control" />
+            </div>
+          """
 
-        elif ftype == "boolean":
-            jsx = f"""
-              <div className="col-md-2 mb-3 form-check">
-                <Field name="{name}" type="checkbox" className="form-check-input" />
-                <RBForm.Label className="form-check-label">{label}</RBForm.Label>
-              </div>
-            """
+      elif ftype == "boolean":
+          jsx = f"""
+            <div className="col-md-2 mb-3 form-check">
+              <Field name="{name}" type="checkbox" className="form-check-input" />
+              <RBForm.Label className="form-check-label">{label}</RBForm.Label>
+            </div>
+          """
 
-        elif ftype == "foreignkey":
-            jsx = f"""
-              <div className="col-md-3 mb-3">
-                <RBForm.Label>{label}</RBForm.Label>
-                <Field as="select" name="{name}" className="form-control">
-                  <option value="">Seleccione...</option>
-                </Field>
-              </div>
-            """
+      elif ftype == "foreignkey":
+          jsx = f"""
+            <div className="col-md-3 mb-3">
+              <RBForm.Label>{label}</RBForm.Label>
+              <Field as="select" name="{name}" className="form-control">
+                <option value="">Seleccione...</option>
+              </Field>
+            </div>
+          """
 
-        else:
-            jsx = f"""
-              <div className="col-md-3 mb-3">
-                <RBForm.Label>{label}</RBForm.Label>
-                <Field name="{name}" className="form-control" />
-              </div>
-            """
+      else:
+          jsx = f"""
+            <div className="col-md-3 mb-3">
+              <RBForm.Label>{label}</RBForm.Label>
+              <Field name="{name}" className="form-control" />
+            </div>
+          """
 
-        jsx_fields.append(jsx)
+      jsx_fields.append(jsx)
 
     content = f"""
 import {{ Formik, Form, Field }} from "formik";
 import {{ Button, Form as RBForm }} from "react-bootstrap";
 
-const {model_name}Filter = ({{ onSearch, loading }}) => {{
+const {definition.ModelName}Filter = ({{ onSearch, loading }}) => {{
   return (
     <>
-      <h5 className="mb-3">Filtrar {(model_name).replace('_', ' ')}</h5>
+      <h5 className="mb-3">Filtrar {(definition.model_name).replace('_', ' ')}</h5>
 
       <Formik
-        initialValues={{
-{os.linesep.join(initial_values)}
-        }}
+        initialValues={{{{
+{os.linesep[0].join(initial_values)}
+        }}}}
         onSubmit={{(values) => onSearch(values)}}
       >
         {{() => (
           <Form>
             <div className="row">
 
-{os.linesep.join(jsx_fields)}
+{os.linesep[0].join(jsx_fields)}
 
             </div>
 
@@ -284,7 +286,7 @@ const {model_name}Filter = ({{ onSearch, loading }}) => {{
   );
 }};
 
-export default {model_name}Filter;
+export default {definition.ModelName}Filter;
 """
 
     with open(file_path, "w", encoding="utf-8") as f:
