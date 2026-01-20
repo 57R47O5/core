@@ -10,7 +10,7 @@ from apps.{app_name}.models.{model_name} import {ModelName}
 from apps.{app_name}.serializers.{model_name}_serializer import (
     {ModelName}CreateSerializer,
     {ModelName}UpdateSerializer,
-    {ModelName}RetrieveSerializer,
+    {ModelName}RetrieveSerializer)
 from controllers.base.base_rest_controller import ModelRestController
 
 
