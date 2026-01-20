@@ -25,6 +25,7 @@ class FieldDefinition:
     is_embedded: bool = False
     references_model: str | None = None
     references_app: str | None = None
+    appears_in_form: str | None = None
 
     def __str__(self):
         return self.name
@@ -87,16 +88,19 @@ BASE_MODEL_FIELDS = {
             type="BooleanField",
             max_length=None,
             null=False,
+            appears_in_form=False,
             args={"default": False}
         ),
         FieldDefinition(
             name="createdby",
             type="CharField",
+            appears_in_form=False,
             null=True
         ),
         FieldDefinition(
             name="updatedby",
             type="CharField",
+            appears_in_form=False,
             null=True,
         ),
         FieldDefinition(
@@ -104,6 +108,7 @@ BASE_MODEL_FIELDS = {
             type="DateTimeField",
             max_length=None,
             null=True,
+            appears_in_form=False,
             args={"auto_now_add": True}
         ),
         FieldDefinition(
@@ -111,6 +116,7 @@ BASE_MODEL_FIELDS = {
             type="DateTimeField",
             max_length=None,
             null=True,
+            appears_in_form=False,
             args={"auto_now": True}
         ),
     ],
@@ -341,6 +347,7 @@ def extract_extra_fields(model_class: ast.ClassDef):
                     is_foreign_key=True,
                     references_app=ref_app,
                     references_model=ref_model,
+                    appears_in_form=True,
                     is_embedded=field_name in embedded_fks,
                 )
             )

@@ -15,6 +15,10 @@ from orchestrator.scripts.generators.urls import generate_urls
 from orchestrator.scripts.generators.tests import generate_model_tests
 from orchestrator.scripts.generators.paths import REPO_ROOT
 from orchestrator.utils.logger import get_logger
+from orchestrator.scripts.generators.frontend_form_generator import generate_frontend_form, generate_frontend_filter
+from orchestrator.scripts.generators.frontend_formpage_generator import generate_form_page
+from orchestrator.scripts.generators.frontend_list_page_generator import generate_frontend_list_page
+
 
 log = get_logger("orc.generate")
 
@@ -26,9 +30,17 @@ def main():
     #generate_changelogs(definition)
     generate_rest_controller(definition)
     generate_serializer(definition)
-    generate_urls(app_name,model_name)
+    generate_urls(definition)
     generate_rest_urls(app_name)
-    generate_model_tests(app_name, model_name)
+    generate_model_tests(definition)
+
+    # Frontend
+
+    generate_form_page(definition)
+    generate_frontend_form(definition)
+    # generate_frontend_filter(model_name, fields, base_frontend_path)
+    # generate_frontend_list_page(model_name, fields, base_frontend_path)
+
 
     print("[GEN] done")
 

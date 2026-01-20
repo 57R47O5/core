@@ -1,29 +1,28 @@
-import os
 from orchestrator.scripts.generators.paths import APPS_DIR
-from orchestrator.utils.naming import to_snake_case, to_pascal_case
+from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
 
-
-def generate_urls(app_name:str, model_name:str):
+def generate_urls(definition:DomainModelDefinition):
     """
     Genera un urls.py básico usando SimpleRouter.
     Basado directamente en el template proporcionado por el usuario.
     """
 
     # Ej.: modelo Paciente → paciente
-    model_snake = to_snake_case(model_name)
-    ModelName = to_pascal_case(model_snake)
-    model_kebab = model_snake.replace("_", "-")
+    model_name = definition.model_name
+    ModelName = definition.ModelName
+    app_name = definition.app_name
+    model_kebab = model_name.replace("_", "-")
 
     # Controller
     controller_name = f"{ModelName}RestController"
 
-    file_path = APPS_DIR / app_name / "urls" / f"{model_snake}_urls.py"
+    file_path = APPS_DIR / app_name / "urls" / f"{model_name}_urls.py"
 
     # Template base proporcionado por el usuario
     content = f"""
 from django.urls import path
 from rest_framework import routers
-from apps.{app_name}.rest_controllers.{model_snake}_rest_controller import (
+from apps.{app_name}.rest_controllers.{model_name}_rest_controller import (
     {controller_name}
 )
 
