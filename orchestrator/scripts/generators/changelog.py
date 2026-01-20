@@ -1,8 +1,4 @@
-import ast
-from pathlib import Path
-
 from orchestrator.scripts.generators.domain_model_definition import (
-    load_domain_model_definition, 
     DomainModelDefinition, 
     FieldDefinition,
     _fail)
@@ -10,18 +6,6 @@ from orchestrator.scripts.generators.domain_model_definition import (
 # --------------------------------------------------
 # Helpers AST
 # --------------------------------------------------
-IGNORED_ATTRIBUTES = {"objects"}
-
-
-
-def _get_str_constant(node, ctx):
-    if isinstance(node, ast.Constant) and isinstance(node.value, str):
-        return node.value
-    _fail(f"{ctx} debe ser un string literal")
-
-def _is_false(node):
-    return isinstance(node, ast.Constant) and node.value is False
-
 def generate_liquibase_initial_data(
     definition: DomainModelDefinition
 ) -> str:
@@ -32,7 +16,7 @@ def generate_liquibase_initial_data(
 
     if not definition.has_initial_data:
         _fail(
-            f"El modelo {definition.model_name} no define datos iniciales"
+            f"El modelo {definition.ModelName} no define datos iniciales"
         )
 
     xml = [
@@ -46,7 +30,7 @@ def generate_liquibase_initial_data(
 
     for constant in definition.constants:
         nombre = constant["name"].replace("_", " ").title()
-        descripcion = f"{definition.model_name} {nombre}"
+        descripcion = f"{definition.ModelName} {nombre}"
 
         xml.append(f"""
     <changeSet id="{definition.db_table}-{constant['value'].lower()}" author="orco">
@@ -90,7 +74,7 @@ def generate_liquibase_initial_data(
                 if not field.null:
                     _fail(
                         f"No se puede generar dato inicial para FK no nullable "
-                        f"'{field.name}' en {definition.model_name}"
+                        f"'{field.name}' en {definition.ModelName}"
                     )
 
                 xml.append(
@@ -116,7 +100,6 @@ def generate_liquibase_initial_data(
     xml.append("</databaseChangeLog>")
 
     return "\n".join(xml)
-
 
 FIELD_TYPE_MAP = {
     "AutoField": lambda f: "int",
@@ -278,21 +261,3 @@ def generate_historical_model_changelog(
 
     return "\n".join(line.rstrip() for line in xml)
 
-def generate_constant_model_changelog(app_name: str, model_name: str):
-    definition = load_domain_model_definition(app_name, model_name)
-
-    model_xml = generate_model_changelog(definition)
-
-    data_xml = (
-        generate_liquibase_initial_data(definition)
-        if definition.has_initial_data
-        else None
-    )
-
-    history_xml = (
-        generate_historical_model_changelog(definition)
-        if definition.has_history
-        else None
-    )
-
-    return model_xml, data_xml, history_xml

@@ -1,4 +1,4 @@
-import os
+from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
 from orchestrator.scripts.generators.paths import APPS_DIR
 from orchestrator.utils.naming import to_snake_case, to_pascal_case
 
@@ -54,14 +54,14 @@ class {ModelName}RestController(ModelRestController):
         return self.model.objects.filter(filtro).order_by('id')
 """
 
-
-def generate_rest_controller(app_name:str,model_name: str):
+def generate_rest_controller(definition: DomainModelDefinition):
     """
     Genera el archivo RestController para un modelo dado.
     """
 
-    model_name = to_snake_case(model_name)
-    ModelName = to_pascal_case(model_name)
+    model_name = definition.model_name
+    ModelName = definition.ModelName
+    app_name = definition.app_name
 
     file_path = APPS_DIR / app_name / "rest_controllers" / f"{model_name}_rest_controller.py"
 
