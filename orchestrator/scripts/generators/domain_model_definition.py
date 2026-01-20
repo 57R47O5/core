@@ -5,7 +5,6 @@ from typing import List, Dict, Optional, Any
 from orchestrator.scripts.generators.paths import APPS_DIR
 from orchestrator.utils.naming import to_snake_case, to_pascal_case
 
-
 @dataclass(frozen=True)
 class FieldDefinition:
     name: str
@@ -22,6 +21,7 @@ class FieldDefinition:
     default: Any | None = None
     choices: list | None = None
     fk_target: str | None = None
+    is_embedded: bool = False
 
     def __str__(self):
         return self.name
@@ -42,7 +42,8 @@ class DomainModelDefinition:
     - documentación
     - otros artefactos futuros
     """
-    model_name: str
+    app_name: str
+    ModelName: str
     db_table: str
     constants: List[Dict[str, str]]
     extra_fields: List[FieldDefinition]
@@ -62,6 +63,10 @@ class DomainModelDefinition:
         Indica si el modelo necesita una  tabla histórica
         """
         return self.inherits_from_base_model
+    
+    @property
+    def model_name(self)->str:
+        return to_snake_case(self.ModelName)
 
     
 BASE_MODEL_FIELDS = {
@@ -258,15 +263,27 @@ def extract_constants(manager_class: ast.ClassDef):
 def extract_extra_fields(model_class: ast.ClassDef):
     """
     Descubre campos adicionales al contrato base y los devuelve
-    como definiciones de dominio (no strings sueltos).
-
-    Reglas:
-    - Se ignoran: id, codigo, nombre, descripcion
-    - Se ignora explícitamente: objects
-    - Solo se permiten CharField (por ahora)
+    como definiciones de dominio ricas (FieldDefinition).
     """
+
     base_fields = {"id", "codigo", "nombre", "descripcion"}
-    ignored_attrs = {"objects"}
+    ignored_attrs = {"objects", "EMBEDDED_FKS"}
+
+    # --------------------------------------------------
+    # Detectar FKs embebidos declarados en el modelo
+    # --------------------------------------------------
+    embedded_fks = set()
+
+    for stmt in model_class.body:
+        if (
+            isinstance(stmt, ast.Assign)
+            and isinstance(stmt.targets[0], ast.Name)
+            and stmt.targets[0].id == "EMBEDDED_FKS"
+            and isinstance(stmt.value, (ast.List, ast.Tuple))
+        ):
+            for elt in stmt.value.elts:
+                if isinstance(elt, ast.Constant) and isinstance(elt.value, str):
+                    embedded_fks.add(elt.value)
 
     extra_fields = []
 
@@ -285,25 +302,56 @@ def extract_extra_fields(model_class: ast.ClassDef):
         if not isinstance(stmt.value, ast.Call):
             continue
 
-        field_type = getattr(stmt.value.func, "attr", None)
+        call = stmt.value
+        field_type = getattr(call.func, "attr", None)
 
-        if field_type == "CharField":
+        # ----------------------------------------------
+        # ForeignKey
+        # ----------------------------------------------
+        if field_type == "ForeignKey":
+            ref_model = None
+            ref_column = "id"
+
+            # Primer argumento: modelo referenciado
+            if call.args and isinstance(call.args[0], ast.Name):
+                ref_model = call.args[0].id
+
+            # Keywords: to_field
+            for kw in call.keywords:
+                if kw.arg == "to_field" and isinstance(kw.value, ast.Constant):
+                    ref_column = kw.value.value
+
+            if ref_model == "User":
+                ref_table = "auth_user"
+            elif ref_model:
+                ref_table = to_snake_case(ref_model)
+            else:
+                ref_table = None
+
             extra_fields.append(
                 FieldDefinition(
                     name=field_name,
-                    type="CharField",
-                    args={}   # futuro: max_length, null, etc.
+                    type="foreignkey",
+                    is_foreign_key=True,
+                    references_table=ref_table,
+                    references_column=ref_column,
+                    is_embedded=field_name in embedded_fks,
                 )
             )
-        else:
-            _fail(
-                f"Campo no soportado '{field_name}' "
-                f"(solo CharField permitido)"
+            continue
+
+        # ----------------------------------------------
+        # Campo normal
+        # ----------------------------------------------
+        extra_fields.append(
+            FieldDefinition(
+                name=field_name,
+                type=field_type,
+                is_foreign_key=False,
             )
+        )
 
     return extra_fields
-
-
 def find_model_and_manager(tree: ast.Module):
     """
     Localiza el ConstantModel/BasicModel y su Manager asociado
@@ -353,6 +401,7 @@ def parse_ast_file(model_file: Path) -> ast.Module:
 
 
 def build_domain_model_definition(
+    app_name: str,
     tree: ast.AST
 ) -> DomainModelDefinition:
     """
@@ -405,7 +454,8 @@ def build_domain_model_definition(
     # Construcción de la definición
     # --------------------------------------------------
     return DomainModelDefinition(
-        model_name=model_class.name,
+        app_name = app_name,
+        ModelName=model_class.name,
         db_table=db_table,
         constants=constants,
         extra_fields=all_fields,
@@ -423,4 +473,4 @@ def load_domain_model_definition(
     """
     model_file = resolve_model_file(app_name, model_name)
     tree = parse_ast_file(model_file)
-    return build_domain_model_definition(tree)
+    return build_domain_model_definition(app_name, tree)
