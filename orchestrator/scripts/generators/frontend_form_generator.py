@@ -16,11 +16,32 @@ def generate_frontend_form(definition:DomainModelDefinition):
 
     yup_entries = []
     form_fields_jsx = []
+    embedded_forms = []
+    embedded_schemas = []
 
     for field in definition.extra_fields:
         if not field.appears_in_form:
             continue
         required = None
+
+        if field.is_foreign_key and field.is_embedded:
+          ref_model = field.references_model
+          ref_app = field.references_app
+
+          imports.add(
+              f"{{ {ref_model}FormFields, {ref_model}Schema }} "
+              f'from "../../{ref_app}/{to_snake_case(ref_model)}/{ref_model}Form"'
+          )
+
+          embedded_schemas.append(
+              f"  {field.name}: {ref_model}Schema,"
+          )
+
+          form_fields_jsx.append(f"""
+          <{ref_model}FormFields prefix="{field.name}" />
+          """)
+
+          continue
 
         # YUP
         yup_line = f"{field.name}: "
@@ -44,6 +65,7 @@ def generate_frontend_form(definition:DomainModelDefinition):
             yup_line += ".nullable()"
 
         yup_entries.append("  " + yup_line + ",")
+        schema_entries = yup_entries + embedded_schemas
 
         # COMPONENTES FRONT
         label = field.name.replace("_", " ").capitalize()
@@ -112,8 +134,18 @@ import {{ Button }} from "react-bootstrap";
 {imports_code}
 
 export const {definition.ModelName}Schema = Yup.object().shape({{
-{os.linesep.join(yup_entries)}
+{os.linesep.join(schema_entries)}
 }});
+
+export function {definition.ModelName}FormFields({{ prefix = "" }}) {{
+  const fieldName = (name) => prefix ? `${{prefix}}.${{name}}` : name;
+
+  return (
+    <>
+    {os.linesep.join(form_fields_jsx)}
+    </>
+  );
+}}
 
 export default function {definition.ModelName}Form({{
   initialValues,
