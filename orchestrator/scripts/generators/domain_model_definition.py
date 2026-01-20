@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List, Dict, Optional, Any
 from orchestrator.scripts.generators.paths import APPS_DIR
 from orchestrator.utils.naming import to_snake_case, to_pascal_case
+from orchestrator.utils.resolve_model_app import resolve_model_app
 
 @dataclass(frozen=True)
 class FieldDefinition:
@@ -22,6 +23,8 @@ class FieldDefinition:
     choices: list | None = None
     fk_target: str | None = None
     is_embedded: bool = False
+    references_model: str | None = None
+    references_app: str | None = None
 
     def __str__(self):
         return self.name
@@ -89,16 +92,12 @@ BASE_MODEL_FIELDS = {
         FieldDefinition(
             name="createdby",
             type="CharField",
-            null=True,
-            is_foreign_key=True,
-            references_table="auth_user"
+            null=True
         ),
         FieldDefinition(
             name="updatedby",
             type="CharField",
             null=True,
-            is_foreign_key=True,
-            references_table="auth_user"
         ),
         FieldDefinition(
             name="createdat",
@@ -310,48 +309,56 @@ def extract_extra_fields(model_class: ast.ClassDef):
         # ----------------------------------------------
         if field_type == "ForeignKey":
             ref_model = None
-            ref_column = "id"
+            ref_app = None
 
+            # ------------------------------------
             # Primer argumento: modelo referenciado
-            if call.args and isinstance(call.args[0], ast.Name):
-                ref_model = call.args[0].id
+            # ------------------------------------
+            if call.args:
+                arg = call.args[0]
 
-            # Keywords: to_field
-            for kw in call.keywords:
-                if kw.arg == "to_field" and isinstance(kw.value, ast.Constant):
-                    ref_column = kw.value.value
+                # ForeignKey(Modelo)
+                if isinstance(arg, ast.Name):
+                    ref_model = arg.id
 
-            if ref_model == "User":
-                ref_table = "auth_user"
-            elif ref_model:
-                ref_table = to_snake_case(ref_model)
-            else:
-                ref_table = None
+                # ForeignKey("app.Modelo")
+                elif isinstance(arg, ast.Constant) and isinstance(arg.value, str):
+                    if "." in arg.value:
+                        ref_app, ref_model = arg.value.split(".")
+                    else:
+                        ref_model = arg.value
+
+            # ------------------------------------
+            # Inferir app si no viene explícita
+            # ------------------------------------
+            if ref_model and not ref_app:
+                ref_app = resolve_model_app(ref_model)
 
             extra_fields.append(
                 FieldDefinition(
                     name=field_name,
                     type="foreignkey",
                     is_foreign_key=True,
-                    references_table=ref_table,
-                    references_column=ref_column,
+                    references_app=ref_app,
+                    references_model=ref_model,
                     is_embedded=field_name in embedded_fks,
                 )
             )
-            continue
 
         # ----------------------------------------------
         # Campo normal
         # ----------------------------------------------
-        extra_fields.append(
-            FieldDefinition(
-                name=field_name,
-                type=field_type,
-                is_foreign_key=False,
+        else:
+            extra_fields.append(
+                FieldDefinition(
+                    name=field_name,
+                    type=field_type,
+                    is_foreign_key=False,
+                )
             )
-        )
 
     return extra_fields
+
 def find_model_and_manager(tree: ast.Module):
     """
     Localiza el ConstantModel/BasicModel y su Manager asociado

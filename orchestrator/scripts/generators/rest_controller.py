@@ -1,6 +1,5 @@
 from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
 from orchestrator.scripts.generators.paths import APPS_DIR
-from orchestrator.utils.naming import to_snake_case, to_pascal_case
 
 CONTROLLER_TEMPLATE = """from django.db.models import Q
 from datetime import datetime
