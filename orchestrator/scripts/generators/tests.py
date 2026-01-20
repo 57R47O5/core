@@ -1,23 +1,25 @@
 import os
 from orchestrator.scripts.generators.paths import APPS_DIR
-from orchestrator.utils.naming import to_snake_case, to_pascal_case
+from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
 
 
-def generate_model_tests(app_name: str, model_name: str):
+def generate_model_tests(definition:DomainModelDefinition):
     """
     Genera tests CRUD básicos para un modelo.
     Se ejecuta como parte de: orc generate <model> <app>
     """
 
-    model_snake = to_snake_case(model_name)
-    ModelName = to_pascal_case(model_snake)
-    model_kebab = model_snake.replace("_", "-")
+    model_name = definition.model_name
+    ModelName = definition.ModelName
+    app_name = definition.app_name
+    model_kebab = model_name.replace("_", "-")
+
 
     tests_dir = (
         APPS_DIR
         / app_name
         / "tests"
-        / f"test_{model_snake}"
+        / f"test_{model_name}"
     )
 
     os.makedirs(tests_dir, exist_ok=True)
@@ -26,7 +28,7 @@ def generate_model_tests(app_name: str, model_name: str):
     init_file = tests_dir / "__init__.py"
     init_file.touch(exist_ok=True)
 
-    test_file = tests_dir / f"test_{model_snake}_crud.py"
+    test_file = tests_dir / f"test_{model_name}_crud.py"
 
     content = f"""
 import json

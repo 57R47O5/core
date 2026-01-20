@@ -1,5 +1,5 @@
 from orchestrator.scripts.generators.paths import APPS_DIR
-from orchestrator.utils.naming import to_snake_case, to_pascal_case
+from orchestrator.utils.naming import to_pascal_case
 
 def generate_rest_urls(app_name: str):
     """
