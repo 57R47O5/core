@@ -23,9 +23,9 @@ def main():
     model_name = sys.argv[2]
 
     definition = load_domain_model_definition(app_name, model_name)
-    generate_changelogs(definition)
+    #generate_changelogs(definition)
     generate_rest_controller(definition)
-    generate_serializer(app_name, model_name)
+    generate_serializer(definition)
     generate_urls(app_name,model_name)
     generate_rest_urls(app_name)
     generate_model_tests(app_name, model_name)
