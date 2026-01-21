@@ -19,109 +19,111 @@ def generate_frontend_form(definition:DomainModelDefinition):
     embedded_forms = []
     embedded_schemas = []
 
+    print(f"Los extra_fields son {definition.extra_fields}")
+
     for field in definition.extra_fields:
-        if not field.appears_in_form:
-            continue
-        required = None
-
-        if field.is_foreign_key and field.is_embedded:
-          ref_model = field.references_model
-          ref_app = field.references_app
-
-          imports.add(
-              f"{{ {ref_model}FormFields, {ref_model}Schema }} "
-              f'from "../../{ref_app}/{to_snake_case(ref_model)}/{ref_model}Form"'
-          )
-
-          embedded_schemas.append(
-              f"  {field.name}: {ref_model}Schema,"
-          )
-
-          form_fields_jsx.append(f"""
-          <{ref_model}FormFields prefix="{field.name}" />
-          """)
-
+      if not field.appears_in_form:
           continue
+      required = None
 
-        # YUP
-        yup_line = f"{field.name}: "
+      if field.is_foreign_key and field.is_embedded:
+        ref_model = field.references_model
+        ref_app = field.references_app
 
-        if field.type == "string":
-            yup_line += "Yup.string()"
-        elif field.type == "email":
-            yup_line += "Yup.string().email('Email inválido')"
-        elif field.type in ["date", "datetime"]:
-            yup_line += "Yup.date()"
-        elif field.type == "number":
-            yup_line += "Yup.number()"
-        elif field.type == "boolean":
-            yup_line += "Yup.boolean()"
-        else:
-            yup_line += "Yup.mixed()"
+        imports.add(
+            f"{{ {ref_model}FormFields, {ref_model}Schema }} "
+            f'from "../../{ref_app}/{to_snake_case(ref_model)}/{ref_model}Form"'
+        )
 
-        if required:
-            yup_line += f".required('El campo {field.name} es obligatorio')"
-        else:
-            yup_line += ".nullable()"
+        embedded_schemas.append(
+            f"  {field.name}: {ref_model}Schema,"
+        )
 
-        yup_entries.append("  " + yup_line + ",")
-        schema_entries = yup_entries + embedded_schemas
+        form_fields_jsx.append(f"""
+        <{ref_model}FormFields prefix="{field.name}" />
+        """)
 
-        # COMPONENTES FRONT
-        label = field.name.replace("_", " ").capitalize()
+        continue
 
-        if field.type in ("string", "email", "number"):
-            imports.add("InputFormik")
-            extra = ' type="email"' if field.type == "email" else ""
-            jsx = f"""
-        <InputFormik
-          name="{field.name}"
-          label="{label}"
-          {extra}
-        />
-            """
+      # YUP
+      yup_line = f"{field.name}: "
 
-        elif field.type == "boolean":
-            imports.add("CheckboxFormik")
-            jsx = f"""
-        <CheckboxFormik
-          name="{field.name}"
-          label="{label}"
-        />
-            """
+      if field.type == "string":
+          yup_line += "Yup.string()"
+      elif field.type == "email":
+          yup_line += "Yup.string().email('Email inválido')"
+      elif field.type in ["date", "datetime"]:
+          yup_line += "Yup.date()"
+      elif field.type == "number":
+          yup_line += "Yup.number()"
+      elif field.type == "boolean":
+          yup_line += "Yup.boolean()"
+      else:
+          yup_line += "Yup.mixed()"
 
-        elif field.type in ("date", "datetime"):
-            imports.add("DatepickerFormik")
-            mode = "datetime" if field.type == "datetime" else "date"
-            jsx = f"""
-        <DatepickerFormik
-          name="{field.name}"
-          label="{label}"
-          mode="{mode}"
-        />
-            """
+      if required:
+          yup_line += f".required('El campo {field.name} es obligatorio')"
+      else:
+          yup_line += ".nullable()"
 
-        elif field.type == "ForeignKey":
-            imports.add("SelectFormik")
-            endpoint = to_snake_case(field.references_model).replace("_", "-")
-            jsx = f"""
-        <SelectFormik
-          name="{field.name}"
-          label="{label}"
-          endpoint="{endpoint}"
-        />
-            """
+      yup_entries.append("  " + yup_line + ",")
+      schema_entries = yup_entries + embedded_schemas
 
-        else:
-            imports.add("InputFormik")
-            jsx = f"""
-        <InputFormik
-          name="{field.name}"
-          label="{label}"
-        />
-            """
+      # COMPONENTES FRONT
+      label = field.name.replace("_", " ").capitalize()
 
-        form_fields_jsx.append(jsx)
+      if field.type in ("string", "email", "number"):
+          imports.add("InputFormik")
+          extra = ' type="email"' if field.type == "email" else ""
+          jsx = f"""
+      <InputFormik
+        name="{field.name}"
+        label="{label}"
+        {extra}
+      />
+          """
+
+      elif field.type == "boolean":
+          imports.add("CheckboxFormik")
+          jsx = f"""
+      <CheckboxFormik
+        name="{field.name}"
+        label="{label}"
+      />
+          """
+
+      elif field.type in ("date", "datetime"):
+          imports.add("DatepickerFormik")
+          mode = "datetime" if field.type == "datetime" else "date"
+          jsx = f"""
+      <DatepickerFormik
+        name="{field.name}"
+        label="{label}"
+        mode="{mode}"
+      />
+          """
+
+      elif field.type == "ForeignKey":
+          imports.add("SelectFormik")
+          endpoint = to_snake_case(field.references_model).replace("_", "-")
+          jsx = f"""
+      <SelectFormik
+        name="{field.name}"
+        label="{label}"
+        endpoint="{endpoint}"
+      />
+          """
+
+      else:
+          imports.add("InputFormik")
+          jsx = f"""
+      <InputFormik
+        name="{field.name}"
+        label="{label}"
+      />
+          """
+
+      form_fields_jsx.append(jsx)
 
     imports_code = "\n".join(
         [f'import {imp} from "../../components/formik/{imp}";' for imp in sorted(imports)]

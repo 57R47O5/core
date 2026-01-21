@@ -25,7 +25,7 @@ class FieldDefinition:
     is_embedded: bool = False
     references_model: str | None = None
     references_app: str | None = None
-    appears_in_form: str | None = None
+    appears_in_form: bool | None = True
 
     def __str__(self):
         return self.name
@@ -143,11 +143,13 @@ BASE_MODEL_FIELDS = {
             type="CharField", 
             null= False,
             unique= True,
+            appears_in_form=False,
             max_length= 50
         ),
         FieldDefinition(
             name="activo", 
             type="BooleanField", 
+            appears_in_form=False,
             null= False),
     ],
 }
