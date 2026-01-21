@@ -241,7 +241,7 @@ def generate_historical_model_changelog(
     xml.append('        <column name="history_user" type="varchar(150)"/>')
 
     # --- Campos del modelo original ---
-    for field in definition.fields:
+    for field in definition.extra_fields:
         column_type = map_field_type(field)
 
         attrs = [f'name="{field.name}"', f'type="{column_type}"']

@@ -1,44 +1,41 @@
 import os
-import re
+
+from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
+from orchestrator.scripts.generators.paths import FRONTEND_DIR
 
 
-def to_kebab_case(name):
-    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1-\2", name)
-    return re.sub("([a-z0-9])([A-Z])", r"\1-\2", s1).lower()
-
-
-def generate_frontend_list_page(model_name, fields, base_path):
-    model_kebab = to_kebab_case(model_name)
-    model_folder = f"{base_path}/{model_kebab}"
+def generate_frontend_list_page(definition:DomainModelDefinition):
+    model_kebab = (definition.model_name).replace("_","-")
+    model_folder = model_folder = FRONTEND_DIR / "src" / "apps" / definition.app_name / definition.model_name
     os.makedirs(model_folder, exist_ok=True)
 
-    file_path = f"{model_folder}/{model_name}ListPage.jsx"
+    file_path = f"{model_folder}/{definition.ModelName}ListPage.jsx"
 
     # Construimos las columnas en base a los fields del modelo
     columns_js = []
-    for f in fields:
-        name = f["name"]
-        label = name.replace("_", " ").capitalize()
-        columns_js.append(f'        {{ label: "{label}", field: "{name}" }},')
+    for field in definition.extra_fields:
+      if not field.appears_in_form:
+        continue
+      name = field.name
+      label = name.replace("_", " ").capitalize()
+      columns_js.append(f'      {{ label: "{label}", field: "{name}" }}')
 
-    columns_render = "\n".join(columns_js)
+    columns_render = "{[\n" + ",\n".join(columns_js) + "\n      ]}"
 
     content = f"""
 import BaseListPage from "../../components/listados/BaseListPage";
-import {model_name}Filter from "./{model_name}Filter";
+import {definition.ModelName}Filter from "./{definition.ModelName}Filter";
 
-export default function {model_name}ListPage() {{
+export default function {definition.ModelName}ListPage() {{
   return (
     <BaseListPage
       controller="{model_kebab}"
-      title="{model_name}"
-      FilterComponent={model_name}Filter}}
-      columns={[
-{columns_render}
-      ]}
+      title="{definition.ModelName}"
+      FilterComponent={{{definition.ModelName}Filter}}
+      columns={columns_render}
     />
   );
-}}
+  }}
 """
 
     with open(file_path, "w", encoding="utf-8") as f:

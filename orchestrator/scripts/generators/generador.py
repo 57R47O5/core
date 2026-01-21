@@ -27,7 +27,7 @@ def main():
     model_name = sys.argv[2]
 
     definition = load_domain_model_definition(app_name, model_name)
-    #generate_changelogs(definition)
+    generate_changelogs(definition)
     generate_rest_controller(definition)
     generate_serializer(definition)
     generate_urls(definition)
@@ -39,8 +39,7 @@ def main():
     generate_form_page(definition)
     generate_frontend_form(definition)
     generate_frontend_filter(definition)
-    # generate_frontend_list_page(model_name, fields, base_frontend_path)
-
+    generate_frontend_list_page(definition)
 
     print("[GEN] done")
 
