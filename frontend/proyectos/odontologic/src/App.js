@@ -35,7 +35,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
-                 <Route
+          <Route
           path="/usuarios"
           element={
             <RequireRole roles={['MEDICO']}>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="moneda-pyg" author="orco">
+        <insert tableName="moneda">
+            <column name="id" valueComputed="nextval('moneda_id_seq')"/>
+            <column name="codigo" value="PYG"/>
+            <column name="nombre" value="Guarani"/>
+            <column name="descripcion" value="Moneda Guarani"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+        <column name="simbolo" value=""/>
+
+        </insert>
+        <rollback>
+            <delete tableName="moneda">
+                <where>codigo = 'PYG'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="moneda-usd" author="orco">
+        <insert tableName="moneda">
+            <column name="id" valueComputed="nextval('moneda_id_seq')"/>
+            <column name="codigo" value="USD"/>
+            <column name="nombre" value="Dolar"/>
+            <column name="descripcion" value="Moneda Dolar"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+        <column name="simbolo" value=""/>
+
+        </insert>
+        <rollback>
+            <delete tableName="moneda">
+                <where>codigo = 'USD'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="moneda-brl" author="orco">
+        <insert tableName="moneda">
+            <column name="id" valueComputed="nextval('moneda_id_seq')"/>
+            <column name="codigo" value="BRL"/>
+            <column name="nombre" value="Real"/>
+            <column name="descripcion" value="Moneda Real"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+        <column name="simbolo" value=""/>
+
+        </insert>
+        <rollback>
+            <delete tableName="moneda">
+                <where>codigo = 'BRL'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

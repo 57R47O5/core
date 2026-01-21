@@ -1,7 +1,7 @@
 import os
-from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
-from orchestrator.scripts.generators.paths import FRONTEND_DIR
-from orchestrator.utils.naming import to_snake_case
+from scripts.generators.domain_model_definition import DomainModelDefinition
+from scripts.generators.paths import FRONTEND_DIR
+from scripts.utils.naming import to_snake_case
 
 # ============================================================
 #  GENERADOR DEL FORM 

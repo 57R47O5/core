@@ -1,6 +1,6 @@
 from enum import Enum
 from django.db import models
-from apps.base.models.user import User
+from backend.apps.auth.models.user import User
 
 class Persona(models.Model):
     """Representa a una persona física o jurídica que puede administrar carteles."""

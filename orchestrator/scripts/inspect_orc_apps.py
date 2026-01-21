@@ -1,7 +1,6 @@
 import importlib.util
 from pathlib import Path
 
-
 def get_orc_apps(project_root: Path) -> list[str]:
     """
     Descubre las apps del orco a partir de:
@@ -36,10 +35,8 @@ if __name__ == "__main__":
         print("Uso: inspect_orc_apps.py <project_name>")
         sys.exit(1)
 
-    project_name = sys.argv[1]
-    workspace_root = Path.cwd()
-    project_root = workspace_root / project_name
-
+    project_root = sys.argv[1]
+    
     apps = get_orc_apps(project_root)
 
     for app in apps:

@@ -1,9 +1,6 @@
 import ast
-import logging
-import sys
 from pathlib import Path
 from typing import List
-
 
 def get_model_fks(
     project_root: Path,

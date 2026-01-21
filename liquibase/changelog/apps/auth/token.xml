@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet
+        id="auth-006-create-token"
+        author="orco">
+
+        <createTable tableName="token">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="key" type="VARCHAR(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="expires_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="last_used_at" type="TIMESTAMP WITH TIME ZONE"/>
+
+            <column name="user_agent" type="VARCHAR(255)"/>
+            <column name="ip_address" type="VARCHAR(45)"/>
+
+            <!-- Soft delete -->
+            <column name="is_deleted" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Auditoría -->
+            <column name="createdat" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updatedat" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="createdby_id" type="BIGINT"/>
+            <column name="updatedby_id" type="BIGINT"/>
+
+        </createTable>
+
+        <!-- FK -->
+        <addForeignKeyConstraint
+            baseTableName="token"
+            baseColumnNames="user_id"
+            referencedTableName="user"
+            referencedColumnNames="id"
+            constraintName="fk_token_user"/>
+
+        <!-- Índices -->
+        <createIndex tableName="token" indexName="idx_token_key">
+            <column name="key"/>
+        </createIndex>
+
+        <createIndex tableName="token" indexName="idx_token_user">
+            <column name="user_id"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>

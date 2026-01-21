@@ -1,4 +1,5 @@
 from pathlib import Path
+from generators.paths import REPO_ROOT
 
 import sys
 
@@ -11,7 +12,7 @@ from generate_master_changelog import generate_master_changelog
 from setup_logger import setup_logger
 
 def main(project_name: str):
-    project_root = Path.cwd()
+    project_root = REPO_ROOT
     logger = setup_logger(project_root)
 
     logger.info("=== migrate_engine iniciado ===")

@@ -1,7 +1,6 @@
 import os
-from orchestrator.scripts.generators.paths import APPS_DIR
-from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
-
+from scripts.generators.paths import APPS_DIR
+from scripts.generators.domain_model_definition import DomainModelDefinition
 
 def generate_model_tests(definition:DomainModelDefinition):
     """

@@ -1,5 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: changelog/apps/base/rol.xml
-  - include:
-      file: changelog/apps/base/rol_history.xml

@@ -1,10 +1,10 @@
-from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
-from orchestrator.scripts.generators.paths import APPS_DIR
+from scripts.generators.domain_model_definition import DomainModelDefinition
+from scripts.generators.paths import APPS_DIR
 
 CONTROLLER_TEMPLATE = """from django.db.models import Q
 from datetime import datetime
 
-from base.framework.api.options import BaseOptionsAPIView
+from framework.api.options import BaseOptionsAPIView
 from apps.{app_name}.models.{model_name} import {ModelName}
 from apps.{app_name}.serializers.{model_name}_serializer import (
     {ModelName}CreateSerializer,

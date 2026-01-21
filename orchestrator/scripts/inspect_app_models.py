@@ -2,7 +2,6 @@ import ast
 from pathlib import Path
 from typing import List
 
-
 def get_app_models(project_root: Path, app_name: str) -> List[str]:
     models_init = (
         project_root
