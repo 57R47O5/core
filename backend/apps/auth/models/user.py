@@ -6,8 +6,18 @@ class User(models.Model):
     No representa una persona.
     """
 
-    # Identidad de login
-    email = models.EmailField(unique=True)
+    # Identidad lógica
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        help_text="Identificador lógico estable del usuario"
+    )
+
+    # Identidad de contacto
+    email = models.EmailField(
+        unique=True,
+        help_text="Email de contacto (no identidad primaria)"
+    )
 
     # Seguridad
     password_hash = models.CharField(max_length=255)

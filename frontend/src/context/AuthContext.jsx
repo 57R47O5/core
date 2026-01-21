@@ -1,66 +1,65 @@
 import { createContext, useState, useEffect } from "react";
-import { login, logout, check } from "../api/auth";
-import { Alertar, Tipo } from "../utils/alertas";
+import { login, logout, me } from "../api/auth";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState();
-  const [userRoles, setUserRoles] = useState(null)
   const [loading, setLoading] = useState(true);
 
-   useEffect(() => {
-        const verificarAuth = async () => {
-            try {
-                const response = await check();
-                setIsAuthenticated(response.isAuthenticated);
-                setUser(response?.user);
-                setUserRoles(response?.user?.roles);
-            } catch (error) {
-                setIsAuthenticated(false);
-                setUser(null);
-                setUserRoles(null);
-                console.error('Error', error)
-                Alertar(error, Tipo.ERROR)
-              } finally {
-                setLoading(false);
-              }
-        };
+  // --------------------------------------------
+  // Inicialización: verificar token (me)
+  // --------------------------------------------
+  useEffect(() => {
+    const inicializarAuth = async () => {
+      try {
+        const response = await me();
+        setUser(response.user);
+        setIsAuthenticated(true);
+      } catch (error) {
+        // Token inválido / expirado / ausente
+        setUser(null);
+        setIsAuthenticated(false);
+        console.error("Auth init error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        verificarAuth();
-      }, []);
-      
-      const handleLogin = async (credentials) => {
-        try {
-          const { user } = await login(credentials);
-          setUser(user.username);
-          setIsAuthenticated(true)
-        }catch(error){
-        console.error('Error', error)
-        Alertar(error, Tipo.ERROR)
-    }
+    inicializarAuth();
+  }, []);
 
+  // --------------------------------------------
+  // Login
+  // --------------------------------------------
+  const handleLogin = async (credentials) => {
+    const response = await login(credentials);
+
+    setUser(response.user);
+    setIsAuthenticated(true);
   };
- 
+
+  // --------------------------------------------
+  // Logout
+  // --------------------------------------------
   const handleLogout = async () => {
-    try {
-      await logout();
-      setUser(null);
-      setIsAuthenticated(false)
-      localStorage.removeItem("csrftoken");
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-      Alertar(error, Tipo.ERROR)
-    }
+    await logout();
+
+    setUser(null);
+    setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, setUser, 
-      userRoles, setUserRoles, 
-      isAuthenticated, loading, 
-      handleLogin, handleLogout  }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated,
+        loading,
+        handleLogin,
+        handleLogout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
