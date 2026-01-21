@@ -343,7 +343,7 @@ def extract_extra_fields(model_class: ast.ClassDef):
             extra_fields.append(
                 FieldDefinition(
                     name=field_name,
-                    type="foreignkey",
+                    type="ForeignKey",
                     is_foreign_key=True,
                     references_app=ref_app,
                     references_model=ref_model,

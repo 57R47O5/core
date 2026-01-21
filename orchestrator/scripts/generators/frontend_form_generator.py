@@ -101,7 +101,7 @@ def generate_frontend_form(definition:DomainModelDefinition):
         />
             """
 
-        elif field.type == "foreignkey":
+        elif field.type == "ForeignKey":
             imports.add("SelectFormik")
             endpoint = to_snake_case(field.references_model).replace("_", "-")
             jsx = f"""
@@ -187,7 +187,6 @@ export default function {definition.ModelName}Form({{
 # ============================================================
 
 def generate_frontend_filter(definition:DomainModelDefinition):
-    model_kebab = (definition.model_name).replace("_","-")
     model_folder = FRONTEND_DIR / "src" / "apps" / definition.app_name / definition.model_name
     os.makedirs(model_folder, exist_ok=True)
 
@@ -231,7 +230,7 @@ def generate_frontend_filter(definition:DomainModelDefinition):
             </div>
           """
 
-      elif ftype == "foreignkey":
+      elif ftype == "ForeignKey":
           jsx = f"""
             <div className="col-md-3 mb-3">
               <RBForm.Label>{label}</RBForm.Label>
