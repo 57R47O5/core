@@ -616,7 +616,11 @@ Project URL configuration.
 Delegates routing to ORCO-managed apps.
 """
 
-from config.urls import urlpatterns
+from django.urls import path, include
+
+urlpatterns = [
+    path("api/", include("config.urls")),
+]
 '''
     project_urls_path.write_text(project_urls_content)
 
