@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import BaseLayout from "./BaseLayout";
 
+
 const Home = () => {
   const { user, isAuthenticated } = useContext(AuthContext);
 

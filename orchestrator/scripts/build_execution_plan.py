@@ -10,6 +10,7 @@ def build_execution_plan(
 
     # Ordenar apps
     app_graph = build_app_graph(apps_models)
+    print(f"app_graph es:  {app_graph}")
     apps_sorted = topo_sort_apps(app_graph)
 
     apps_models_map = {

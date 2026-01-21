@@ -14,7 +14,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from apps.base.serializers import UserLookupSerializer
 from apps.base.framework.exceptions import excepcion, ExcepcionPermisos, ExcepcionValidacion
-from apps.base.models.user import User
+from backend.apps.auth.models.user import User
 from apps.base.serializers import UserSerializer
 
 @api_view(['POST'])

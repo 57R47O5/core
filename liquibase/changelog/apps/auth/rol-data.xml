@@ -1,0 +1,45 @@
+<changeSet id="rol-seed" author="orco">
+    <!-- OWNER -->
+    <insert tableName="rol">
+        <column name="code" value="owner"/>
+        <column name="name" value="Owner"/>
+        <column name="description" value="Propietario de la cuenta con control total del sistema"/>
+        <column name="is_system" valueBoolean="true"/>
+        <column name="is_active" valueBoolean="true"/>
+        <column name="created_at" valueDate="now()"/>
+        <column name="updated_at" valueDate="now()"/>
+    </insert>
+
+    <!-- ADMIN -->
+    <insert tableName="rol">
+        <column name="code" value="admin"/>
+        <column name="name" value="Administrador"/>
+        <column name="description" value="Administrador del sistema y de los usuarios"/>
+        <column name="is_system" valueBoolean="true"/>
+        <column name="is_active" valueBoolean="true"/>
+        <column name="created_at" valueDate="now()"/>
+        <column name="updated_at" valueDate="now()"/>
+    </insert>
+
+    <!-- USER -->
+    <insert tableName="rol">
+        <column name="code" value="user"/>
+        <column name="name" value="Usuario"/>
+        <column name="description" value="Usuario estándar del sistema"/>
+        <column name="is_system" valueBoolean="true"/>
+        <column name="is_active" valueBoolean="true"/>
+        <column name="created_at" valueDate="now()"/>
+        <column name="updated_at" valueDate="now()"/>
+    </insert>
+
+    <!-- READONLY -->
+    <insert tableName="rol">
+        <column name="code" value="readonly"/>
+        <column name="name" value="Solo lectura"/>
+        <column name="description" value="Usuario con permisos de solo lectura"/>
+        <column name="is_system" valueBoolean="true"/>
+        <column name="is_active" valueBoolean="true"/>
+        <column name="created_at" valueDate="now()"/>
+        <column name="updated_at" valueDate="now()"/>
+    </insert>
+</changeSet>

@@ -2,7 +2,7 @@ from django.db import models
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from apps.base.models.user import User
+from backend.apps.auth.models.user import User
 from apps.carteles.models.paciente import Paciente
 
 class Turno(models.Model):

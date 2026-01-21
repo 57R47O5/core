@@ -1,6 +1,6 @@
-from orchestrator.scripts.generators.paths import APPS_DIR
-from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
-from orchestrator.utils.naming import to_snake_case
+from scripts.generators.paths import APPS_DIR
+from scripts.generators.domain_model_definition import DomainModelDefinition
+from scripts.utils.naming import to_snake_case
 
 def generate_serializer(definition: DomainModelDefinition):
     """

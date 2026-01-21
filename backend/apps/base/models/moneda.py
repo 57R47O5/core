@@ -1,5 +1,5 @@
 from django.db import models
-from .basemodels import Constant, ConstantModel, ConstantModelManager
+from framework.models.basemodels import Constant, ConstantModel, ConstantModelManager
 
 class MonedaManager(ConstantModelManager):
     """

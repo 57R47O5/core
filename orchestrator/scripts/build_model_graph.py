@@ -1,6 +1,5 @@
 from typing import Dict, Set
 
-
 def build_model_graph(app_models: Dict[str, dict]) -> Dict[str, Set[str]]:
     model_graph: Dict[str, Set[str]] = {
         model: set() for model in app_models

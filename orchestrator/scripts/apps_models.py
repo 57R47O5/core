@@ -2,6 +2,10 @@ from typing import Dict, List, Tuple, Iterator
 
 
 class AppsModels:
+    '''
+    Estructura que alberga información sobre cada app 
+    instalada en un proyecto y cada modelo de cada app
+    '''
     def __init__(self):
         self._data: Dict[str, Dict[str, dict]] = {}
 

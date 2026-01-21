@@ -1,7 +1,6 @@
 import subprocess
 import os
 
-
 def run_psql(command: str, db, database="postgres"):
     env = os.environ.copy()
     env["PGPASSWORD"] = db["password"]

@@ -10,14 +10,8 @@ $Context = Resolve-OrcContext `
     -Args    $Args
     
 $projectModel = $Context.ProjectModel
-$OrcRoot = $Context.OrcRoot
 $project      = $projectModel.Project
 $projectName  = $project.Name
-$backendPath = $projectModel.Project.BackendPath
-$frontendPath = $projectModel.Project.FrontendPath
-$frontendBaseDir = Resolve-Path (
-    Join-Path $frontendPath "..\.."
-)
 
 Write-Host ""
 Write-Host "Ejecutando motor de migraciones:" -ForegroundColor Yellow

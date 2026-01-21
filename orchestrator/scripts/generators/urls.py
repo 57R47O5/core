@@ -1,5 +1,5 @@
-from orchestrator.scripts.generators.paths import APPS_DIR
-from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
+from scripts.generators.paths import APPS_DIR
+from scripts.generators.domain_model_definition import DomainModelDefinition
 
 def generate_urls(definition:DomainModelDefinition):
     """
@@ -20,7 +20,6 @@ def generate_urls(definition:DomainModelDefinition):
 
     # Template base proporcionado por el usuario
     content = f"""
-from django.urls import path
 from rest_framework import routers
 from apps.{app_name}.rest_controllers.{model_name}_rest_controller import (
     {controller_name}

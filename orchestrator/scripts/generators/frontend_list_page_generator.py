@@ -1,7 +1,7 @@
 import os
 
-from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
-from orchestrator.scripts.generators.paths import FRONTEND_DIR
+from scripts.generators.domain_model_definition import DomainModelDefinition
+from scripts.generators.paths import FRONTEND_DIR
 
 
 def generate_frontend_list_page(definition:DomainModelDefinition):

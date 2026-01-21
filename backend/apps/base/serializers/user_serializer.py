@@ -1,7 +1,7 @@
 from django.apps import apps
 from rest_framework import serializers
 
-from apps.base.models.user import User
+from backend.apps.auth.models.user import User
 from apps.base.framework.permissions import get_roles
 
 class UserRegisterSerializer(serializers.ModelSerializer):
