@@ -1,6 +1,6 @@
 from django.db import models
 from .campana import Campana
-from apps.base.models.user import User
+from backend.apps.auth.models.user import User
 
 class Colaborador(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

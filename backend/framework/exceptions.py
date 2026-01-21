@@ -3,8 +3,8 @@ import traceback
 from functools import wraps
 from os.path import split
 
-from django.http import JsonResponse
 from rest_framework import status
+from rest_framework.response import Response
 
 
 class ExcepcionBase(Exception):
@@ -32,20 +32,26 @@ class ExcepcionBase(Exception):
             for frame_summary in stack_summary
         ]
 
+    def to_response(self):
+        self.actualizar_callstack()
+        return Response(
+            {
+                "mensaje": self.mensaje,
+                "callstack": self.callstack,
+            },
+            status=self.http_status,
+        )
 
 class ExcepcionValidacion(ExcepcionBase):
-    '''
-    Excepciones lanzadas durante la validacion
-    '''
-    def __init__(self, mensaje, *args, **kwargs):
-        super().__init__(mensaje, *args, **kwargs)
+    http_status = status.HTTP_400_BAD_REQUEST
+
+
+class ExcepcionAutenticacion(ExcepcionBase):
+    http_status = status.HTTP_401_UNAUTHORIZED
+
 
 class ExcepcionPermisos(ExcepcionBase):
-    '''
-    Excepciones lanzadas por falta de permisos para realizar la acción
-    '''
-    def __init__(self, mensaje, *args, **kwargs):
-        super().__init__(mensaje, *args, **kwargs)
+    http_status = status.HTTP_403_FORBIDDEN
 
 
 def excepcion(view_func):
@@ -54,9 +60,6 @@ def excepcion(view_func):
         try:
             return view_func(request, *args, **kwargs)
         except ExcepcionBase as e:
-            response_data = e.serialize()
-            return JsonResponse(
-                json.loads(response_data), status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            return e.to_response()
 
     return _wrapped_view
