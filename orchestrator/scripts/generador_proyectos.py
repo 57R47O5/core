@@ -292,12 +292,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "projects.{project_name}.{project_name}.wsgi.application"
 
-REST_FRAMEWORK = {
+REST_FRAMEWORK = {{
     "UNAUTHENTICATED_USER": None,
     "UNAUTHENTICATED_TOKEN": None,
 
     "DEFAULT_AUTHENTICATION_CLASSES": [],
-}
+}}
 
 # -------------------------------------------------------------------
 # Database (runtime-controlled)
