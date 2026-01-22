@@ -4,8 +4,8 @@ from rest_framework import status
 
 from framework.exceptions import ExcepcionPermisos
 from framework.constantes.mensajes_error import MensajesError
-from auth.models import Token
-from auth.models.user import User
+from apps.auth.models import Token
+from apps.auth.models.user import User
 
 class UserError(MensajesError):
     NO_AUTENTICADO = "Usuario no autenticado."

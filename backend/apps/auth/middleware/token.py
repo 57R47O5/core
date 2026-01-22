@@ -1,4 +1,4 @@
-from auth.models.token import Token
+from apps.auth.models.token import Token
 from framework.exceptions import ExcepcionAutenticacion
 from framework.constantes.mensajes_error import MensajesError
 

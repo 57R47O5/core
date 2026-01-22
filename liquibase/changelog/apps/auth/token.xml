@@ -51,7 +51,7 @@
         <addForeignKeyConstraint
             baseTableName="token"
             baseColumnNames="user_id"
-            referencedTableName="user"
+            referencedTableName="auth_user"
             referencedColumnNames="id"
             constraintName="fk_token_user"/>
 

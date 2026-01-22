@@ -8,7 +8,7 @@ from framework.constantes.mensajes_error import MensajesError
 class UsuarioError(MensajesError):
     NO_AUTENTICADO="Usuario no autenticado."
 
-from auth.models.user import User
+from apps.auth.models.user import User
 
 class MeView(APIView):
     """

@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Rol(models.Model):
     """
     Rol del sistema.

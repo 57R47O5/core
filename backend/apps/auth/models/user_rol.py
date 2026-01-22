@@ -1,6 +1,6 @@
 from django.db import models
 from framework.models.basemodels import BaseModel, SAFEDELETE_PROTECT
-from auth.models.user import User
+from .user import User
 from .rol import Rol
 
 class UserRol(BaseModel):

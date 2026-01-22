@@ -8,7 +8,7 @@
 
     <changeSet id="auth-001-create-user-table" author="orco">
 
-        <createTable tableName="auth_users">
+        <createTable tableName="auth_user">
 
             <column name="id" type="BIGSERIAL">
                 <constraints primaryKey="true" nullable="false"/>
@@ -60,11 +60,11 @@
 
         </createTable>
 
-        <createIndex indexName="idx_auth_users_username" tableName="auth_users">
+        <createIndex indexName="idx_auth_user_username" tableName="auth_user">
             <column name="username"/>
         </createIndex>
 
-        <createIndex indexName="idx_auth_users_email" tableName="auth_users">
+        <createIndex indexName="idx_auth_user_email" tableName="auth_user">
             <column name="email"/>
         </createIndex>
 
