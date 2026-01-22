@@ -6,7 +6,7 @@ from django.db.models import Q
 from rest_framework import status, viewsets, serializers
 from rest_framework.response import Response
 
-from apps.base.framework.exceptions import excepcion
+from framework.exceptions import excepcion
 
 class BaseRestController(viewsets.ViewSet):
     pass
