@@ -318,7 +318,7 @@ DATABASES = {{
 # Authentication
 # -------------------------------------------------------------------
 
-AUTH_USER_MODEL = "base.User"
+AUTH_USER_MODEL = "auth.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {{"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"}},
