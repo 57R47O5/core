@@ -13,8 +13,10 @@ class ORCHistoricalRecords(HistoricalRecords):
     """
 
     signal_registered = False
+    history_user = None
 
-    def __init__(self, *args, disabled=False, **kwargs,):
+    def __init__(self, *args, disabled=False, **kwargs):
+        kwargs["user_model"] = None
         super().__init__(*args, **kwargs)
         self.disabled = disabled
 

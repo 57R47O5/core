@@ -1,8 +1,9 @@
+from framework.security.passwords import hash_password
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from auth.models.user import User
+from apps.auth.models.user import User
 
 from framework.exceptions import ExcepcionValidacion
 from framework.constantes.mensajes_error import MensajesError
@@ -39,7 +40,7 @@ class RegisterView(APIView):
         user = User.objects.create(
             username=username,
             email=email,
-            password=password,
+            password_hash=hash_password(password),
         )
 
         return Response(

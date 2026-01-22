@@ -1,7 +1,7 @@
 from django.db import models
 from framework.models.basemodels import BaseModel, SAFEDELETE_PROTECT
-from auth.models.rol import Rol
-from auth.models.permiso import Permiso
+from .rol import Rol
+from .permiso import Permiso
 
 
 class RolPermiso(BaseModel):

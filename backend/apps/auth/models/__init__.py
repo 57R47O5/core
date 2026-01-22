@@ -1,9 +1,9 @@
-from auth.models.user import User
-from auth.models.rol import Rol
-from auth.models.user_rol import UserRol
-from auth.models.permiso import Permiso
-from auth.models.rol_permiso import RolPermiso
-from auth.models.token import Token
+from .user import User
+from .rol import Rol
+from .user_rol import UserRol
+from .permiso import Permiso
+from .rol_permiso import RolPermiso
+from .token import Token
 
 __all__ = [
     User,

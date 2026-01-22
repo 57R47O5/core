@@ -1,7 +1,6 @@
 from django.db import models
 from framework.models.basemodels import BaseModel, SAFEDELETE_PROTECT
-from auth.models.user import User
-
+from .user import User
 
 class Token(BaseModel):
     """

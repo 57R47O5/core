@@ -1,16 +1,15 @@
 from datetime import timedelta
 from django.utils import timezone
-from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.hashers import check_password
+from framework.security.passwords import verify_password
 import json
 
 from rest_framework import status
 from rest_framework.response import Response
 
-from auth.models.user import User
-from auth.models.token import Token
+from apps.auth.models.user import User
+from apps.auth.models.token import Token
 
 from framework.constantes.mensajes_error import MensajesError
 from framework.exceptions import (
@@ -56,7 +55,7 @@ def login(request):
     if not user.is_active:
         raise ExcepcionAutenticacion(LoginError.USUARIO_INACTIVO)
 
-    if not check_password(password, user.password_hash):
+    if not verify_password(password, user.password_hash):
         raise ExcepcionAutenticacion(LoginError.CREDENCIALES_INVALIDAS)
 
     expires_at = timezone.now() + timedelta(days=7)

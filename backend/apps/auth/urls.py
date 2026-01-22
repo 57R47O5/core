@@ -1,9 +1,9 @@
 from django.urls import path
 
-from auth.views.login import login
-from auth.views.logout import LogoutView
-from auth.views.me import MeView
-from auth.views.register import RegisterView
+from .views.login import login
+from .views.logout import LogoutView
+from .views.me import MeView
+from .views.register import RegisterView
 
 app_name = "auth"
 
