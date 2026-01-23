@@ -1,5 +1,5 @@
 
-import BaseListPage from "../../components/listados/BaseListPage";
+import BaseListPage from "../../../components/listados/BaseListPage";
 import MonedaFilter from "./MonedaFilter";
 
 export default function MonedaListPage() {

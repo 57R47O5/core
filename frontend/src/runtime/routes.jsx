@@ -1,5 +1,6 @@
-﻿import base from "@apps/base";
+﻿import baseRoutes from "../apps/base/routes/baseRoutes";
 
 export default [
-  ...base.routes
+  ...
+  baseRoutes,
 ];
