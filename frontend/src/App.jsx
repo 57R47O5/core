@@ -7,16 +7,25 @@ import LoginPage from "./pages/LoginPage"
 import Register from"./pages/RegisterPage"
 import { AuthProvider } from "../src/context/AuthContext";
 
+function RutasComunes (){
+  
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<Register />} />
+    </Routes>    
+  )
+}
+
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <NavBar>
         </NavBar>
+        <RutasComunes/>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<Register />} />
           {routes.map((route, i) => (
             <Route
             key={i}

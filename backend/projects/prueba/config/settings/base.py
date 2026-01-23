@@ -61,7 +61,6 @@ from .orc_apps import ORC_APPS
 DJANGO_BASE_APPS = [
     "corsheaders",
     "rest_framework",
-    "django.contrib.admin",
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
 ]
@@ -77,11 +76,16 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "auth.middleware.token.AuthTokenMiddleware",    
-    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "prueba.urls"
+ORC_PUBLIC_PATHS = (
+    "/login/",
+    "/register/",
+    "/health/",
+)
+
+ROOT_URLCONF = "projects.prueba.config.urls"
 
 TEMPLATES = [
     {
@@ -99,6 +103,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "projects.prueba.prueba.wsgi.application"
+
+REST_FRAMEWORK = {
+    "UNAUTHENTICATED_USER": None,
+    "UNAUTHENTICATED_TOKEN": None,
+
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "auth.authentication.OrcTokenAuthentication",
+    ],
+}
 
 # -------------------------------------------------------------------
 # Database (runtime-controlled)
@@ -119,7 +132,7 @@ DATABASES = {
 # Authentication
 # -------------------------------------------------------------------
 
-AUTH_USER_MODEL = "base.User"
+AUTH_USER_MODEL = "auth.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},

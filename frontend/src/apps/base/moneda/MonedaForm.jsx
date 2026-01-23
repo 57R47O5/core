@@ -2,7 +2,7 @@
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { Button } from "react-bootstrap";
-import InputFormik from "../../components/formik/InputFormik";
+import InputFormik from "../../../components/forms/InputFormik";
 
 export const MonedaSchema = Yup.object().shape({
   id: Yup.mixed().nullable(),  nombre: Yup.mixed().nullable(),  descripcion: Yup.mixed().nullable(),  simbolo: Yup.mixed().nullable(),
@@ -84,4 +84,4 @@ export default function MonedaForm({
       )}
     </Formik>
   );
-}
+} 

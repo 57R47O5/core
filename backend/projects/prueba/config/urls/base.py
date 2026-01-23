@@ -13,6 +13,6 @@ for app in ORC_APPS:
     try:
         urlpatterns.append(
             path("", include(f"{app}.urls"))
-        )    
+        )
     except ModuleNotFoundError:
         pass
