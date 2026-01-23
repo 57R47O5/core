@@ -10,7 +10,7 @@ import {
   NavDropdown,
 } from "react-bootstrap";
 
-const NavBar = () => {
+const NavBar = ({children}) => {
   const navigate = useNavigate();
   const { isAuthenticated, handleLogout, user } = useContext(AuthContext);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -34,7 +34,7 @@ const NavBar = () => {
       <Navbar expand="lg" bg="primary" data-bs-theme="dark" className="mb-4">
         <Container>
           <Navbar.Brand as={Link} to="/">
-            OdontoLogic
+            NombreProyecto
           </Navbar.Brand>
 
           <Navbar.Toggle aria-controls="main-navbar" />
@@ -49,7 +49,7 @@ const NavBar = () => {
                 </>
               )}
 
-              {isAuthenticated && (
+              {/* {isAuthenticated && (
                 <>
                   <Nav.Link as={Link} to="/usuarios">Usuarios</Nav.Link>
 
@@ -65,38 +65,8 @@ const NavBar = () => {
                     </NavDropdown.Item>
                   </NavDropdown>
                 </>
-              )}
+              )} */}
             </Nav>
-
-            {/* 🔹 Botón "Crear Turno" a la derecha */}
-            {isAuthenticated && (
-              <>
-              <Nav className="me-auto">
-                    <NavDropdown title="Pacientes" id="pacientes-dropdown">
-                      <NavDropdown.Item as={Link} to="/pacientes">
-                        Pacientes
-                      </NavDropdown.Item>
-                      <NavDropdown.Item as={Link} to="/pacientes/nuevo">
-                        Crear Paciente
-                      </NavDropdown.Item>
-                  </NavDropdown>
-                  <NavDropdown title="Turnos" id="turnos-dropdown">
-                    <NavDropdown.Item
-                      as={Link}
-                      to="/turnos/"
-                      >
-                      Ver Turnos
-                    </NavDropdown.Item>
-                    <NavDropdown.Item
-                      as={Link}
-                      to="/turnos/nuevo"
-                      >
-                      Crear Turno
-                    </NavDropdown.Item>
-                  </NavDropdown>
-              </Nav>
-              </>
-            )}
 
             {/* Botón de logout */}
             {isAuthenticated && (
@@ -106,6 +76,9 @@ const NavBar = () => {
             )}
           </Navbar.Collapse>
         </Container>
+        <main>
+          {children}
+        </main>
       </Navbar>
 
       {/* Modal de confirmación */}

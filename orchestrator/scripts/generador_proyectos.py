@@ -269,9 +269,14 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "auth.middleware.token.AuthTokenMiddleware",    
-    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+ORC_PUBLIC_PATHS = (
+    "/login/",
+    "/register/",
+    "/health/",
+)
 
 ROOT_URLCONF = "projects.{project_name}.config.urls"
 
@@ -296,7 +301,9 @@ REST_FRAMEWORK = {{
     "UNAUTHENTICATED_USER": None,
     "UNAUTHENTICATED_TOKEN": None,
 
-    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+    "auth.authentication.OrcTokenAuthentication",
+    ],
 }}
 
 # -------------------------------------------------------------------

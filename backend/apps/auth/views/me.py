@@ -12,20 +12,30 @@ from apps.auth.models.user import User
 
 class MeView(APIView):
     """
-    Devuelve la información del usuario autenticado.
+    Devuelve la información del usuario autenticado
+    a partir del token validado por el middleware.
     """
 
-    def get(self, request):
-        user: User = request.user
+    authentication_classes = []  # importante: NO usar DRF auth
+    permission_classes = []
 
-        if not user or not user.is_authenticated:
-            raise ExcepcionPermisos(UsuarioError.NO_AUTENTICADO)
+    def get(self, request):
+        token = getattr(request, "token", None)
+
+        salida = {
+            "user":None
+        }
+        if token:
+            user: User = token.user
+
+            salida = {
+                    "id": user.pk,
+                    "user": user.username,
+                    "is_system": user.is_system,
+                }
+        
 
         return Response(
-            {
-                "id": user.pk,
-                "username": user.username,
-                "is_system": user.is_system,
-            },
+            salida,
             status=status.HTTP_200_OK,
         )

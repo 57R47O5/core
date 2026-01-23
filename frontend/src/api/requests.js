@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Alertar, Tipo } from "../utils/alertas";
+import { getToken, clearToken } from "./tokenService";
 
 // --- Instancia principal de axios ---
 const request = axios.create({
@@ -13,7 +14,7 @@ const request = axios.create({
 // --- Interceptor de request (token si existe) ---
 request.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("access_token");
+    const token = getToken();
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -40,6 +41,9 @@ request.interceptors.response.use(
       if (callstack) {
         console.error("BE callstack:", callstack);
       }
+      else if (error.response?.status===401){
+      clearToken();
+    }
     } else if (error.request) {
       mensaje = "El servidor no respondió.";
     } else {

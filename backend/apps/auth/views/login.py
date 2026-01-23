@@ -1,10 +1,9 @@
 from datetime import timedelta
 from django.utils import timezone
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
 from framework.security.passwords import verify_password
 import json
 
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -24,51 +23,53 @@ class LoginError(MensajesError):
     CREDENCIALES_INVALIDAS="Credenciales Inválidas"
     USUARIO_INACTIVO="Usuario Inactivo"
 
-@csrf_exempt
-@require_POST
-@excepcion
-def login(request):
-    """
-    Autentica un usuario y emite un token de acceso.
-    """
 
-    try:
-        payload = json.loads(request.body.decode("utf-8"))
-    except Exception:
-        raise ExcepcionValidacion(LoginError.JSON_INVALIDO)
+class LoginView(APIView):
 
-    identifier = payload.get("identifier")
-    password = payload.get("password")
+    @excepcion
+    def post(self, request):
+        """
+        Autentica un usuario y emite un token de acceso.
+        """
 
-    if not identifier or not password:
-        raise ExcepcionValidacion(LoginError.FALTA_EMAIL_CONTRASENHA)
-
-    try:
         try:
-            user = User.objects.get(username=identifier)
+            payload = json.loads(request.body.decode("utf-8"))
+        except Exception:
+            raise ExcepcionValidacion(LoginError.JSON_INVALIDO)
+
+        identifier = payload.get("identifier")
+        password = payload.get("password")
+
+        if not identifier or not password:
+            raise ExcepcionValidacion(LoginError.FALTA_EMAIL_CONTRASENHA)
+
+        try:
+            try:
+                user = User.objects.get(username=identifier)
+            except User.DoesNotExist:
+                user = User.objects.get(email=identifier)
+
         except User.DoesNotExist:
-            user = User.objects.get(email=identifier)
+            raise ExcepcionAutenticacion(LoginError.CREDENCIALES_INVALIDAS)
 
-    except User.DoesNotExist:
-        raise ExcepcionAutenticacion(LoginError.CREDENCIALES_INVALIDAS)
+        if not user.is_active:
+            raise ExcepcionAutenticacion(LoginError.USUARIO_INACTIVO)
 
-    if not user.is_active:
-        raise ExcepcionAutenticacion(LoginError.USUARIO_INACTIVO)
+        if not verify_password(password, user.password_hash):
+            raise ExcepcionAutenticacion(LoginError.CREDENCIALES_INVALIDAS)
 
-    if not verify_password(password, user.password_hash):
-        raise ExcepcionAutenticacion(LoginError.CREDENCIALES_INVALIDAS)
+        expires_at = timezone.now() + timedelta(days=7)
 
-    expires_at = timezone.now() + timedelta(days=7)
+        token = Token.objects.create_token(
+                user=user,
+                request=request,
+                expires_at=expires_at
+            )
 
-    token = Token.objects.create(
-        user=user,
-        expires_at=expires_at
-    )
-
-    return Response(
-        {
-            "token": token.key,   
-            "expires_at": expires_at.isoformat(),
-        },
-        status=status.HTTP_200_OK
-    )
+        return Response(
+            {
+                "token": token.key,   
+                "expires_at": expires_at.isoformat(),
+            },
+            status=status.HTTP_200_OK
+        )

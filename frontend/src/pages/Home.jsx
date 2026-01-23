@@ -17,7 +17,7 @@ const Home = () => {
 
               {isAuthenticated ? (
                 <p className="fs-5 text-secondary">
-                  ¡Hola, <strong>{user.nombres}</strong>! 👋
+                  ¡Hola, <strong>{user}</strong>! 👋
                 </p>
               ) : (
                 <p className="text-muted fs-6 mt-2">
