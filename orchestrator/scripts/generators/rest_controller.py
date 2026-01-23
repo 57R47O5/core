@@ -1,5 +1,5 @@
-from scripts.generators.domain_model_definition import DomainModelDefinition
-from scripts.generators.paths import APPS_DIR
+from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
+from orchestrator.scripts.generators.paths import APPS_DIR
 
 CONTROLLER_TEMPLATE = """from django.db.models import Q
 from datetime import datetime

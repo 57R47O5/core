@@ -1,5 +1,5 @@
-from scripts.generators.domain_model_definition import DomainModelDefinition
-from scripts.generators.paths import FRONTEND_DIR
+from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
+from orchestrator.scripts.generators.paths import FRONTEND_DIR
 
 def generate_form_page(definition:DomainModelDefinition):
     """
@@ -13,7 +13,7 @@ def generate_form_page(definition:DomainModelDefinition):
     form_component = f"{pascal}Form"          # StockFacturaForm
 
     output_path = FRONTEND_DIR / "src" / "apps" / app_name / model_name / f"{pascal}FormPage.jsx"
-    content = f'''import BaseFormPage from "../../components/forms/BaseFormPage";
+    content = f'''import BaseFormPage from "../../../components/forms/BaseFormPage";
 import {form_component} from "./{form_component}";
 
 export default function {pascal}FormPage() {{

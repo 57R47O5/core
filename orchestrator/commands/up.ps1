@@ -49,14 +49,15 @@ function Initialize-FrontendRuntimeRoutes {
     $routes  = @()
 
     foreach ($app in $Apps) {
-        $imports += "import $app from `"@apps/$app`";"
-        $routes  += "...$app.routes"
+        $imports += "import ${app}Routes from `"../apps/$app/routes/${app}Routes`";"
+        $routes  += "${app}Routes,"
     }
 
     $content = @"
 $($imports -join "`n")
 
 export default [
+  ...
   $($routes -join ",`n  ")
 ];
 "@

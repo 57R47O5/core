@@ -1,7 +1,7 @@
 import os
 
-from scripts.generators.domain_model_definition import DomainModelDefinition
-from scripts.generators.paths import FRONTEND_DIR
+from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
+from orchestrator.scripts.generators.paths import FRONTEND_DIR
 
 
 def generate_frontend_list_page(definition:DomainModelDefinition):
@@ -23,7 +23,7 @@ def generate_frontend_list_page(definition:DomainModelDefinition):
     columns_render = "{[\n" + ",\n".join(columns_js) + "\n      ]}"
 
     content = f"""
-import BaseListPage from "../../components/listados/BaseListPage";
+import BaseListPage from "../../../components/listados/BaseListPage";
 import {definition.ModelName}Filter from "./{definition.ModelName}Filter";
 
 export default function {definition.ModelName}ListPage() {{
