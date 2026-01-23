@@ -9,7 +9,6 @@ export default function MonedaListPage() {
       title="Moneda"
       FilterComponent={MonedaFilter}
       columns={[
-      { label: "Id", field: "id" },
       { label: "Nombre", field: "nombre" },
       { label: "Descripcion", field: "descripcion" },
       { label: "Simbolo", field: "simbolo" }
