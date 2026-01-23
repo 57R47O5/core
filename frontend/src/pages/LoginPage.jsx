@@ -13,7 +13,7 @@ import {
 const LoginPage = () => {
   const navigate = useNavigate();
   const { handleLogin } = useContext(AuthContext);
-  const [form, setForm] = useState({ username: "", password: "" });
+  const [form, setForm] = useState({ identifier: "", password: "" });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,12 +33,12 @@ const LoginPage = () => {
             <h2 className="text-center mb-4">Iniciar sesión</h2>
 
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="username">
+              <Form.Group className="mb-3" controlId="identifier">
                 <Form.Label>Usuario</Form.Label>
                 <Form.Control
                   type="text"
-                  name="username"
-                  value={form.username}
+                  name="identifier"
+                  value={form.identifier}
                   onChange={handleChange}
                   placeholder="Ingrese su usuario"
                 />

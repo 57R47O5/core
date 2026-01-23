@@ -20,7 +20,7 @@
             <!-- Autenticación -->
             <column
                 name="password_hash"
-                value="pbkdf2_sha256$1200000$IXkJMXbleuwJTozKLZMFuK$+NsOKcrCU6LcXm4f1TZL2ruIIxmsm2UNDvs+XRyvECA="/>
+                value="$2b$12$OHDMLHN7TqboXV.tEiitVeui5BGmWUOvBDcZtC9KpAl8Oe4ceiPry"/>
 
             <!-- Flags -->
             <column name="is_system" valueBoolean="true"/>

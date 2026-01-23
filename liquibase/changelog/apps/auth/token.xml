@@ -42,8 +42,8 @@
             <!-- Auditoría -->
             <column name="createdat" type="TIMESTAMP WITH TIME ZONE"/>
             <column name="updatedat" type="TIMESTAMP WITH TIME ZONE"/>
-            <column name="createdby_id" type="BIGINT"/>
-            <column name="updatedby_id" type="BIGINT"/>
+            <column name="createdby" type="BIGINT"/>
+            <column name="updatedby" type="BIGINT"/>
 
         </createTable>
 

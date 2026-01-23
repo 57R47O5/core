@@ -1,8 +1,19 @@
 import request from "../api/requests";
+import { setToken, clearToken } from "./tokenService";
 
-BASE_URL = "auth/"
+export const login = async (data) => {
+   try {
+    const response = await request.post("login/", data);
+    setToken(response.token);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 
-export const register = (data) => request.post(`${BASE_URL}register/`, data);
-export const login = (data) => request.post(`${BASE_URL}login/`, data);
-export const logout = (data) => request.post(`${BASE_URL}logout/`, data);
-export const me = ()=> request.get(`${BASE_URL}me/`)
+export const logout = async () => {
+  await request.post("logout/");
+  clearToken();
+};
+export const register = (data) => request.post(`register/`, data);
+export const me = ()=> request.get(`me/`)

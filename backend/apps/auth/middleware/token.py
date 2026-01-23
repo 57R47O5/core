@@ -1,6 +1,9 @@
 from apps.auth.models.token import Token
 from framework.exceptions import ExcepcionAutenticacion
 from framework.constantes.mensajes_error import MensajesError
+from django.conf import settings
+from datetime import date
+
 
 class TokenError(MensajesError):
     MALFORMADO="Token malformado"
@@ -28,6 +31,11 @@ class AuthTokenMiddleware:
     def __call__(self, request):
         request.user = None
         request.token = None
+        path = request.path
+
+        for public_path in getattr(settings, "ORC_PUBLIC_PATHS", []):
+            if path.startswith(public_path):
+                return self.get_response(request)
 
         auth_header = request.headers.get("Authorization")
 
@@ -63,7 +71,7 @@ class AuthTokenMiddleware:
                 TokenError.INVALIDO
             )
 
-        if token.is_expired():
+        if token.expires_at.date()<date.today():
             raise ExcepcionAutenticacion(
                 TokenError.EXPIRADO
             )
