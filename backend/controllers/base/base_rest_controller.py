@@ -6,7 +6,7 @@ from django.db.models import Q
 from rest_framework import status, viewsets, serializers
 from rest_framework.response import Response
 
-from framework.exceptions import excepcion
+from framework.exceptions import excepcion, ExcepcionValidacion
 
 class BaseRestController(viewsets.ViewSet):
     pass
@@ -56,7 +56,8 @@ class ModelRestController(BaseRestController):
     @excepcion
     def create(self, request):
         serializer=self.create_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            raise ExcepcionValidacion(str(serializer.errors))
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -89,4 +90,5 @@ class ModelRestController(BaseRestController):
         instancia=self.model.objects.get(pk=pk)
         instancia.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
