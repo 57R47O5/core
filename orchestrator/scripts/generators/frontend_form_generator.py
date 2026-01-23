@@ -21,6 +21,7 @@ def generate_frontend_form(definition:DomainModelDefinition):
 
     print(f"Los extra_fields son {definition.extra_fields}")
 
+    schema_entries=""
     for field in definition.extra_fields:
       if not field.appears_in_form:
           continue
@@ -68,6 +69,7 @@ def generate_frontend_form(definition:DomainModelDefinition):
 
       yup_entries.append("  " + yup_line + ",")
       schema_entries = yup_entries + embedded_schemas
+      
 
       # COMPONENTES FRONT
       label = field.name.replace("_", " ").capitalize()
@@ -125,6 +127,8 @@ def generate_frontend_form(definition:DomainModelDefinition):
 
       form_fields_jsx.append(jsx)
 
+    
+        
     imports_code = "\n".join(
         [f'import {imp} from "../../../components/forms/{imp}";' for imp in sorted(imports)]
     )
