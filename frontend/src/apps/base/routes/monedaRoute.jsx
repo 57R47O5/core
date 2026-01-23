@@ -10,6 +10,10 @@ const monedaRoutes = [
     {
         path: "/moneda/:id",
         element: <MonedaFormPage />,
+    },
+    {
+        path: "/moneda/nuevo",
+        element: <MonedaFormPage />,
     }
 ];
 

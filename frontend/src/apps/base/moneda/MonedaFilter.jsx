@@ -9,7 +9,7 @@ const MonedaFilter = ({ onSearch, loading }) => {
 
       <Formik
         initialValues={{
-      id: "",      nombre: "",      descripcion: "",      simbolo: "",
+      nombre: "",      descripcion: "",      simbolo: "",
         }}
         onSubmit={(values) => onSearch(values)}
       >
@@ -18,11 +18,6 @@ const MonedaFilter = ({ onSearch, loading }) => {
             <div className="row">
 
 
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Id</RBForm.Label>
-              <Field name="id" className="form-control" />
-            </div>
-          
             <div className="col-md-3 mb-3">
               <RBForm.Label>Nombre</RBForm.Label>
               <Field name="nombre" className="form-control" />
