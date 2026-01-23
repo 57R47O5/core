@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Spinner, Card, Button } from "react-bootstrap";
 import CenteredCard from "../displays/CenteredCard";
 import getAPIBase from "../../api/BaseAPI";
+import { useRouteMode } from "../../hooks/useRouteMode";
 
 /**
  * BaseFormPage
@@ -25,7 +26,7 @@ export default function BaseFormPage({
   titleNew = "Nuevo Registro",
   titleEdit = "Editar Registro",
 }) {
-  const { id } = useParams();
+  const { id, isCreate } = useRouteMode();
   const navigate = useNavigate();
   const { obtener, editar, crear } = getAPIBase(controller);
 
@@ -39,23 +40,16 @@ export default function BaseFormPage({
 
   useEffect(() => {
     const cargarInstancia = async () => {
-      try {
-        const data = await obtener(id);
-
-        // Mezclamos defaults + datos (evita undefineds)
-        const populated = {
-          ...initialDefaults,
-          ...data,
-        };
-
-        setInitialValues(populated);
-      } catch (error) {
-        console.error(error);
-        alert("Error cargando instancia");
-      }
+      if (isCreate) {
+      setInitialValues(initialDefaults);
       setCargando(false);
-    };
+      return;
+    }
 
+    const data = await obtener(id);
+    setInitialValues({ ...initialDefaults, ...data });
+    setCargando(false);
+    };
     if (id) cargarInstancia();
   }, [id]);
 
@@ -63,12 +57,12 @@ export default function BaseFormPage({
     try {
       setSubmitting(true);
 
-      if (id) {
-        await editar(id, values);
-        alert("Registro actualizado");
-      } else {
+      if (isCreate) {
         await crear(values);
         alert("Registro creado");
+      } else {
+        await editar(id, values);
+        alert("Registro actualizado");
       }
 
       navigate(redirectTo);
@@ -91,13 +85,13 @@ export default function BaseFormPage({
   return (
     <CenteredCard>
       <Card.Body>
-        <h3 className="mb-4">{id ? titleEdit : titleNew}</h3>
+        <h3 className="mb-4">{isCreate ? titleNew : titleEdit}</h3>
 
         <FormComponent
           initialValues={initialValues}
           onSubmit={handleSubmit}
           submitting={submitting}
-          submitText={id ? "Actualizar" : "Crear"}
+          submitText={isCreate ? "Crear" : "Actualizar"}
         />
 
         <Button

@@ -81,6 +81,7 @@ BASE_MODEL_FIELDS = {
             max_length=None,
             null=False,
             primary_key=True,
+            appears_in_form=False,
             args={}
         ),
         FieldDefinition(
