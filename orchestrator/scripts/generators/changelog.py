@@ -1,4 +1,4 @@
-from scripts.generators.domain_model_definition import (
+from orchestrator.scripts.generators.domain_model_definition import (
     DomainModelDefinition, 
     FieldDefinition,
     _fail)

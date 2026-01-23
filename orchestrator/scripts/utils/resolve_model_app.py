@@ -1,4 +1,4 @@
-from scripts.generators.paths import BACKEND_DIR
+from orchestrator.scripts.generators.paths import BACKEND_DIR
 
 MODELS_ROOT = BACKEND_DIR / "apps"
 

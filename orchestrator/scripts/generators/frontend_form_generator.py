@@ -1,7 +1,7 @@
 import os
-from scripts.generators.domain_model_definition import DomainModelDefinition
-from scripts.generators.paths import FRONTEND_DIR
-from scripts.utils.naming import to_snake_case
+from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
+from orchestrator.scripts.generators.paths import FRONTEND_DIR
+from orchestrator.scripts.utils.naming import to_snake_case
 
 # ============================================================
 #  GENERADOR DEL FORM 
@@ -126,7 +126,7 @@ def generate_frontend_form(definition:DomainModelDefinition):
       form_fields_jsx.append(jsx)
 
     imports_code = "\n".join(
-        [f'import {imp} from "../../components/formik/{imp}";' for imp in sorted(imports)]
+        [f'import {imp} from "../../../components/forms/{imp}";' for imp in sorted(imports)]
     )
 
     content = f"""
@@ -175,7 +175,7 @@ export default function {definition.ModelName}Form({{
       )}}
     </Formik>
   );
-}}
+}} 
 """
 
     with open(file_path, "w", encoding="utf-8") as field:

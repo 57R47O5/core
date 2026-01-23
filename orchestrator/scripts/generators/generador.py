@@ -1,23 +1,24 @@
 import sys
-from scripts.generators.changelog import (
+from orchestrator.scripts.generators.changelog import (
     generate_historical_model_changelog,
     generate_model_changelog,
     generate_liquibase_initial_data,
 )
-from scripts.generators.domain_model_definition import (
+from orchestrator.scripts.generators.domain_model_definition import (
     load_domain_model_definition, 
     DomainModelDefinition,
     )
-from scripts.generators.rest_controller import generate_rest_controller
-from scripts.generators.serializer import generate_serializer
-from scripts.generators.rest_urls import generate_rest_urls
-from scripts.generators.urls import generate_urls
-from scripts.generators.tests import generate_model_tests
-from scripts.generators.paths import REPO_ROOT
-from scripts.utils.logger import get_logger
-from scripts.generators.frontend_form_generator import generate_frontend_form, generate_frontend_filter
-from scripts.generators.frontend_formpage_generator import generate_form_page
-from scripts.generators.frontend_list_page_generator import generate_frontend_list_page
+from orchestrator.scripts.generators.rest_controller import generate_rest_controller
+from orchestrator.scripts.generators.serializer import generate_serializer
+from orchestrator.scripts.generators.rest_urls import generate_rest_urls
+from orchestrator.scripts.generators.urls import generate_urls
+from orchestrator.scripts.generators.tests import generate_model_tests
+from orchestrator.scripts.generators.paths import REPO_ROOT
+from orchestrator.scripts.utils.logger import get_logger
+from orchestrator.scripts.generators.frontend_form_generator import generate_frontend_form, generate_frontend_filter
+from orchestrator.scripts.generators.frontend_formpage_generator import generate_form_page
+from orchestrator.scripts.generators.frontend_list_page_generator import generate_frontend_list_page
+from orchestrator.scripts.generators.frontend_model_route_generator import generate_model_route
 
 
 log = get_logger("orc.generate")
@@ -40,6 +41,7 @@ def main():
     generate_frontend_form(definition)
     generate_frontend_filter(definition)
     generate_frontend_list_page(definition)
+    generate_model_route(definition)
 
     print("[GEN] done")
 

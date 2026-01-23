@@ -2,9 +2,9 @@ import ast
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Optional, Any
-from scripts.generators.paths import APPS_DIR
-from scripts.utils.naming import to_snake_case
-from scripts.utils.resolve_model_app import resolve_model_app
+from orchestrator.scripts.generators.paths import APPS_DIR
+from orchestrator.scripts.utils.naming import to_snake_case
+from orchestrator.scripts.utils.resolve_model_app import resolve_model_app
 
 @dataclass(frozen=True)
 class FieldDefinition:
