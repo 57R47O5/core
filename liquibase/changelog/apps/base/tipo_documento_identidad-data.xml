@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="tipo_documento_identidad-ci" author="orco">
+        <insert tableName="tipo_documento_identidad">
+            <column name="id" valueComputed="nextval('tipo_documento_identidad_id_seq')"/>
+            <column name="codigo" value="CI"/>
+            <column name="nombre" value="Cedula"/>
+            <column name="descripcion" value="TipoDocumentoIdentidad Cedula"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="tipo_documento_identidad">
+                <where>codigo = 'CI'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="tipo_documento_identidad-ruc" author="orco">
+        <insert tableName="tipo_documento_identidad">
+            <column name="id" valueComputed="nextval('tipo_documento_identidad_id_seq')"/>
+            <column name="codigo" value="RUC"/>
+            <column name="nombre" value="Ruc"/>
+            <column name="descripcion" value="TipoDocumentoIdentidad Ruc"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="tipo_documento_identidad">
+                <where>codigo = 'RUC'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="tipo_documento_identidad-pasaporte" author="orco">
+        <insert tableName="tipo_documento_identidad">
+            <column name="id" valueComputed="nextval('tipo_documento_identidad_id_seq')"/>
+            <column name="codigo" value="Pasaporte"/>
+            <column name="nombre" value="Pasaporte"/>
+            <column name="descripcion" value="TipoDocumentoIdentidad Pasaporte"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="tipo_documento_identidad">
+                <where>codigo = 'Pasaporte'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
