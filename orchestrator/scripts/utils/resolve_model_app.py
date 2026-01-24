@@ -1,4 +1,5 @@
 from orchestrator.scripts.generators.paths import BACKEND_DIR
+from orchestrator.scripts.utils.naming import to_snake_case, to_pascal_case
 
 MODELS_ROOT = BACKEND_DIR / "apps"
 
@@ -30,7 +31,7 @@ def build_model_registry() -> dict[str, str]:
                 continue
 
             model_name = model_file.stem  # paciente.py
-            ModelName = model_name.capitalize()  # Paciente
+            ModelName = to_pascal_case(model_name)
 
             if ModelName in registry:
                 raise RuntimeError(
@@ -50,16 +51,16 @@ def get_model_registry() -> dict[str, str]:
 
     return _MODEL_REGISTRY
 
-def resolve_model_app(model_name: str) -> str:
+def resolve_model_app(ModelName: str) -> str:
     """
     Dado un modelo en PascalCase, retorna la app donde está definido.
     """
     registry = get_model_registry()
 
     try:
-        return registry[model_name]
+        return registry[ModelName]
     except KeyError:
         raise RuntimeError(
-            f"No se pudo resolver la app del modelo '{model_name}'. "
+            f"No se pudo resolver la app del modelo '{to_snake_case(ModelName)}'. "
             f"Modelos conocidos: {sorted(registry.keys())}"
         )

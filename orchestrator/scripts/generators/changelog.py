@@ -104,6 +104,7 @@ def generate_liquibase_initial_data(
 FIELD_TYPE_MAP = {
     "AutoField": lambda f: "int",
     "ForeignKey": lambda f: "int",
+    "OneToOneField": lambda f: "int",
     "CharField": lambda f: f'varchar({f.max_length or 255})',
     "TextField": lambda f: 'text',
     "IntegerField": lambda f: 'int',
