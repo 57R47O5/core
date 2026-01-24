@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+<changeSet id="create-hist_persona_juridica" author="orco">
+    <createTable tableName="hist_persona_juridica">
+        <column name="history_id" type="bigint"/>
+        <column name="history_date" type="timestamp"/>
+        <column name="history_type" type="char(1)"/>
+        <column name="history_user" type="varchar(150)"/>
+        <column name="id" type="int"/>
+        <column name="is_deleted" type="boolean"/>
+        <column name="createdby" type="varchar(255)"/>
+        <column name="updatedby" type="varchar(255)"/>
+        <column name="createdat" type="timestamp"/>
+        <column name="updatedat" type="timestamp"/>
+        <column name="persona" type="int"/>
+        <column name="razon_social" type="varchar(255)"/>
+        <column name="nombre_fantasia" type="varchar(255)"/>
+
+    </createTable>
+</changeSet>
+</databaseChangeLog>
