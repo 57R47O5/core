@@ -22,7 +22,7 @@ const getAPIBase = (controller)=>({
 
     // Eliminar instancia
     eliminar: async (id) => {
-        return await request.del(`${controller}/${id}/`);
+        return await request.delete(`${controller}/${id}/`);
     },
 
     // Búsqueda / Autocomplete

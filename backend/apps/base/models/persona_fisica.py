@@ -7,6 +7,7 @@ class PersonaFisica(BaseModel):
         Persona,
         on_delete=models.CASCADE,
         related_name="fisica",
+        db_column='persona',
     )
 
     nombres = models.CharField(max_length=150)

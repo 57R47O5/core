@@ -10,10 +10,6 @@ const persona_juridicaRoutes = [
     {
         path: "/persona-juridica/:id",
         element: <PersonaJuridicaFormPage />,
-    },
-    {
-        path: "/persona-juridica/nuevo",
-        element: <PersonaJuridicaFormPage />,
     }
 ];
 

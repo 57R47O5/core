@@ -26,9 +26,9 @@ export default function BaseFormPage({
   titleNew = "Nuevo Registro",
   titleEdit = "Editar Registro",
 }) {
-  const { id, isCreate } = useRouteMode();
+  const { id, isCreate, isEdit } = useRouteMode();
   const navigate = useNavigate();
-  const { obtener, editar, crear } = getAPIBase(controller);
+  const { obtener, editar, crear, eliminar } = getAPIBase(controller);
 
   // Tomamos los initialValues por defecto desde el form recibido
   const initialDefaults =
@@ -39,24 +39,24 @@ export default function BaseFormPage({
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    const cargarInstancia = async () => {
-      if (isCreate) {
-      setInitialValues(initialDefaults);
-      setCargando(false);
-      return;
-    }
+      const cargarInstancia = async () => {
+        if (isCreate) {
+        setInitialValues(initialDefaults);
+        setCargando(false);
+        return;
+      }
 
-    const data = await obtener(id);
-    setInitialValues({ ...initialDefaults, ...data });
-    setCargando(false);
-    };
-    if (id) cargarInstancia();
-  }, [id]);
+      const data = await obtener(id);
+      setInitialValues({ ...initialDefaults, ...data });
+      setCargando(false);
+      };
+      if (id) cargarInstancia();
+    }, [id]);
 
   const handleSubmit = async (values) => {
-    try {
-      setSubmitting(true);
+    setSubmitting(true);
 
+    try {
       if (isCreate) {
         await crear(values);
         alert("Registro creado");
@@ -66,13 +66,16 @@ export default function BaseFormPage({
       }
 
       navigate(redirectTo);
-    } catch (error) {
-      console.error(error);
-      alert("Error al guardar");
     } finally {
       setSubmitting(false);
     }
   };
+
+  const handleDelete = async () =>{
+    await eliminar(id);
+      alert("Registro eliminado");
+      navigate(redirectTo);
+  }
 
   if (cargando) {
     return (
@@ -92,15 +95,26 @@ export default function BaseFormPage({
           onSubmit={handleSubmit}
           submitting={submitting}
           submitText={isCreate ? "Crear" : "Actualizar"}
-        />
+        />        
 
+        <div className="d-flex justify-content-between mt-3">
         <Button
           variant="secondary"
-          className="mt-3"
           onClick={() => navigate(redirectTo)}
         >
           Volver
         </Button>
+
+        {!isCreate && (
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+          >
+            Eliminar
+          </Button>
+        )}
+      </div>
+
       </Card.Body>
     </CenteredCard>
   );

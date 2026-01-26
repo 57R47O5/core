@@ -8,8 +8,7 @@ export const PersonaJuridicaSchema = Yup.object().shape({
   persona: Yup.mixed().nullable(),  razon_social: Yup.mixed().nullable(),  nombre_fantasia: Yup.mixed().nullable(),
 });
 
-export function PersonaJuridicaFormFields({ prefix = "" }) {
-  const fieldName = (name) => prefix ? `${prefix}.${name}` : name;
+export function PersonaJuridicaFormFields() {
 
   return (
     <>
@@ -46,24 +45,9 @@ export default function PersonaJuridicaForm({
       validationSchema={PersonaJuridicaSchema}
       onSubmit={onSubmit}
     >
-      {({ errors, touched }) => (
+      {(formik) => (
         <Form>
-
-      <InputFormik
-        name="persona"
-        label="Persona"
-      />
-          
-      <InputFormik
-        name="razon_social"
-        label="Razon social"
-      />
-          
-      <InputFormik
-        name="nombre_fantasia"
-        label="Nombre fantasia"
-      />
-          
+          <PersonaJuridicaFormFields/>
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}

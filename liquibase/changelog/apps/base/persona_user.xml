@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+<changeSet id="create-persona_user" author="orco">
+    <createSequence sequenceName="persona_user_id_seq" startValue="1" />
+    <createTable tableName="persona_user">
+        <column name="id" type="int">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+        <column name="is_deleted" type="boolean">
+            <constraints nullable="false"/>
+        </column>
+        <column name="createdby" type="varchar(255)">
+        </column>
+        <column name="updatedby" type="varchar(255)">
+        </column>
+        <column name="createdat" type="timestamp">
+        </column>
+        <column name="updatedat" type="timestamp">
+        </column>
+        <column name="persona" type="int">
+        </column>
+        <column name="user" type="int">
+        </column>
+        <column name="principal" type="boolean">
+        </column>
+    </createTable>
+    <addDefaultValue tableName="persona_user" columnName="id" defaultValueComputed="nextval('persona_user_id_seq')" />
+</changeSet>
+</databaseChangeLog>

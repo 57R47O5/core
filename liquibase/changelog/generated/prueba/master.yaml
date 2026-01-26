@@ -21,6 +21,39 @@ databaseChangeLog:
       file: ../../apps/base/moneda.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/base/persona.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/persona-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/persona_fisica.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/persona_fisica-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/persona_juridica.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/persona_juridica-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/persona_user.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/persona_user-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/tipo_documento_identidad.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/documento_identidad.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/documento_identidad-hist.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/auth/rol-data.xml
       relativeToChangelogFile: true
   - include:
@@ -31,4 +64,7 @@ databaseChangeLog:
       relativeToChangelogFile: true
   - include:
       file: ../../apps/base/moneda-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/tipo_documento_identidad-data.xml
       relativeToChangelogFile: true

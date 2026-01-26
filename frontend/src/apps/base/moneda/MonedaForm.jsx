@@ -8,8 +8,7 @@ export const MonedaSchema = Yup.object().shape({
   nombre: Yup.mixed().nullable(),  descripcion: Yup.mixed().nullable(),  simbolo: Yup.mixed().nullable(),
 });
 
-export function MonedaFormFields({ prefix = "" }) {
-  const fieldName = (name) => prefix ? `${prefix}.${name}` : name;
+export function MonedaFormFields() {
 
   return (
     <>
@@ -46,24 +45,9 @@ export default function MonedaForm({
       validationSchema={MonedaSchema}
       onSubmit={onSubmit}
     >
-      {({ errors, touched }) => (
+      {(formik) => (
         <Form>
-
-      <InputFormik
-        name="nombre"
-        label="Nombre"
-      />
-          
-      <InputFormik
-        name="descripcion"
-        label="Descripcion"
-      />
-          
-      <InputFormik
-        name="simbolo"
-        label="Simbolo"
-      />
-          
+          <MonedaFormFields/>
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}

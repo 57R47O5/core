@@ -5,11 +5,12 @@ import { Button } from "react-bootstrap";
 import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
 
-export const DocumentoIdentidadSchema = Yup.object().shape({
-  persona: Yup.mixed().nullable(),  tipo: Yup.mixed().nullable(),  numero: Yup.mixed().nullable(),  pais_emision: Yup.mixed().nullable(),  vigente: Yup.mixed().nullable(),
+export const PersonaUserSchema = Yup.object().shape({
+  persona: Yup.mixed().nullable(),  user: Yup.mixed().nullable(),  principal: Yup.mixed().nullable(),
 });
 
-export function DocumentoIdentidadFormFields() {
+export function PersonaUserFormFields({ prefix = "" }) {
+  const fieldName = (name) => prefix ? `${prefix}.${name}` : name;
 
   return (
     <>
@@ -21,31 +22,21 @@ export function DocumentoIdentidadFormFields() {
       />
           
       <SelectFormik
-        name="tipo"
-        label="Tipo"
-        endpoint="tipo-documento-identidad"
+        name="user"
+        label="User"
+        endpoint="user"
       />
           
       <InputFormik
-        name="numero"
-        label="Numero"
-      />
-          
-      <InputFormik
-        name="pais_emision"
-        label="Pais emision"
-      />
-          
-      <InputFormik
-        name="vigente"
-        label="Vigente"
+        name="principal"
+        label="Principal"
       />
           
     </>
   );
 }
 
-export default function DocumentoIdentidadForm({
+export default function PersonaUserForm({
   initialValues,
   onSubmit,
   submitText = "Guardar",
@@ -55,12 +46,29 @@ export default function DocumentoIdentidadForm({
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={DocumentoIdentidadSchema}
+      validationSchema={PersonaUserSchema}
       onSubmit={onSubmit}
     >
-      {(formik) => (
+      {({ errors, touched }) => (
         <Form>
-          <DocumentoIdentidadFormFields/>
+
+      <SelectFormik
+        name="persona"
+        label="Persona"
+        endpoint="persona"
+      />
+          
+      <SelectFormik
+        name="user"
+        label="User"
+        endpoint="user"
+      />
+          
+      <InputFormik
+        name="principal"
+        label="Principal"
+      />
+          
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}
