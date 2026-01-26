@@ -24,10 +24,6 @@ const {definition.model_name}Routes = [
     {{
         path: "/{definition.model_name.replace("_","-")}/:id",
         element: <{definition.ModelName}FormPage />,
-    }},
-    {{
-        path: "/{definition.model_name.replace("_","-")}/nuevo",
-        element: <{definition.ModelName}FormPage />,
     }}
 ];
 

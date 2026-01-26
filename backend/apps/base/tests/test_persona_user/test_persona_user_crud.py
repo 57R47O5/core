@@ -3,15 +3,15 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.base.models.moneda import Moneda
+from apps.base.models.persona_user import PersonaUser
 
 
-class TestMonedaCRUD(APITestCase):
+class TestPersonaUserCRUD(APITestCase):
 
     def setUp(self):
-        self.list_url = reverse('base:moneda-list')
+        self.list_url = reverse('base:persona-user-list')
         self.payload = {
-            "name": "Test Moneda"
+            "name": "Test PersonaUser"
         }
 
     def test_create(self):
@@ -21,21 +21,21 @@ class TestMonedaCRUD(APITestCase):
             content_type="application/json"
         )
         assert response.status_code == status.HTTP_201_CREATED
-        assert Moneda.objects.count() == 1
+        assert PersonaUser.objects.count() == 1
 
     def test_list(self):
-        Moneda.objects.create(name="Item 1")
-        Moneda.objects.create(name="Item 2")
+        PersonaUser.objects.create(name="Item 1")
+        PersonaUser.objects.create(name="Item 2")
 
         response = self.client.get(self.list_url)
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) == 2
 
     def test_update(self):
-        instance = Moneda.objects.create(name="Old Name")
+        instance = PersonaUser.objects.create(name="Old Name")
 
         detail_url = reverse(
-            'base:moneda-detail',
+            'base:persona-user-detail',
             args=[instance.id]
         )
 
@@ -50,14 +50,14 @@ class TestMonedaCRUD(APITestCase):
         assert instance.name == "Updated Name"
 
     def test_delete(self):
-        instance = Moneda.objects.create(name="To delete")
+        instance = PersonaUser.objects.create(name="To delete")
 
         detail_url = reverse(
-            'base:moneda-detail',
+            'base:persona-user-detail',
             args=[instance.id]
         )
 
         response = self.client.delete(detail_url)
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
-        assert Moneda.objects.count() == 0
+        assert PersonaUser.objects.count() == 0

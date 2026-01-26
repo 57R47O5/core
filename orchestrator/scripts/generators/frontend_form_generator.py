@@ -95,10 +95,10 @@ def generate_frontend_form(definition:DomainModelDefinition):
           """
 
       elif field.type in ("date", "datetime"):
-          imports.add("DatepickerFormik")
+          imports.add("DatePickerFormik")
           mode = "datetime" if field.type == "datetime" else "date"
           jsx = f"""
-      <DatepickerFormik
+      <DatePickerFormik
         name="{field.name}"
         label="{label}"
         mode="{mode}"
@@ -143,8 +143,7 @@ export const {definition.ModelName}Schema = Yup.object().shape({{
 {os.linesep[0].join(schema_entries)}
 }});
 
-export function {definition.ModelName}FormFields({{ prefix = "" }}) {{
-  const fieldName = (name) => prefix ? `${{prefix}}.${{name}}` : name;
+export function {definition.ModelName}FormFields() {{
 
   return (
     <>
@@ -166,9 +165,9 @@ export default function {definition.ModelName}Form({{
       validationSchema={{{definition.ModelName}Schema}}
       onSubmit={{onSubmit}}
     >
-      {{({{ errors, touched }}) => (
+      {{(formik) => (
         <Form>
-{os.linesep[0].join(form_fields_jsx)}
+          <{definition.ModelName}FormFields/>
           <div className="text-end mt-3">
             <Button type="submit" disabled={{submitting}}>
               {{submitting ? "Guardando..." : submitText}}

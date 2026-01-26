@@ -8,8 +8,7 @@ export const TipoDocumentoIdentidadSchema = Yup.object().shape({
   nombre: Yup.mixed().nullable(),  descripcion: Yup.mixed().nullable(),
 });
 
-export function TipoDocumentoIdentidadFormFields({ prefix = "" }) {
-  const fieldName = (name) => prefix ? `${prefix}.${name}` : name;
+export function TipoDocumentoIdentidadFormFields() {
 
   return (
     <>
@@ -41,19 +40,9 @@ export default function TipoDocumentoIdentidadForm({
       validationSchema={TipoDocumentoIdentidadSchema}
       onSubmit={onSubmit}
     >
-      {({ errors, touched }) => (
+      {(formik) => (
         <Form>
-
-      <InputFormik
-        name="nombre"
-        label="Nombre"
-      />
-          
-      <InputFormik
-        name="descripcion"
-        label="Descripcion"
-      />
-          
+          <TipoDocumentoIdentidadFormFields/>
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}

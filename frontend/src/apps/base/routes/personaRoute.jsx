@@ -10,10 +10,6 @@ const personaRoutes = [
     {
         path: "/persona/:id",
         element: <PersonaFormPage />,
-    },
-    {
-        path: "/persona/nuevo",
-        element: <PersonaFormPage />,
     }
 ];
 

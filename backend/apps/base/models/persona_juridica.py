@@ -7,6 +7,7 @@ class PersonaJuridica(BaseModel):
         Persona,
         on_delete=models.CASCADE,
         related_name="juridica",
+        db_column="persona",
     )
 
     razon_social = models.CharField(max_length=255)

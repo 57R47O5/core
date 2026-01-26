@@ -10,10 +10,6 @@ const persona_fisicaRoutes = [
     {
         path: "/persona-fisica/:id",
         element: <PersonaFisicaFormPage />,
-    },
-    {
-        path: "/persona-fisica/nuevo",
-        element: <PersonaFisicaFormPage />,
     }
 ];
 

@@ -10,10 +10,6 @@ const tipo_documento_identidadRoutes = [
     {
         path: "/tipo-documento-identidad/:id",
         element: <TipoDocumentoIdentidadFormPage />,
-    },
-    {
-        path: "/tipo-documento-identidad/nuevo",
-        element: <TipoDocumentoIdentidadFormPage />,
     }
 ];
 

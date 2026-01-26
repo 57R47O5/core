@@ -239,7 +239,8 @@ def generate_historical_model_changelog(
     xml.append('        <column name="history_id" type="bigint"/>')
     xml.append('        <column name="history_date" type="timestamp"/>')
     xml.append('        <column name="history_type" type="char(1)"/>')
-    xml.append('        <column name="history_user" type="varchar(150)"/>')
+    xml.append('        <column name="history_user_id" type="bigint"/>')
+    xml.append('        <column name="history_change_reason" type="text"/>')
 
     # --- Campos del modelo original ---
     for field in definition.extra_fields:

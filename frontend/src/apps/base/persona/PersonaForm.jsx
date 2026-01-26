@@ -8,8 +8,7 @@ export const PersonaSchema = Yup.object().shape({
 
 });
 
-export function PersonaFormFields({ prefix = "" }) {
-  const fieldName = (name) => prefix ? `${prefix}.${name}` : name;
+export function PersonaFormFields() {
 
   return (
     <>
@@ -31,9 +30,9 @@ export default function PersonaForm({
       validationSchema={PersonaSchema}
       onSubmit={onSubmit}
     >
-      {({ errors, touched }) => (
+      {(formik) => (
         <Form>
-
+          <PersonaFormFields/>
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}
