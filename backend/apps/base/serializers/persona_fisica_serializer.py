@@ -7,28 +7,29 @@ class PersonaFisicaSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonaFisica
         fields = [
-            "id", "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "persona", "nombres", "apellidos", "fecha_nacimiento"
+            "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "persona", "nombres", "apellidos", "fecha_nacimiento"
         ]
 
-    def create(self, validated_data):
-        Persona.objects.create()
-        instancia = PersonaFisica.objects.create(
-            persona=Persona,
-            **validated_data)
-        return instancia
 
 
 class PersonaFisicaCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonaFisica
         fields = ["nombres", "apellidos", "fecha_nacimiento"]
-    pass
+
+    @atomic
+    def create(self, validated_data):
+        persona=Persona.objects.create()
+        instancia = PersonaFisica.objects.create(
+            persona=persona,
+            **validated_data)
+        return instancia
 
 
 class PersonaFisicaUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonaFisica
-        fields = ["nombres", "apellidos", "fecha"]
+        fields = ["nombres", "apellidos", "fecha_nacimiento"]
 
 
 class PersonaFisicaRetrieveSerializer(PersonaFisicaSerializer):

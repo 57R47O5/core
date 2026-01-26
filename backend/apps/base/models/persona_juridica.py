@@ -20,3 +20,9 @@ class PersonaJuridica(BaseModel):
     @property
     def nombre_completo(self):
         return self.nombre_fantasia or self.razon_social
+    
+    def delete(self, *args, **kwargs):
+        persona=self.persona
+        super().delete(*args, **kwargs)
+        persona.delete()
+        return True

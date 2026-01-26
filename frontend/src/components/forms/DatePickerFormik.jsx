@@ -39,7 +39,6 @@ const DatepickerFormik = ({ label, mode = "date", ...props }) => {
     if (isDateOnly) {
       // Crear fecha con TZ local correctamente
       helpers.setValue(raw);;
-      dateWithTZ = new Date(Number(y), Number(m) - 1, Number(d));
     } else {
       // YYYY-MM-DDTHH:MM → separar fecha y hora
       const [datePart, timePart] = raw.split("T");
@@ -53,9 +52,9 @@ const DatepickerFormik = ({ label, mode = "date", ...props }) => {
         Number(hh),
         Number(mm)
       );
+      helpers.setValue(dateWithTZ.toISOString());
     }
 
-    helpers.setValue(dateWithTZ.toISOString());
   };
 
   return (

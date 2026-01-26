@@ -21,3 +21,9 @@ class PersonaFisica(BaseModel):
     @property
     def nombre_completo(self):
         return f"{self.nombres} {self.apellidos}".strip()
+    
+    def delete(self, *args, **kwargs):
+        persona=self.persona
+        super().delete(*args, **kwargs)
+        persona.delete()
+        return True
