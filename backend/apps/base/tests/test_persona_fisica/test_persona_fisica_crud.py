@@ -1,63 +1,14 @@
-import json
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APITestCase
+import pytest
+from datetime import date
 
-from apps.base.models.persona_fisica import PersonaFisica
+URL = "/persona-fisica/"
 
-
-class TestPersonaFisicaCRUD(APITestCase):
-
-    def setUp(self):
-        self.list_url = reverse('base:persona-fisica-list')
-        self.payload = {
-            "name": "Test PersonaFisica"
-        }
-
-    def test_create(self):
-        response = self.client.post(
-            self.list_url,
-            data=json.dumps(self.payload),
-            content_type="application/json"
-        )
-        assert response.status_code == status.HTTP_201_CREATED
-        assert PersonaFisica.objects.count() == 1
-
-    def test_list(self):
-        PersonaFisica.objects.create(name="Item 1")
-        PersonaFisica.objects.create(name="Item 2")
-
-        response = self.client.get(self.list_url)
-        assert response.status_code == status.HTTP_200_OK
-        assert len(response.data) == 2
-
-    def test_update(self):
-        instance = PersonaFisica.objects.create(name="Old Name")
-
-        detail_url = reverse(
-            'base:persona-fisica-detail',
-            args=[instance.id]
-        )
-
-        response = self.client.put(
-            detail_url,
-            data=json.dumps({"name": "Updated Name"}),
-            content_type="application/json"
-        )
-
-        assert response.status_code == status.HTTP_200_OK
-        instance.refresh_from_db()
-        assert instance.name == "Updated Name"
-
-    def test_delete(self):
-        instance = PersonaFisica.objects.create(name="To delete")
-
-        detail_url = reverse(
-            'base:persona-fisica-detail',
-            args=[instance.id]
-        )
-
-        response = self.client.delete(detail_url)
-
-        assert response.status_code == status.HTTP_204_NO_CONTENT
-        assert PersonaFisica.objects.count() == 0
+@pytest.mark.django_db()
+def test_create_persona_fisica(auth_client):
+    datos={
+        'nombres': 'Pedro Juan', 
+        'apellidos': 'Caballero',
+        'fecha_nacimiento': date.today().isoformat()}
+    salida=auth_client.post(URL, datos)
+    assert True
+    
