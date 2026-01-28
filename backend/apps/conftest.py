@@ -39,6 +39,32 @@ django.setup()
 # Fixtures
 # ─────────────────────────────────────────────────────────────
 
+@pytest.fixture(scope="session")
+def django_db_setup():
+    # pytest-django NO crea ni destruye la DB
+    pass
+
+@pytest.fixture(autouse=True)
+def db_rollback(transactional_db):
+    """
+    Cada test corre dentro de una transacción
+    que se revierte completamente al final.
+    """
+    yield
+
+class UsuarioPrueba():
+    nombre="usuario_prueba"
+    password="password"
+
+@pytest.fixture
+def user(db):
+    from apps.auth.models.user import User
+    from framework.security.passwords import hash_password
+    return User.objects.create(
+        username=UsuarioPrueba.nombre,
+        password_hash=hash_password(UsuarioPrueba.password),
+    )
+
 @pytest.fixture
 def client():
     from rest_framework.test import APIClient
@@ -46,10 +72,12 @@ def client():
 
 
 @pytest.fixture
-def auth_client(client):
+def auth_client(client, user):
     response = client.post(
         "/login/",
-        {"identifier": "esteban", "password": "142857"},
+        {
+            "identifier": UsuarioPrueba.nombre, 
+            "password": UsuarioPrueba.password},
         format="json",
     )
 
