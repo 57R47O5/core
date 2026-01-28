@@ -58,8 +58,9 @@ class ModelRestController(BaseRestController):
         serializer=self.create_serializer(data=request.data)
         if not serializer.is_valid():
             raise ExcepcionValidacion(str(serializer.errors))
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        instancia=serializer.save()
+        retrieve_serializer = self.retrieve_serializer(instancia)
+        return Response(retrieve_serializer.data, status=status.HTTP_201_CREATED)
 
     @excepcion
     def retrieve(self, request, pk=None):

@@ -24,5 +24,8 @@ class PersonaJuridica(BaseModel):
     def delete(self, *args, **kwargs):
         persona=self.persona
         super().delete(*args, **kwargs)
+        documentos=persona.documentos.all()
+        for documento in documentos:
+            documento.delete()
         persona.delete()
         return True
