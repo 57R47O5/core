@@ -75,7 +75,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "auth.middleware.token.AuthTokenMiddleware",    
+    "apps.auth.middleware.token.AuthTokenMiddleware",    
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -109,7 +109,7 @@ REST_FRAMEWORK = {
     "UNAUTHENTICATED_TOKEN": None,
 
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "auth.authentication.OrcTokenAuthentication",
+    "apps.auth.authentication.OrcTokenAuthentication",
     ],
 }
 

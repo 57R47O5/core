@@ -268,7 +268,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "auth.middleware.token.AuthTokenMiddleware",    
+    "apps.auth.middleware.token.AuthTokenMiddleware",    
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -302,7 +302,7 @@ REST_FRAMEWORK = {{
     "UNAUTHENTICATED_TOKEN": None,
 
     "DEFAULT_AUTHENTICATION_CLASSES": [
-    "auth.authentication.OrcTokenAuthentication",
+    "apps.auth.authentication.OrcTokenAuthentication",
     ],
 }}
 
@@ -633,6 +633,21 @@ urlpatterns = [
 '''
     project_urls_path.write_text(project_urls_content)
 
+def create_pytestini(project_dir):
+    project_pytestini_path = project_dir / "pytest.ini"
+    content = """
+[pytest]
+DJANGO_SETTINGS_MODULE = config.settings.base
+python_files = test_*.py
+testpaths =
+    backend/apps/
+pythonpath =
+    ../../
+    ../../apps
+addopts = -ra
+"""
+    project_pytestini_path.write_text(content)
+
 
 # ==============================
 # Main
@@ -661,6 +676,7 @@ def main():
         configure_entrypoints(project_name, project_dir)
         configure_urls(project_name, project_dir)
         configure_vscode(project_dir)
+        create_pytestini(project_dir)
         # create_postgres_schema(args)
         # register_project_in_liquibase(args.project)
 
