@@ -18,7 +18,7 @@ class DocumentoIdentidad(BaseModel):
         db_column="tipo"
         )
     numero = models.CharField(max_length=50)
-    pais_emision = models.CharField(max_length=2)
+    pais_emision = models.CharField(max_length=2, default="PY")
     vigente = models.BooleanField(default=True)
 
     class Meta:
