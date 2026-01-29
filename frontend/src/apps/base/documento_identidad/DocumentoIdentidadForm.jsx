@@ -5,42 +5,26 @@ import { Button } from "react-bootstrap";
 import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
 
-export const DocumentoIdentidadSchema = Yup.object().shape({
-  persona: Yup.mixed().nullable(),  tipo: Yup.mixed().nullable(),  numero: Yup.mixed().nullable(),  pais_emision: Yup.mixed().nullable(),  vigente: Yup.mixed().nullable(),
-});
+
+export const DocumentoIdentidadFields = {
+  tipo: Yup.mixed().nullable(),
+  numero: Yup.mixed().nullable(),
+};
 
 export function DocumentoIdentidadFormFields() {
 
   return (
-    <>
-    
-      <SelectFormik
-        name="persona"
-        label="Persona"
-        endpoint="persona"
-      />
-          
+    <>    
       <SelectFormik
         name="tipo"
-        label="Tipo"
+        label="Tipo Documento"
         endpoint="tipo-documento-identidad"
       />
-          
       <InputFormik
         name="numero"
-        label="Numero"
+        label="Numero de documento"
       />
-          
-      <InputFormik
-        name="pais_emision"
-        label="Pais emision"
-      />
-          
-      <InputFormik
-        name="vigente"
-        label="Vigente"
-      />
-          
+                
     </>
   );
 }

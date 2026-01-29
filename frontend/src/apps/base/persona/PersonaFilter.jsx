@@ -9,24 +9,22 @@ const PersonaFilter = ({ onSearch, loading }) => {
 
       <Formik
         initialValues={{
-
         }}
         onSubmit={(values) => onSearch(values)}
       >
-        {() => (
+        {(formik) => (
+          <>
+          {console.log("formik: ", formik)}
           <Form>
             <div className="row">
-
-
-
             </div>
-
             <div className="text-end">
               <Button type="submit" variant="primary" disabled={loading}>
                 Buscar
               </Button>
             </div>
           </Form>
+          </>
         )}
       </Formik>
     </>

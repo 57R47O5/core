@@ -4,12 +4,14 @@ import * as Yup from "yup";
 import { Button } from "react-bootstrap";
 import InputFormik from "../../../components/forms/InputFormik";
 import DatePickerFormik from "../../../components/forms/DatePickerFormik";
+import {DocumentoIdentidadFormFields, DocumentoIdentidadFields} from "../documento_identidad/DocumentoIdentidadForm";
 
 export const PersonaFisicaSchema = Yup.object().shape({
   nombres: Yup.mixed().nullable(),
   apellidos: Yup.mixed().nullable(),
   fecha_nacimiento: Yup.mixed().nullable(),
-});
+  ...DocumentoIdentidadFields,
+  });
 
 export function PersonaFisicaFormFields({ prefix = "" }) {
  
@@ -20,17 +22,15 @@ export function PersonaFisicaFormFields({ prefix = "" }) {
         name="nombres"
         label="Nombres"
       />          
-
       <InputFormik
         name="apellidos"
         label="Apellidos"
       />         
-
       <DatePickerFormik
         name="fecha_nacimiento"
         label="Fecha nacimiento"
       />
-          
+      <DocumentoIdentidadFormFields/>   
     </>
   );
 }
