@@ -32,15 +32,17 @@ class DocumentoIdentidadSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentoIdentidad
         fields = [
-            "id", "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "persona", "tipo", "numero", "pais_emision", "vigente"
+            "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "persona", "tipo", "numero", "pais_emision", "vigente"
         ]
 
 
 class DocumentoIdentidadCreateSerializer(serializers.ModelSerializer):
+    tipo = serializers.PrimaryKeyRelatedField(
+        queryset=TipoDocumentoIdentidad.objects.all()
+    )
     class Meta:
         model = DocumentoIdentidad
-        fields = "__all__"
-    pass
+        fields = ["tipo", "numero", "pais_emision", "vigente"]
 
 
 class DocumentoIdentidadUpdateSerializer(serializers.ModelSerializer):

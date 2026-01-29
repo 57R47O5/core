@@ -4,15 +4,15 @@ from datetime import datetime
 from framework.api.options import BaseOptionsAPIView
 from apps.base.models.persona_juridica import PersonaJuridica
 from apps.base.serializers.persona_juridica_serializer import (
-    PersonaJuridicaCreateSerializer,
     PersonaJuridicaUpdateSerializer,
+    PersonaJuridicaInputSerializer,
     PersonaJuridicaRetrieveSerializer)
 from controllers.base.base_rest_controller import ModelRestController
 
 
 class PersonaJuridicaRestController(ModelRestController):
     model = PersonaJuridica
-    create_serializer = PersonaJuridicaCreateSerializer
+    create_serializer = PersonaJuridicaInputSerializer
     update_serializer = PersonaJuridicaUpdateSerializer
     retrieve_serializer = PersonaJuridicaRetrieveSerializer
 
