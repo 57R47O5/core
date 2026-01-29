@@ -9,7 +9,7 @@ export default function PersonaFisicaListPage() {
       title="PersonaFisica"
       FilterComponent={PersonaFisicaFilter}
       columns={[
-      { label: "Persona", field: "persona" },
+      { label: "Id", field: "id" },
       { label: "Nombres", field: "nombres" },
       { label: "Apellidos", field: "apellidos" },
       { label: "Fecha nacimiento", field: "fecha_nacimiento" }

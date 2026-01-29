@@ -8,10 +8,9 @@ const PersonaFisicaFilter = ({ onSearch, loading }) => {
       <h5 className="mb-3">Filtrar persona fisica</h5>
       <Formik
         initialValues={{
-      persona: "",
+      id: "",
       nombres: "",
       apellidos: "",
-      fecha_nacimiento: "",
         }}
         onSubmit={(values) => onSearch(values)}
       >
@@ -19,8 +18,8 @@ const PersonaFisicaFilter = ({ onSearch, loading }) => {
           <Form>
             <div className="row">
             <div className="col-md-3 mb-3">
-              <RBForm.Label>Persona</RBForm.Label>
-              <Field name="persona" className="form-control" />
+              <RBForm.Label>ID</RBForm.Label>
+              <Field name="id" className="form-control" />
             </div>
             <div className="col-md-3 mb-3">
               <RBForm.Label>Nombres</RBForm.Label>
@@ -29,11 +28,7 @@ const PersonaFisicaFilter = ({ onSearch, loading }) => {
             <div className="col-md-3 mb-3">
               <RBForm.Label>Apellidos</RBForm.Label>
               <Field name="apellidos" className="form-control" />
-            </div>
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Fecha nacimiento</RBForm.Label>
-              <Field name="fecha_nacimiento" className="form-control" />
-            </div>
+            </div>            
             </div>
             <div className="text-end">
               <Button type="submit" variant="primary" disabled={loading}>
