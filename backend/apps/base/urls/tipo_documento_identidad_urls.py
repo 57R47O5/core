@@ -9,7 +9,7 @@ router = routers.SimpleRouter()
 router.register(r'tipo-documento-identidad', TipoDocumentoIdentidadRestController, 'tipo-documento-identidad')
 
 urlpatterns = [
-    path('options/', TipoDocumentoIdentidadOptionsView.as_view(), name='tipo-documento-identidad-options'),
+    path(r'tipo-documento-identidad/options/', TipoDocumentoIdentidadOptionsView.as_view(), name='tipo-documento-identidad-options'),
 ]
 
 urlpatterns += router.urls

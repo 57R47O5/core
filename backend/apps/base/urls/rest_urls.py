@@ -1,19 +1,15 @@
-from rest_framework import routers
+from apps.base.urls.moneda_urls import urlpatterns as moneda_urls
+from apps.base.urls.persona_urls import urlpatterns as persona_urls
+from apps.base.urls.persona_fisica_urls import urlpatterns as persona_fisica_urls
+from apps.base.urls.persona_juridica_urls import urlpatterns as persona_juridica_urls
+from apps.base.urls.tipo_documento_identidad_urls import urlpatterns as tipo_doc_urls
+from apps.base.urls.documento_identidad_urls import urlpatterns as documento_urls
 
-router = routers.SimpleRouter()
-
-from apps.base.rest_controllers.moneda_rest_controller import MonedaRestController
-from apps.base.rest_controllers.persona_rest_controller import PersonaRestController
-from apps.base.rest_controllers.persona_fisica_rest_controller import PersonaFisicaRestController
-from apps.base.rest_controllers.persona_juridica_rest_controller import PersonaJuridicaRestController
-from apps.base.rest_controllers.tipo_documento_identidad_rest_controller import TipoDocumentoIdentidadRestController
-from apps.base.rest_controllers.documento_identidad_rest_controller import DocumentoIdentidadRestController
-
-router.register(r'moneda', MonedaRestController, 'moneda')
-router.register(r'persona', PersonaRestController, 'persona')
-router.register(r'persona-fisica', PersonaFisicaRestController, 'persona-fisica')
-router.register(r'persona-juridica', PersonaJuridicaRestController,'persona-juridica')
-router.register(r'tipo-documento-identidad', TipoDocumentoIdentidadRestController,'tipo-documento-identidad')
-router.register(r'documento-identidad', DocumentoIdentidadRestController,'documento-identidad')
-
-urlpatterns = router.urls
+urlpatterns = (
+    moneda_urls
+    + persona_urls
+    + persona_fisica_urls
+    + persona_juridica_urls
+    + tipo_doc_urls
+    + documento_urls
+)
