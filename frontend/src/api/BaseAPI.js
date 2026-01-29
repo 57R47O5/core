@@ -26,22 +26,25 @@ const getAPIBase = (controller)=>({
     },
 
     // Búsqueda / Autocomplete
-    buscar: async (filtros) => {
-    // Si no se envía nada, devolvemos []
-    // if (!filtros || typeof filtros !== "object") return [];
+buscar: async (filtros = {}) => {
+  const params = new URLSearchParams();
 
-    // Construir parámetros dinámicos
-    const params = new URLSearchParams();
+  if (filtros && typeof filtros === "object") {
+        Object.entries(filtros).forEach(([key, value]) => {
+        if (value === null || value === undefined) return;
 
-    if (filtros.nombre) params.append("nombre", filtros.nombre.trim());
-    if (filtros.apellido) params.append("apellido", filtros.apellido.trim());
-    if (filtros.dni) params.append("dni", filtros.dni.trim());
+        // strings vacíos no se envían
+        if (typeof value === "string" && value.trim() === "") return;
 
-    if (filtros.fecha_desde) params.append("fecha_desde", filtros.fecha_desde);
-    if (filtros.fecha_hasta) params.append("fecha_hasta", filtros.fecha_hasta);
+        params.append(key, value);
+        });
+    }
 
-    return await request.get(`${controller}/?${params.toString()}`);
-  },
+    const query = params.toString();
+    const url = query ? `${controller}/?${query}` : `${controller}/`;
+
+    return await request.get(url);
+    },
 })
 
 export default getAPIBase;
