@@ -1,7 +1,6 @@
 from typing import Type
-
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, CharField, TextField, DateField, DateTimeField
 
 from rest_framework import status, viewsets, serializers
 from rest_framework.response import Response
@@ -24,7 +23,6 @@ class ModelRestController(BaseRestController):
         """
         return list(queryset.values())
 
-    @excepcion
     def list(self, request):
         LIMITE=100
         filtro=self._get_filter(request.query_params)
@@ -34,22 +32,48 @@ class ModelRestController(BaseRestController):
 
     def _get_filter(self, params):
         filtro = Q()
-        model_fields = {f.name for f in self.model._meta.get_fields()}
+
+        model_fields = {
+            f.name: f
+            for f in self.model._meta.get_fields()
+            if hasattr(f, "get_internal_type")
+        }
 
         for key, value in params.items():
-            # Si viene un lookup (ej: nombre__icontains) tomamos solo la parte antes del __
-            field_name = key.split("__")[0]
+            if value in (None, "", []):
+                continue
 
-            # Validamos que el campo base exista en el modelo
-            if field_name in model_fields:
-                try:
+            # nombre__lookup → nombre
+            field_name, *lookup_parts = key.split("__")
+            field = model_fields.get(field_name)
+
+            if not field:
+                continue
+
+            try:
+                # Si el frontend ya mandó lookup explícito → respetar
+                if lookup_parts:
                     filtro &= Q(**{key: value})
-                except Exception:
-                    # Si el lookup no es válido ignoramos ese filtro
-                    pass
+                    continue
+
+                # Inferir lookup por tipo de campo
+                if isinstance(field, (CharField, TextField)):
+                    filtro &= Q(**{f"{field_name}__icontains": value})
+
+                elif isinstance(field, (DateField, DateTimeField)):
+                    # igualdad por defecto (el FE puede mandar __gte/__lte)
+                    filtro &= Q(**{field_name: value})
+
+                else:
+                    # Integer, FK, Boolean, UUID, etc
+                    filtro &= Q(**{field_name: value})
+
+            except Exception:
+                # lookup inválido → ignorar
+                pass
 
         return filtro
-    
+        
     def _get_queryset(self, filtro):
         return self.model.objects.filter(filtro)
 

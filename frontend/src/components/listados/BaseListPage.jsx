@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Spinner, Card, Table, Button } from "react-bootstrap";
-import CenteredCard from "../displays/CenteredCard";
 import getAPIBase from "../../api/BaseAPI";
+import { BaseListLayout } from "./BaseListLayout";
+import { DataTable } from "./DataTable";
 
 /**
  * BaseListPage
@@ -33,77 +33,32 @@ export default function BaseListPage({
       const data = await buscar(filters);
       setItems(data || []);
 
-      // acceso directo si solo hay un resultado
-      if (data && data.length === 1) {
+      if (data?.length === 1) {
         navigate(`/${controller}/${data[0].id}`);
       }
-    } catch (error) {
-      console.error("Error al buscar:", error);
-      alert("Hubo un error al cargar los datos");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  // Carga inicial sin filtros
   useEffect(() => {
     handleSearch();
   }, []);
 
   return (
-    <div className="container">
-      <h2 className="mb-4">{title}</h2>
-
-      {/* ---------- FILTROS ---------- */}
-      <CenteredCard>
-        <Card.Body>
-          <FilterComponent onSearch={handleSearch} loading={loading} />
-        </Card.Body>
-      </CenteredCard>
-
-      {/* ---------- LISTADO ---------- */}
-      <CenteredCard>
-        <Card.Body>
-          <h5 className="mb-3">Resultados</h5>
-
-          {loading ? (
-            <div className="text-center my-4">
-              <Spinner animation="border" />
-            </div>
-          ) : items.length === 0 ? (
-            <p className="text-center my-4">No se encontraron resultados</p>
-          ) : (
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  {columns.map((col) => (
-                    <th key={col.field}>{col.label}</th>
-                  ))}
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item.id}>
-                    {columns.map((col) => (
-                      <td key={col.field}>{item[col.field] || "-"}</td>
-                    ))}
-
-                    <td>
-                      <Button
-                        size="sm"
-                        onClick={() => navigate(`/${controller}/${item.id}`)}
-                      >
-                        Editar
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-        </Card.Body>
-      </CenteredCard>
-    </div>
+    <BaseListLayout
+      title={title}
+      FilterComponent={FilterComponent}
+      onSearch={handleSearch}
+      loading={loading}
+    >
+      <DataTable
+        items={items}
+        columns={columns}
+        loading={loading}
+        onEdit={(item) => navigate(`/${controller}/${item.id}`)}
+      />
+    </BaseListLayout>
   );
 }
+

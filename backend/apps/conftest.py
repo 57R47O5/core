@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 import pytest
+from django.db import connection, transaction
 
 # backend/apps/conftest.py
 
@@ -45,12 +46,11 @@ def django_db_setup():
     pass
 
 @pytest.fixture(autouse=True)
-def db_rollback(transactional_db):
-    """
-    Cada test corre dentro de una transacción
-    que se revierte completamente al final.
-    """
-    yield
+def enable_db_access_for_tests(django_db_blocker):
+    with django_db_blocker.unblock():
+        with transaction.atomic():
+            yield
+            # rollback automático
 
 class UsuarioPrueba():
     nombre="usuario_prueba"
