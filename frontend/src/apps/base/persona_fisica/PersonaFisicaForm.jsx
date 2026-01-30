@@ -4,20 +4,20 @@ import * as Yup from "yup";
 import { Button } from "react-bootstrap";
 import InputFormik from "../../../components/forms/InputFormik";
 import DatePickerFormik from "../../../components/forms/DatePickerFormik";
-import {DocumentoIdentidadFormFields, DocumentoIdentidadFields} from "../documento_identidad/DocumentoIdentidadForm";
+import {DocumentoIdentidadFormFields, DocumentoIdentidadSchema} from "../documento_identidad/DocumentoIdentidadForm";
+import { useRouteMode } from "../../../hooks/useRouteMode";
 
 export const PersonaFisicaSchema = Yup.object().shape({
-  nombres: Yup.mixed().nullable(),
-  apellidos: Yup.mixed().nullable(),
-  fecha_nacimiento: Yup.mixed().nullable(),
-  ...DocumentoIdentidadFields,
+  nombres: Yup.string().required(),
+  apellidos: Yup.string().required(),
+  fecha_nacimiento: Yup.string().nullable(),
+  ...DocumentoIdentidadSchema,
   });
-
-export function PersonaFisicaFormFields({ prefix = "" }) {
- 
+  
+export function PersonaFisicaFormFields() {
+  const {isCreate} = useRouteMode()
   return (
     <>               
-
       <InputFormik
         name="nombres"
         label="Nombres"
@@ -30,7 +30,7 @@ export function PersonaFisicaFormFields({ prefix = "" }) {
         name="fecha_nacimiento"
         label="Fecha nacimiento"
       />
-      <DocumentoIdentidadFormFields/>   
+      {isCreate && <DocumentoIdentidadFormFields/>}   
     </>
   );
 }
