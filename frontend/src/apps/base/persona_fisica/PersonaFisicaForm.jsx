@@ -1,64 +1,45 @@
-
 import { Formik, Form } from "formik";
-import * as Yup from "yup";
 import { Button } from "react-bootstrap";
-import InputFormik from "../../../components/forms/InputFormik";
-import DatePickerFormik from "../../../components/forms/DatePickerFormik";
-import {DocumentoIdentidadFormFields, DocumentoIdentidadSchema} from "../documento_identidad/DocumentoIdentidadForm";
 import { useRouteMode } from "../../../hooks/useRouteMode";
-
-export const PersonaFisicaSchema = Yup.object().shape({
-  nombres: Yup.string().required(),
-  apellidos: Yup.string().required(),
-  fecha_nacimiento: Yup.string().nullable(),
-  ...DocumentoIdentidadSchema,
-  });
-  
-export function PersonaFisicaFormFields() {
-  const {isCreate} = useRouteMode()
-  return (
-    <>               
-      <InputFormik
-        name="nombres"
-        label="Nombres"
-      />          
-      <InputFormik
-        name="apellidos"
-        label="Apellidos"
-      />         
-      <DatePickerFormik
-        name="fecha_nacimiento"
-        label="Fecha nacimiento"
-      />
-      {isCreate && <DocumentoIdentidadFormFields/>}   
-    </>
-  );
-}
+import { useModelForm } from "../../../hooks/useModelForm";
+import { personaFisicaFields } from "./PersonaFisicaFields";
 
 export default function PersonaFisicaForm({
-  initialValues,
+  initialValues: externalInitialValues,
   onSubmit,
   submitText = "Guardar",
   submitting = false,
 }) {
+  const { isCreate } = useRouteMode();
+
+  const {
+    initialValues,
+    validationSchema,
+    FormFields,
+  } = useModelForm(
+    personaFisicaFields,
+    // opcional: orden explícito
+    ["nombres", "apellidos", "fecha_nacimiento", "tipo", "numero"]
+  );
+
   return (
     <Formik
       enableReinitialize
-      initialValues={initialValues}
-      validationSchema={PersonaFisicaSchema}
+      initialValues={externalInitialValues ?? initialValues}
+      validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
-      {(formik) => (
+      {() => (
         <Form>
-     <PersonaFisicaFormFields/>          
+          <FormFields />
+
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}
             </Button>
           </div>
-
         </Form>
       )}
     </Formik>
   );
-} 
+}

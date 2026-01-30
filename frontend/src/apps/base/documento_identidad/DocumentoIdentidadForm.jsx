@@ -1,58 +1,37 @@
 
 import { Formik, Form } from "formik";
-import * as Yup from "yup";
 import { Button } from "react-bootstrap";
-import InputFormik from "../../../components/forms/InputFormik";
-import SelectFormik from "../../../components/forms/SelectFormik";
+import { documentoIdentidadFields } from "./DocumentoIdentidadFields";
+import { useModelForm } from "../../../hooks/useModelForm";
 
-
-export const DocumentoIdentidadSchema = {
-  tipo: Yup.number().nullable(),
-  numero: Yup.string().nullable(),
-};
-
-export function DocumentoIdentidadFormFields() {
-
-  return (
-    <>    
-      <SelectFormik
-        name="tipo"
-        label="Tipo Documento"
-        endpoint="tipo-documento-identidad"
-      />
-      <InputFormik
-        name="numero"
-        label="Numero de documento"
-      />
-                
-    </>
-  );
-}
 
 export default function DocumentoIdentidadForm({
-  initialValues,
   onSubmit,
   submitText = "Guardar",
   submitting = false,
 }) {
+  
+  const {
+    initialValues,
+    validationSchema,
+    columns,
+    FormFields,
+  } = useModelForm(documentoIdentidadFields);
   return (
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={DocumentoIdentidadSchema}
+      validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
-      {(formik) => (
-        <Form>
-          <DocumentoIdentidadFormFields/>
-          <div className="text-end mt-3">
-            <Button type="submit" disabled={submitting}>
-              {submitting ? "Guardando..." : submitText}
-            </Button>
-          </div>
-
-        </Form>
-      )}
+      <Form>
+        <FormFields fields={documentoIdentidadFields} />
+        <div className="text-end mt-3">
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Guardando..." : submitText}
+          </Button>
+        </div>
+      </Form>
     </Formik>
   );
-} 
+}
