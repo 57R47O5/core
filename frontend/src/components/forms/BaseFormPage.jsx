@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Spinner, Card, Button } from "react-bootstrap";
 import CenteredCard from "../displays/CenteredCard";
 import getAPIBase from "../../api/BaseAPI";

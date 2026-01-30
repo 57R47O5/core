@@ -26,10 +26,10 @@ const getAPIBase = (controller)=>({
     },
 
     // Búsqueda / Autocomplete
-buscar: async (filtros = {}) => {
-  const params = new URLSearchParams();
+    buscar: async (filtros = {}) => {
+    const params = new URLSearchParams();
 
-  if (filtros && typeof filtros === "object") {
+    if (filtros && typeof filtros === "object") {
         Object.entries(filtros).forEach(([key, value]) => {
         if (value === null || value === undefined) return;
 

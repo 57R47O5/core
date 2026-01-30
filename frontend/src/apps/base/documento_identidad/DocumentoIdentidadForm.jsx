@@ -6,9 +6,9 @@ import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
 
 
-export const DocumentoIdentidadFields = {
-  tipo: Yup.mixed().nullable(),
-  numero: Yup.mixed().nullable(),
+export const DocumentoIdentidadSchema = {
+  tipo: Yup.number().nullable(),
+  numero: Yup.string().nullable(),
 };
 
 export function DocumentoIdentidadFormFields() {
