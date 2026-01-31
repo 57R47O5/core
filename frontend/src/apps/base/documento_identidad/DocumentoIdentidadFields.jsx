@@ -3,7 +3,7 @@ import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
 
 export const documentoIdentidadFields = {
-  persona: {
+  persona_id: {
     label: "Persona",
     initial: "",
     validation: Yup.number().required("Requerido"),

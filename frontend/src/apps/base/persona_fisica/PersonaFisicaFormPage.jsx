@@ -27,13 +27,13 @@ function PersonaFisicaO2MDocumentos({
       columns={columns}
       initialItem={{
         ...initialItem,
-        persona: instance.persona, 
+        persona_id: instance.persona_id, 
       }}
       validationSchema={validationSchema}
     >
       <O2MInlineList
         title="Documentos de identidad"
-        filtros={{ persona: instance.persona }}
+        filtros={{persona_id: instance.persona_id }}
       />
     </O2MProvider>
   );
