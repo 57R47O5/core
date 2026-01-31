@@ -1,83 +1,41 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spinner, Card, Button } from "react-bootstrap";
 import CenteredCard from "../displays/CenteredCard";
-import getAPIBase from "../../api/BaseAPI";
 import { useRouteMode } from "../../hooks/useRouteMode";
+import { InstanceProvider, useInstance } from "../../context/InstanceContext";
+import getAPIBase from "../../api/BaseAPI";
 
-/**
- * BaseFormPage
- * 
- * Props:
- * - controller: string (ej "pacientes")
- * - FormComponent: componente de Formik con props:
- *        - initialValuesDefault  (objeto requerido)
- *        - initialValues
- *        - onSubmit
- *        - submitting
- *        - submitText
- * 
- * - redirectTo: string (ruta donde volver después de crear/editar)
- */
-export default function BaseFormPage({
+function BaseFormPageContent({
   controller,
   FormComponent,
-  redirectTo = `/${controller}`,
-  titleNew = "Nuevo Registro",
-  titleEdit = "Editar Registro",
+  redirectTo,
+  titleNew,
+  titleEdit,
 }) {
-  const { id, isCreate, isEdit } = useRouteMode();
+  const { id, isCreate } = useRouteMode();
   const navigate = useNavigate();
-  const { obtener, editar, crear, eliminar } = getAPIBase(controller);
+  const { instance, loading } = useInstance();
 
-  // Tomamos los initialValues por defecto desde el form recibido
-  const initialDefaults =
-    FormComponent.initialValuesDefault || {};
-
-  const [initialValues, setInitialValues] = useState(initialDefaults);
-  const [cargando, setCargando] = useState(!!id);
-  const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-      const cargarInstancia = async () => {
-        if (isCreate) {
-        setInitialValues(initialDefaults);
-        setCargando(false);
-        return;
-      }
-
-      const data = await obtener(id);
-      setInitialValues({ ...initialDefaults, ...data });
-      setCargando(false);
-      };
-      if (id) cargarInstancia();
-    }, [id]);
+  const { crear, editar, eliminar } = getAPIBase(controller);
 
   const handleSubmit = async (values) => {
-    setSubmitting(true);
-
-    try {
-      if (isCreate) {
-        await crear(values);
-        alert("Registro creado");
-      } else {
-        await editar(id, values);
-        alert("Registro actualizado");
-      }
-
-      navigate(redirectTo);
-    } finally {
-      setSubmitting(false);
+    if (isCreate) {
+      await crear(values);
+      alert("Registro creado");
+    } else {
+      await editar(id, values);
+      alert("Registro actualizado");
     }
+    navigate(redirectTo);
   };
 
-  const handleDelete = async () =>{
+  const handleDelete = async () => {
     await eliminar(id);
-      alert("Registro eliminado");
-      navigate(redirectTo);
-  }
+    alert("Registro eliminado");
+    navigate(redirectTo);
+  };
 
-  if (cargando) {
+  if (loading) {
     return (
       <div className="text-center mt-5">
         <Spinner animation="border" />
@@ -88,34 +46,64 @@ export default function BaseFormPage({
   return (
     <CenteredCard>
       <Card.Body>
-        <h3 className="mb-4">{isCreate ? titleNew : titleEdit}</h3>
+        <h3 className="mb-4">
+          {isCreate ? titleNew : titleEdit}
+        </h3>
 
         <FormComponent
-          initialValues={initialValues}
+          initialValues={instance}
           onSubmit={handleSubmit}
-          submitting={submitting}
           submitText={isCreate ? "Crear" : "Actualizar"}
-        />        
+        />
 
         <div className="d-flex justify-content-between mt-3">
-        <Button
-          variant="secondary"
-          onClick={() => navigate(redirectTo)}
-        >
-          Volver
-        </Button>
-
-        {!isCreate && (
           <Button
-            variant="danger"
-            onClick={handleDelete}
+            variant="secondary"
+            onClick={() => navigate(redirectTo)}
           >
-            Eliminar
+            Volver
           </Button>
-        )}
-      </div>
 
+          {!isCreate && (
+            <Button
+              variant="danger"
+              onClick={handleDelete}
+            >
+              Eliminar
+            </Button>
+          )}
+        </div>
       </Card.Body>
     </CenteredCard>
   );
 }
+
+export default function BaseFormPage({
+  controller,
+  FormComponent,
+  redirectTo = `/${controller}`,
+  titleNew = "Nuevo Registro",
+  titleEdit = "Editar Registro",
+}) {
+  const { id } = useRouteMode();
+
+  const defaults =
+    FormComponent.initialValuesDefault || {};
+
+  return (
+    <InstanceProvider
+      controller={controller}
+      id={id}
+      defaults={defaults}
+    >
+      <BaseFormPageContent
+        controller={controller}
+        FormComponent={FormComponent}
+        redirectTo={redirectTo}
+        titleNew={titleNew}
+        titleEdit={titleEdit}
+      />
+    </InstanceProvider>
+  );
+}
+

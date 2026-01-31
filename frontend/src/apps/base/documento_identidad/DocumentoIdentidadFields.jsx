@@ -3,6 +3,19 @@ import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
 
 export const documentoIdentidadFields = {
+  persona: {
+    label: "Persona",
+    initial: "",
+    validation: Yup.number().required("Requerido"),
+    render: (props) => (
+      <InputFormik
+        {...props}
+        endpoint="tipo-documento-identidad"
+        disabled
+      />
+    ),
+  },
+
   tipo: {
     label: "Tipo Documento",
     initial: "",

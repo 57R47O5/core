@@ -17,9 +17,7 @@ export default function PersonaFisicaForm({
     validationSchema,
     FormFields,
   } = useModelForm(
-    personaFisicaFields,
-    // opcional: orden explícito
-    ["nombres", "apellidos", "fecha_nacimiento", "tipo", "numero"]
+    personaFisicaFields
   );
 
   return (

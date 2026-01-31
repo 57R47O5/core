@@ -1,38 +1,73 @@
+import { Spinner } from "react-bootstrap";
 import BaseFormPage from "../../../components/forms/BaseFormPage";
 import PersonaFisicaForm from "./PersonaFisicaForm";
 import O2MInlineList from "../../../components/o2m/O2MInlineList";
-import getAPIBase from "../../../api/BaseAPI";
 import O2MProvider from "../../../components/o2m/O2MProvider";
-import { useModelForm } from "../../../hooks/useModelForm"
+import { useModelForm } from "../../../hooks/useModelForm";
 import { documentoIdentidadFields } from "../documento_identidad/DocumentoIdentidadFields";
+import { useRouteMode } from "../../../hooks/useRouteMode";
+import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
+
+function PersonaFisicaO2MDocumentos({
+  show,
+  columns,
+  initialItem,
+  validationSchema,
+}) {
+  const { instance } = useInstance();
+
+  if (!show)
+    return null;
+
+  if (!instance)
+  return (<Spinner/>)
+  return (
+    <O2MProvider
+      controller="documento-identidad"
+      columns={columns}
+      initialItem={{
+        ...initialItem,
+        persona: instance.persona, 
+      }}
+      validationSchema={validationSchema}
+    >
+      <O2MInlineList
+        title="Documentos de identidad"
+        filtros={{ persona: instance.persona }}
+      />
+    </O2MProvider>
+  );
+}
+
 
 export default function PersonaFisicaFormPage() {
+  const {id, isEdit } = useRouteMode();
+
   const {
     initialValues,
     validationSchema,
     columns,
   } = useModelForm(documentoIdentidadFields);
-  const controller = "persona-fisica"
-  const {id} = getAPIBase(controller)
+  const controller = "persona-fisica";
+
   return (
     <>
-    <BaseFormPage
-      controller = {controller}
-      FormComponent={PersonaFisicaForm}
-      titleNew="Nuevo Persona Fisica"
-      titleEdit="Editar Persona Fisica"
+      <BaseFormPage
+        controller={controller}
+        FormComponent={PersonaFisicaForm}
+        titleNew="Nueva Persona Física"
+        titleEdit="Editar Persona Física"
       />
-      <O2MProvider
-        controller={"documento-identidad"}
-        columns={columns}
-        initialItem={initialValues}
-        validationSchema={validationSchema}
-      >
-        <O2MInlineList
-          title="Documentos de identidad"
-          filtros={{"persona__persona_fisica_id":id}}
-        />    
-      </O2MProvider>  
+      <InstanceProvider
+        controller={controller}
+        id = {id}>
+        <PersonaFisicaO2MDocumentos
+          show = {isEdit}
+          columns={columns}
+          initialItem={initialValues}
+          validationSchema={validationSchema}
+          />
+      </InstanceProvider>
     </>
   );
 }
