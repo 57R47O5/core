@@ -6,13 +6,19 @@ from apps.base.models.tipo_documento_identidad import TipoDocumentoIdentidad
 
 class PersonaLinkSerializer(serializers.ModelSerializer):
     controller = serializers.SerializerMethodField()
+    nombre = serializers.SerializerMethodField()
 
     class Meta:
         model = Persona
         fields = ["id", "nombre", "controller"]
 
     def get_controller(self, obj):
-        return "persona"
+        return "documento-identidad"
+    
+    def get_nombre(self, obj):
+        persona_fisica=obj.fisica.all().get() or None
+        return persona_fisica.nombres if persona_fisica else ""
+    
 
 
 class TipoDocumentoIdentidadLinkSerializer(serializers.ModelSerializer):
@@ -37,12 +43,13 @@ class DocumentoIdentidadSerializer(serializers.ModelSerializer):
 
 
 class DocumentoIdentidadCreateSerializer(serializers.ModelSerializer):
+    persona_id = serializers.FloatField()
     tipo = serializers.PrimaryKeyRelatedField(
         queryset=TipoDocumentoIdentidad.objects.all()
     )
     class Meta:
         model = DocumentoIdentidad
-        fields = ["tipo", "numero", "pais_emision", "vigente"]
+        fields = ["persona_id", "tipo", "numero", "pais_emision", "vigente"]
 
 
 class DocumentoIdentidadUpdateSerializer(serializers.ModelSerializer):
