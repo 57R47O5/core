@@ -8,25 +8,23 @@ import { documentoIdentidadFields } from "../documento_identidad/DocumentoIdenti
 import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
 
-function PersonaFisicaO2MDocumentos({
-  show,
-  columns,
-  initialItem,
-  validationSchema,
-}) {
+function DocumentosPersona({}) {
   const { instance } = useInstance();
 
-  if (!show)
-    return null;
+  const {
+    initialValues,
+    validationSchema,
+    columns,
+  } = useModelForm(documentoIdentidadFields);
 
   if (!instance)
-  return (<Spinner/>)
+    return (<Spinner/>)
   return (
     <O2MProvider
       controller="documento-identidad"
       columns={columns}
       initialItem={{
-        ...initialItem,
+        ...initialValues,
         persona_id: instance.persona_id, 
       }}
       validationSchema={validationSchema}
@@ -42,12 +40,6 @@ function PersonaFisicaO2MDocumentos({
 
 export default function PersonaFisicaFormPage() {
   const {id, isEdit } = useRouteMode();
-
-  const {
-    initialValues,
-    validationSchema,
-    columns,
-  } = useModelForm(documentoIdentidadFields);
   const controller = "persona-fisica";
 
   return (
@@ -60,13 +52,8 @@ export default function PersonaFisicaFormPage() {
       />
       <InstanceProvider
         controller={controller}
-        id = {id}>
-        <PersonaFisicaO2MDocumentos
-          show = {isEdit}
-          columns={columns}
-          initialItem={initialValues}
-          validationSchema={validationSchema}
-          />
+        id = {isEdit && id}>
+        {isEdit && (<DocumentosPersona/>)}
       </InstanceProvider>
     </>
   );
