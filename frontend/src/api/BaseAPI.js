@@ -1,4 +1,5 @@
 import request from "./requests";
+import { alertarExito } from "../utils/alertas";
 
 const getAPIBase = (controller)=>({
     listar: async () => {
@@ -12,17 +13,24 @@ const getAPIBase = (controller)=>({
 
     // Crear una instancia
     crear: async (datos) => {
-        return await request.post(`${controller}/`, datos);
+      const res = await request.post(`${controller}/`, datos);
+      alertarExito(res, "Creación exitosa");
+      return res;
     },
+
 
     // Editar una instancia existente
     editar: async (id, datos) => {
-        return await request.put(`${controller}/${id}/`, datos);
+      const res = await request.put(`${controller}/${id}/`, datos);
+      alertarExito(res, "Edición exitosa");
+      return res;
     },
 
     // Eliminar instancia
     eliminar: async (id) => {
-        return await request.delete(`${controller}/${id}/`);
+      const res = await request.delete(`${controller}/${id}/`);
+      alertarExito(res, "Eliminación exitosa");
+      return res;
     },
 
     // Búsqueda / Autocomplete

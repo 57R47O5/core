@@ -52,3 +52,8 @@ export const Alertar = (msg, tipo, titulo) => {
       break;
   }
 };
+
+export function alertarExito(response, mensajeDefault) {
+  const mensaje = response?.mensaje || mensajeDefault;
+  Alertar(mensaje, Tipo.SUCCESS, "Éxito");
+}
