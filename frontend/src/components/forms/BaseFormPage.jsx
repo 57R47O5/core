@@ -85,7 +85,7 @@ export default function BaseFormPage({
   titleNew = "Nuevo Registro",
   titleEdit = "Editar Registro",
 }) {
-  const { id } = useRouteMode();
+  const { id, isEdit } = useRouteMode();
 
   const defaults =
     FormComponent.initialValuesDefault || {};
@@ -93,16 +93,16 @@ export default function BaseFormPage({
   return (
     <InstanceProvider
       controller={controller}
-      id={id}
+      id={isEdit && id}
       defaults={defaults}
     >
-      <BaseFormPageContent
-        controller={controller}
-        FormComponent={FormComponent}
-        redirectTo={redirectTo}
-        titleNew={titleNew}
-        titleEdit={titleEdit}
-      />
+    <BaseFormPageContent
+      controller={controller}
+      FormComponent={FormComponent}
+      redirectTo={redirectTo}
+      titleNew={titleNew}
+      titleEdit={titleEdit}
+    />
     </InstanceProvider>
   );
 }
