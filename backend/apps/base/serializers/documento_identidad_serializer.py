@@ -16,7 +16,7 @@ class PersonaLinkSerializer(serializers.ModelSerializer):
         return "documento-identidad"
     
     def get_nombre(self, obj):
-        persona_fisica=obj.fisica.all().get() or None
+        persona_fisica=obj.fisica or None
         return persona_fisica.nombres if persona_fisica else ""
     
 
