@@ -1,6 +1,5 @@
 import { Formik, Form } from "formik";
 import { Button } from "react-bootstrap";
-import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useModelForm } from "../../../hooks/useModelForm";
 import { personaFisicaFields } from "./PersonaFisicaFields";
 
@@ -10,8 +9,6 @@ export default function PersonaFisicaForm({
   submitText = "Guardar",
   submitting = false,
 }) {
-  const { isCreate } = useRouteMode();
-
   const {
     initialValues,
     validationSchema,
@@ -30,7 +27,6 @@ export default function PersonaFisicaForm({
       {() => (
         <Form>
           <FormFields />
-
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}

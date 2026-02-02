@@ -26,27 +26,28 @@ export default function O2MRow({item}) {
             </td>
           ))}
           <td className="text-end">
-            <Button
-              size="sm"
-              disabled={formik.isSubmitting}
-              onClick={formik.handleSubmit}
-            >
-              Guardar
-            </Button>
-            <Button
-              size="sm"
-              variant="danger"
-              disabled={formik.isSubmitting}
-              onClick={async () => {
-                if (!confirm("¿Eliminar este registro?")) return;
-
-                await eliminar(item.id);
-                refresh();
-              }}
-            >
-              Eliminar
-            </Button>
-
+            <div className="col-12 col-lg-2 d-flex align-items-center justify-content-center mt-3">
+              <Button
+                size="sm"
+                disabled={formik.isSubmitting}
+                onClick={formik.handleSubmit}
+                >
+                Guardar
+              </Button>
+              <Button
+                size="sm"
+                variant="danger"
+                disabled={formik.isSubmitting}
+                onClick={async () => {
+                  if (!confirm("¿Eliminar este registro?")) return;
+                  
+                  await eliminar(item.id);
+                  refresh();
+                }}
+                >
+                Eliminar
+              </Button>
+            </div>
           </td>
         </tr>
       )}
