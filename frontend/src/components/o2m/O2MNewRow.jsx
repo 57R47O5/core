@@ -9,15 +9,21 @@ export default function O2MNewRow() {
   initialItem,
   validationSchema,
   crear,
+  refresh
 } = useO2M();
 
   return (
     <Formik
       initialValues={initialItem}
       validationSchema={validationSchema}
-      onSubmit={async (values, helpers) => {
-        await crear(values);
-        helpers.resetForm();
+      onSubmit={async (values, helpers, setSubmitting) => {
+        try {
+          await crear(values);
+          refresh();
+        } finally {
+          setSubmitting(false);
+          helpers.resetForm();
+        }
       }}
     >
       {(formik) => (
@@ -34,9 +40,10 @@ export default function O2MNewRow() {
           <td className="text-end">
             <Button
               size="sm"
+              disabled={formik.isSubmitting}
               onClick={formik.handleSubmit}
             >
-              +
+              Agregar
             </Button>
           </td>
         </tr>

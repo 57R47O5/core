@@ -4,12 +4,19 @@ import { Formik } from "formik";
 import { useO2M } from "./O2MProvider";
 
 export default function O2MRow({item}) {
-  const { columns, editar, eliminar, validationSchema } = useO2M();
+  const { columns, editar, eliminar, validationSchema, refresh } = useO2M();
   return (
     <Formik
       initialValues={item}
       validationSchema={validationSchema}
-      onSubmit={(values) => editar(item.id, values)}
+      onSubmit={async (values, { setSubmitting }) => {
+        try {
+          await editar(item.id, values);
+          refresh(); 
+        } finally {
+          setSubmitting(false);
+        }
+      }}
     >
       {(formik) => (
         <tr>
@@ -19,10 +26,27 @@ export default function O2MRow({item}) {
             </td>
           ))}
           <td className="text-end">
-            <Button size="sm" onClick={formik.handleSubmit}>Guardar</Button>
-            <Button size="sm" variant="danger" onClick={() => eliminar(item.id)}>
-              ✕
+            <Button
+              size="sm"
+              disabled={formik.isSubmitting}
+              onClick={formik.handleSubmit}
+            >
+              Guardar
             </Button>
+            <Button
+              size="sm"
+              variant="danger"
+              disabled={formik.isSubmitting}
+              onClick={async () => {
+                if (!confirm("¿Eliminar este registro?")) return;
+
+                await eliminar(item.id);
+                refresh();
+              }}
+            >
+              Eliminar
+            </Button>
+
           </td>
         </tr>
       )}
