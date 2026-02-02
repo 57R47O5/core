@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
 import getAPIBase from "../../api/BaseAPI";
 
 /* =========================
@@ -28,11 +28,19 @@ export default function O2MProvider({
 }) {
   const api = getAPIBase(controller);
 
+  const [version, setVersion] = useState(0);
+
+  const refresh = useCallback(() => {
+    setVersion(v => v + 1);
+  }, []);
+
   const value = {
     controller,
     columns,
     initialItem,
     validationSchema,
+    version,
+    refresh,
     ...api,
   };
 

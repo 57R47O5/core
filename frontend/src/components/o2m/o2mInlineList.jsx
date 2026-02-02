@@ -7,7 +7,7 @@ export default function O2MInlineList({
   title,
   filtros,
 }) {
-  const {buscar,} = useO2M();
+  const {buscar, version} = useO2M();
   const [items, setItems] = useState([]);
   const [cargando, setCargando] = useState(true);
 
@@ -17,7 +17,7 @@ export default function O2MInlineList({
       setItems(data);
       setCargando(false);
     });
-  }, [filtros]);
+  }, [filtros, version]);
 
   if (cargando) return <Spinner />;
 

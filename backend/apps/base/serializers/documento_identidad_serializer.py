@@ -53,9 +53,13 @@ class DocumentoIdentidadCreateSerializer(serializers.ModelSerializer):
 
 
 class DocumentoIdentidadUpdateSerializer(serializers.ModelSerializer):
+    persona_id = serializers.FloatField()
+    tipo = serializers.PrimaryKeyRelatedField(
+        queryset=TipoDocumentoIdentidad.objects.all()
+    )
     class Meta:
         model = DocumentoIdentidad
-        fields = "__all__"
+        fields = ["persona_id", "tipo", "numero", "pais_emision", "vigente"]
 
 
 class DocumentoIdentidadRetrieveSerializer(DocumentoIdentidadSerializer):
