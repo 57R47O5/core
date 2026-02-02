@@ -29,6 +29,9 @@ class FieldDefinition:
 
     def __str__(self):
         return self.name
+    
+    def label(self):
+        return self.name.replace("_", " ").capitalize()
 
 @dataclass
 class DomainModelDefinition:
