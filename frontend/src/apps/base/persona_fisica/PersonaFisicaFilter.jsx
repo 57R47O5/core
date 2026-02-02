@@ -1,34 +1,23 @@
-
-import { Formik, Form, Field } from "formik";
-import { Button, Form as RBForm } from "react-bootstrap";
+import { Formik, Form } from "formik";
+import { Button } from "react-bootstrap";
+import { personaFisicaFields } from "./PersonaFisicaFields";
+import { useModelForm } from "../../../hooks/useModelForm";
 
 const PersonaFisicaFilter = ({ onSearch, loading }) => {
+  const {initialValuesFilter, FilterFields } = useModelForm(
+    personaFisicaFields)
+
   return (
     <>
       <h5 className="mb-3">Filtrar persona fisica</h5>
       <Formik
-        initialValues={{
-      id: "",
-      nombres: "",
-      apellidos: "",
-        }}
+        initialValues={initialValuesFilter}
         onSubmit={(values) => onSearch(values)}
       >
         {() => (
           <Form>
             <div className="row">
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>ID</RBForm.Label>
-              <Field name="id" className="form-control" />
-            </div>
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Nombres</RBForm.Label>
-              <Field name="nombres" className="form-control" />
-            </div>
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Apellidos</RBForm.Label>
-              <Field name="apellidos" className="form-control" />
-            </div>            
+            <FilterFields/>            
             </div>
             <div className="text-end">
               <Button type="submit" variant="primary" disabled={loading}>

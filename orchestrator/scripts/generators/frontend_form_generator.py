@@ -12,162 +12,40 @@ def generate_frontend_form(definition:DomainModelDefinition):
 
     file_path = f"{model_folder}/{definition.ModelName}Form.jsx"
 
-    imports = set()
-
-    yup_entries = []
-    form_fields_jsx = []
-    embedded_forms = []
-    embedded_schemas = []
-
-    print(f"Los extra_fields son {definition.extra_fields}")
-
-    schema_entries=""
-    for field in definition.extra_fields:
-      if not field.appears_in_form:
-          continue
-      required = None
-
-      if field.is_foreign_key and field.is_embedded:
-        ref_model = field.references_model
-        ref_app = field.references_app
-
-        imports.add(
-            f"{{ {ref_model}FormFields, {ref_model}Schema }} "
-            f'from "../../{ref_app}/{to_snake_case(ref_model)}/{ref_model}Form"'
-        )
-
-        embedded_schemas.append(
-            f"  {field.name}: {ref_model}Schema,"
-        )
-
-        form_fields_jsx.append(f"""
-        <{ref_model}FormFields prefix="{field.name}" />
-        """)
-
-        continue
-
-      # YUP
-      yup_line = f"{field.name}: "
-
-      if field.type == "string":
-          yup_line += "Yup.string()"
-      elif field.type == "email":
-          yup_line += "Yup.string().email('Email inválido')"
-      elif field.type in ["date", "datetime"]:
-          yup_line += "Yup.date()"
-      elif field.type == "number":
-          yup_line += "Yup.number()"
-      elif field.type == "boolean":
-          yup_line += "Yup.boolean()"
-      else:
-          yup_line += "Yup.mixed()"
-
-      if required:
-          yup_line += f".required('El campo {field.name} es obligatorio')"
-      else:
-          yup_line += ".nullable()"
-
-      yup_entries.append("  " + yup_line + ",")
-      schema_entries = yup_entries + embedded_schemas
-      
-
-      # COMPONENTES FRONT
-      label = field.name.replace("_", " ").capitalize()
-
-      if field.type in ("string", "email", "number"):
-          imports.add("InputFormik")
-          extra = ' type="email"' if field.type == "email" else ""
-          jsx = f"""
-      <InputFormik
-        name="{field.name}"
-        label="{label}"
-        {extra}
-      />
-          """
-
-      elif field.type == "boolean":
-          imports.add("CheckboxFormik")
-          jsx = f"""
-      <CheckboxFormik
-        name="{field.name}"
-        label="{label}"
-      />
-          """
-
-      elif field.type in ("date", "datetime"):
-          imports.add("DatePickerFormik")
-          mode = "datetime" if field.type == "datetime" else "date"
-          jsx = f"""
-      <DatePickerFormik
-        name="{field.name}"
-        label="{label}"
-        mode="{mode}"
-      />
-          """
-
-      elif field.type == "ForeignKey":
-          imports.add("SelectFormik")
-          endpoint = to_snake_case(field.references_model).replace("_", "-")
-          jsx = f"""
-      <SelectFormik
-        name="{field.name}"
-        label="{label}"
-        endpoint="{endpoint}"
-      />
-          """
-
-      else:
-          imports.add("InputFormik")
-          jsx = f"""
-      <InputFormik
-        name="{field.name}"
-        label="{label}"
-      />
-          """
-
-      form_fields_jsx.append(jsx)
-
-    
-        
-    imports_code = "\n".join(
-        [f'import {imp} from "../../../components/forms/{imp}";' for imp in sorted(imports)]
-    )
-
     content = f"""
 import {{ Formik, Form }} from "formik";
 import * as Yup from "yup";
 import {{ Button }} from "react-bootstrap";
-{imports_code}
-
-export const {definition.ModelName}Schema = Yup.object().shape({{
-{os.linesep[0].join(schema_entries)}
-}});
-
-export function {definition.ModelName}FormFields() {{
-
-  return (
-    <>
-    {os.linesep[0].join(form_fields_jsx)}
-    </>
-  );
-}}
+import {{ useRouteMode }} from "../../../hooks/useRouteMode";
+import {{ useModelForm }} from "../../../hooks/useModelForm";
+import {{ {definition.ModelName}Fields }} from "./{definition.ModelName}Fields";
 
 export default function {definition.ModelName}Form({{
-  initialValues,
+  initialValues: externalInitialValues,
   onSubmit,
   submitText = "Guardar",
   submitting = false,
 }}) {{
+  const {{ isCreate }} = useRouteMode();
+
+  const {{
+    initialValues,
+    validationSchema,
+    FormFields,
+  }} = useModelForm(
+    {definition.ModelName}Fields
+  );  
+
   return (
     <Formik
       enableReinitialize
-      initialValues={{initialValues}}
-      validationSchema={{{definition.ModelName}Schema}}
+      initialValues={{externalInitialValues ?? initialValues}}
+      validationSchema={{validationSchema}}
       onSubmit={{onSubmit}}
     >
       {{(formik) => (
         <Form>
-          <{definition.ModelName}FormFields/>
+          <FormFields/>
           <div className="text-end mt-3">
             <Button type="submit" disabled={{submitting}}>
               {{submitting ? "Guardando..." : submitText}}
@@ -197,85 +75,28 @@ def generate_frontend_filter(definition:DomainModelDefinition):
 
     file_path = f"{model_folder}/{definition.ModelName}Filter.jsx"
 
-    # Campos iniciales vacíos
-    initial_values = []
-    jsx_fields = []
-
-    for field in definition.extra_fields:
-      if not field.appears_in_form:
-        continue
-      name = field.name
-      ftype = field.type
-      label = name.replace("_", " ").capitalize()
-      initial_values.append(f"      {name}: \"\",")
-
-      # Construcción del Field
-      if ftype in ("string", "email", "number"):
-          jsx = f"""
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>{label}</RBForm.Label>
-              <Field name="{name}" className="form-control" />
-            </div>
-          """
-
-      elif ftype in ("date", "datetime"):
-          input_type = "datetime-local" if ftype == "datetime" else "date"
-          jsx = f"""
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>{label}</RBForm.Label>
-              <Field name="{name}" type="{input_type}" className="form-control" />
-            </div>
-          """
-
-      elif ftype == "boolean":
-          jsx = f"""
-            <div className="col-md-2 mb-3 form-check">
-              <Field name="{name}" type="checkbox" className="form-check-input" />
-              <RBForm.Label className="form-check-label">{label}</RBForm.Label>
-            </div>
-          """
-
-      elif ftype == "ForeignKey":
-          jsx = f"""
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>{label}</RBForm.Label>
-              <Field as="select" name="{name}" className="form-control">
-                <option value="">Seleccione...</option>
-              </Field>
-            </div>
-          """
-
-      else:
-          jsx = f"""
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>{label}</RBForm.Label>
-              <Field name="{name}" className="form-control" />
-            </div>
-          """
-
-      jsx_fields.append(jsx)
-
     content = f"""
-import {{ Formik, Form, Field }} from "formik";
-import {{ Button, Form as RBForm }} from "react-bootstrap";
+import {{ Formik, Form }} from "formik";
+import {{ Button }} from "react-bootstrap";
+import {{ useModelForm }} from "../../../hooks/useModelForm";
+import {{ {definition.ModelName}Fields }} from "./{definition.ModelName}Fields";
 
 const {definition.ModelName}Filter = ({{ onSearch, loading }}) => {{
+  const {{ initialValuesFilter, FilterFields }} = useModelForm(
+  {definition.ModelName}Fields)
+  
   return (
     <>
       <h5 className="mb-3">Filtrar {(definition.model_name).replace('_', ' ')}</h5>
 
       <Formik
-        initialValues={{{{
-{os.linesep[0].join(initial_values)}
-        }}}}
+        initialValues={{initialValuesFilter}}
         onSubmit={{(values) => onSearch(values)}}
       >
         {{() => (
           <Form>
             <div className="row">
-
-{os.linesep[0].join(jsx_fields)}
-
+            <FilterFields/>
             </div>
 
             <div className="text-end">
@@ -298,3 +119,102 @@ export default {definition.ModelName}Filter;
 
     print("✅ Filter generado:", file_path)
 
+FIELD_MAP = {
+    "string": {
+        "initial": '""',
+        "yup": "Yup.string()",
+        "component": "InputFormik",
+    },
+    "email": {
+        "initial": '""',
+        "yup": "Yup.string().email('Email inválido')",
+        "component": "InputFormik",
+    },
+    "date": {
+        "initial": "null",
+        "yup": "Yup.date()",
+        "component": "DatePickerFormik",
+    },
+    "datetime": {
+        "initial": "null",
+        "yup": "Yup.date()",
+        "component": "DatePickerFormik",
+        "mode": "datetime",
+    },
+    "boolean": {
+        "initial": "false",
+        "yup": "Yup.boolean()",
+        "component": "CheckboxFormik",
+    },
+    "ForeignKey": {
+        "initial": "null",
+        "yup": "Yup.number()",
+        "component": "SelectFormik",
+    },
+}
+
+def generate_frontend_fields(definition: DomainModelDefinition):
+    model_folder = (
+        FRONTEND_DIR / "src" / "apps" / definition.app_name / definition.model_name
+    )
+    os.makedirs(model_folder, exist_ok=True)
+
+    file_path = model_folder / f"{definition.ModelName}Fields.jsx"
+
+    imports = {"Yup": "yup"}
+    fields_js = []
+
+    for field in definition.extra_fields:
+        if not field.appears_in_form:
+            continue
+
+        config = FIELD_MAP.get(field.type, FIELD_MAP["string"])
+
+        label = field.label or field.name.replace("_", " ").capitalize()
+        initial = config["initial"]
+        yup = config["yup"]
+
+        # required vs nullable
+        if field.required:
+            yup += '.required("Requerido")'
+        else:
+            yup += ".nullable()"
+
+        component = config["component"]
+        imports.add(component)
+
+        # render
+        render_props = ""
+        if field.type == "datetime":
+            render_props = ' mode="datetime"'
+
+        field_block = f"""
+  {field.name}: {{
+    label: "{label}",
+    initial: {initial},
+    form: true, 
+    filter: true,
+    validation: {yup},
+    render: (props) => <{component} {{...props}}{render_props} />,
+  }},
+"""
+        fields_js.append(field_block)
+
+    # imports
+    import_lines = ['import * as Yup from "yup";']
+    for comp in sorted(imports):
+        if comp != "Yup":
+            import_lines.append(
+                f'import {comp} from "../../../components/forms/{comp}";'
+            )
+
+    content = f"""
+{chr(10).join(import_lines)}
+
+export const {definition.model_name}Fields = {{
+{''.join(fields_js)}
+}};
+"""
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(content.strip())
