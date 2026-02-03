@@ -11,7 +11,8 @@ class FieldDefinition:
     name: str
     type: str          
     max_length: Optional[int] = None
-    null: bool = True
+    blank: bool = False
+    null: bool = False
     primary_key: bool = False
     unique: bool = False
     args: Dict[str,object] = None
@@ -316,6 +317,9 @@ def extract_extra_fields(model_class: ast.ClassDef):
         call = stmt.value
         field_type = getattr(call.func, "attr", None)
 
+        blank = get_call_keyword(call, "blank", False)
+        null = get_call_keyword(call, "null", False)
+
         # ----------------------------------------------
         # ForeignKey
         # ----------------------------------------------
@@ -350,6 +354,8 @@ def extract_extra_fields(model_class: ast.ClassDef):
                 FieldDefinition(
                     name=field_name,
                     type="ForeignKey",
+                    blank=blank,
+                    null=null,
                     is_foreign_key=True,
                     references_app=ref_app,
                     references_model=ref_model,
@@ -366,11 +372,20 @@ def extract_extra_fields(model_class: ast.ClassDef):
                 FieldDefinition(
                     name=field_name,
                     type=field_type,
+                    blank=blank,
+                    null=null,
                     is_foreign_key=False,
                 )
             )
 
     return extra_fields
+
+def get_call_keyword(call: ast.Call, name: str, default=None):
+    for kw in call.keywords:
+        if kw.arg == name:
+            if isinstance(kw.value, ast.Constant):
+                return kw.value.value
+    return default
 
 def find_model_and_manager(tree: ast.Module):
     """

@@ -1,39 +1,25 @@
 
-import { Formik, Form, Field } from "formik";
-import { Button, Form as RBForm } from "react-bootstrap";
+import { Formik, Form } from "formik";
+import { Button } from "react-bootstrap";
+import { useModelForm } from "../../../hooks/useModelForm";
+import { MonedaFields } from "./MonedaFields";
 
 const MonedaFilter = ({ onSearch, loading }) => {
+  const { initialValuesFilter, FilterFields } = useModelForm(
+  MonedaFields)
+  
   return (
     <>
       <h5 className="mb-3">Filtrar moneda</h5>
 
       <Formik
-        initialValues={{
-      nombre: "",      descripcion: "",      simbolo: "",
-        }}
+        initialValues={initialValuesFilter}
         onSubmit={(values) => onSearch(values)}
       >
         {() => (
           <Form>
             <div className="row">
-
-
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Nombre</RBForm.Label>
-              <Field name="nombre" className="form-control" />
-            </div>
-          
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Descripcion</RBForm.Label>
-              <Field name="descripcion" className="form-control" />
-            </div>
-          
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Simbolo</RBForm.Label>
-              <Field name="simbolo" className="form-control" />
-            </div>
-          
-
+            <FilterFields/>
             </div>
 
             <div className="text-end">

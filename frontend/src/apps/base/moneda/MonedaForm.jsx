@@ -1,53 +1,33 @@
 
 import { Formik, Form } from "formik";
-import * as Yup from "yup";
 import { Button } from "react-bootstrap";
-import InputFormik from "../../../components/forms/InputFormik";
-
-export const MonedaSchema = Yup.object().shape({
-  nombre: Yup.mixed().nullable(),  descripcion: Yup.mixed().nullable(),  simbolo: Yup.mixed().nullable(),
-});
-
-export function MonedaFormFields() {
-
-  return (
-    <>
-    
-      <InputFormik
-        name="nombre"
-        label="Nombre"
-      />
-          
-      <InputFormik
-        name="descripcion"
-        label="Descripcion"
-      />
-          
-      <InputFormik
-        name="simbolo"
-        label="Simbolo"
-      />
-          
-    </>
-  );
-}
+import { useModelForm } from "../../../hooks/useModelForm";
+import { MonedaFields } from "./MonedaFields";
 
 export default function MonedaForm({
-  initialValues,
+  initialValues: externalInitialValues,
   onSubmit,
   submitText = "Guardar",
   submitting = false,
 }) {
+  const {
+    initialValues,
+    validationSchema,
+    FormFields,
+  } = useModelForm(
+    MonedaFields
+  );  
+
   return (
     <Formik
       enableReinitialize
-      initialValues={initialValues}
-      validationSchema={MonedaSchema}
+      initialValues={externalInitialValues ?? initialValues}
+      validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
       {(formik) => (
         <Form>
-          <MonedaFormFields/>
+          <FormFields/>
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}
