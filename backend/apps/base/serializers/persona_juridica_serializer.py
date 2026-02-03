@@ -31,52 +31,28 @@ class PersonaJuridicaCreateSerializer(serializers.ModelSerializer):
 class PersonaJuridicaUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonaJuridica
-        fields = "__all__"
+        fields = ["razon_social", "nombre_fantasia"]
 
 
 class PersonaJuridicaRetrieveSerializer(PersonaJuridicaSerializer):
-    pass
+    documentos_identidad = serializers.ReadOnlyField()
+    
+    class Meta:
+        model=  PersonaJuridica
+        fields= ["id", "persona_id", "razon_social", "nombre_fantasia", "documentos_identidad"]
 
 class PersonaJuridicaInputSerializer(serializers.Serializer):
     razon_social = serializers.CharField()
     nombre_fantasia = serializers.CharField()
 
-    tipo = serializers.FloatField()
-    
-    numero = serializers.CharField()
-    pais_emision = serializers.CharField(required=False, default="PY")
-
     @atomic
-    def create(self, validated_data):
-        # separar responsabilidades
-        documento_data = {
-            "tipo": validated_data.pop("tipo"),
-            "numero": validated_data.pop("numero"),
-            "pais_emision": validated_data.pop("pais_emision"),
-        }
+    def create(self, validated_data):       
 
-        # 1. validar documento
-        documento_serializer = DocumentoIdentidadCreateSerializer(
-            data=documento_data
-        )
-        documento_serializer.is_valid(raise_exception=True)
-
-        # 2. crear agregado
         persona = Persona.objects.create()
-
-        DocumentoIdentidad.objects.create(
-            persona=persona,
-            **documento_serializer.validated_data
-        )
 
         instancia = PersonaJuridica.objects.create(
             persona=persona,
             **validated_data
         )
 
-        return instancia
-    
-    def validate_tipo(self, value):
-        if value != TipoDocumentoIdentidad.objects.RUC.pk:
-            raise serializers.ValidationError("Tipo de documento inválido para personajurídica")
-        return value
+        return instancia    
