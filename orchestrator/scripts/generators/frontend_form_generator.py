@@ -198,7 +198,7 @@ def generate_frontend_fields(definition: DomainModelDefinition):
 
     # imports
     import_lines = ['import * as Yup from "yup";']
-    for comp in sorted(imports):
+    for comp in sorted(set(imports)):
         if comp != "Yup":
             import_lines.append(
                 f'import {comp} from "../../../components/forms/{comp}";'

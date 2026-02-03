@@ -1,7 +1,5 @@
 import * as Yup from "yup";
 import InputFormik from "../../../components/forms/InputFormik";
-import InputFormik from "../../../components/forms/InputFormik";
-import InputFormik from "../../../components/forms/InputFormik";
 
 export const MonedaFields = {
 

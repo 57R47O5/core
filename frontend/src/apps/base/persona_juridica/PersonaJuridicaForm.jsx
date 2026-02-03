@@ -1,53 +1,34 @@
 
 import { Formik, Form } from "formik";
-import * as Yup from "yup";
 import { Button } from "react-bootstrap";
-import InputFormik from "../../../components/forms/InputFormik";
-
-export const PersonaJuridicaSchema = Yup.object().shape({
-  persona: Yup.mixed().nullable(),  razon_social: Yup.mixed().nullable(),  nombre_fantasia: Yup.mixed().nullable(),
-});
-
-export function PersonaJuridicaFormFields() {
-
-  return (
-    <>
-    
-      <InputFormik
-        name="persona"
-        label="Persona"
-      />
-          
-      <InputFormik
-        name="razon_social"
-        label="Razon social"
-      />
-          
-      <InputFormik
-        name="nombre_fantasia"
-        label="Nombre fantasia"
-      />
-          
-    </>
-  );
-}
+import { useModelForm } from "../../../hooks/useModelForm";
+import { PersonaJuridicaFields } from "./PersonaJuridicaFields";
 
 export default function PersonaJuridicaForm({
-  initialValues,
+  initialValues: externalInitialValues,
   onSubmit,
   submitText = "Guardar",
   submitting = false,
 }) {
+
+  const {
+      initialValues,
+      validationSchema,
+      FormFields,
+    } = useModelForm(
+      PersonaJuridicaFields
+    );
+
   return (
     <Formik
       enableReinitialize
-      initialValues={initialValues}
-      validationSchema={PersonaJuridicaSchema}
-      onSubmit={onSubmit}
+      initialValues={externalInitialValues ?? initialValues}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}      
     >
       {(formik) => (
         <Form>
-          <PersonaJuridicaFormFields/>
+          <FormFields/>
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}

@@ -6,8 +6,8 @@ export default function PersonaJuridicaFormPage() {
     <BaseFormPage
       controller="persona-juridica"
       FormComponent={PersonaJuridicaForm}
-      titleNew="Nuevo PersonaJuridica"
-      titleEdit="Editar PersonaJuridica"
+      titleNew="Nueva Persona Juridica"
+      titleEdit="Editar Persona Juridica"
     />
   );
 }
