@@ -14,9 +14,7 @@ def generate_frontend_form(definition:DomainModelDefinition):
 
     content = f"""
 import {{ Formik, Form }} from "formik";
-import * as Yup from "yup";
 import {{ Button }} from "react-bootstrap";
-import {{ useRouteMode }} from "../../../hooks/useRouteMode";
 import {{ useModelForm }} from "../../../hooks/useModelForm";
 import {{ {definition.ModelName}Fields }} from "./{definition.ModelName}Fields";
 
@@ -26,8 +24,6 @@ export default function {definition.ModelName}Form({{
   submitText = "Guardar",
   submitting = false,
 }}) {{
-  const {{ isCreate }} = useRouteMode();
-
   const {{
     initialValues,
     validationSchema,
@@ -161,7 +157,7 @@ def generate_frontend_fields(definition: DomainModelDefinition):
 
     file_path = model_folder / f"{definition.ModelName}Fields.jsx"
 
-    imports = {"Yup": "yup"}
+    imports = []
     fields_js = []
 
     for field in definition.extra_fields:
@@ -170,18 +166,18 @@ def generate_frontend_fields(definition: DomainModelDefinition):
 
         config = FIELD_MAP.get(field.type, FIELD_MAP["string"])
 
-        label = field.label or field.name.replace("_", " ").capitalize()
+        label = field.name.replace("_", " ").capitalize()
         initial = config["initial"]
         yup = config["yup"]
 
         # required vs nullable
-        if field.required:
+        if not (field.blank or field.null):
             yup += '.required("Requerido")'
         else:
             yup += ".nullable()"
 
         component = config["component"]
-        imports.add(component)
+        imports.append(component)
 
         # render
         render_props = ""
@@ -211,10 +207,12 @@ def generate_frontend_fields(definition: DomainModelDefinition):
     content = f"""
 {chr(10).join(import_lines)}
 
-export const {definition.model_name}Fields = {{
+export const {definition.ModelName}Fields = {{
 {''.join(fields_js)}
 }};
 """
 
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content.strip())
+
+    print("✅ Fields generados:", file_path)
