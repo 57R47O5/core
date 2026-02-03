@@ -12,7 +12,8 @@ export function useModelForm(fields, order = null) {
   
   const initialValues = useMemo(() => {
     return Object.fromEntries(
-      entries.map(([name, def]) => [
+      entries.filter(([_, def]) => def.form === true)
+      .map(([name, def]) => [
         name,
         def.initial ?? "",
       ])
@@ -32,7 +33,8 @@ export function useModelForm(fields, order = null) {
   const validationSchema = useMemo(() => {
     return Yup.object(
       Object.fromEntries(
-        entries.map(([name, def]) => [
+        entries.filter(([_, def]) => def.form === true)
+        .map(([name, def]) => [
           name,
           def.validation,
         ])

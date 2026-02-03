@@ -9,7 +9,7 @@ export default function PersonaJuridicaListPage() {
       title="PersonaJuridica"
       FilterComponent={PersonaJuridicaFilter}
       columns={[
-      { label: "Persona", field: "persona" },
+      { label: "ID", field: "id" },
       { label: "Razon social", field: "razon_social" },
       { label: "Nombre fantasia", field: "nombre_fantasia" }
       ]}

@@ -1,41 +1,26 @@
 
-import { Formik, Form, Field } from "formik";
-import { Button, Form as RBForm } from "react-bootstrap";
+import { Formik, Form } from "formik";
+import { Button } from "react-bootstrap";
+import { PersonaJuridicaFields } from "./PersonaJuridicaFields";
+import { useModelForm } from "../../../hooks/useModelForm";
 
 const PersonaJuridicaFilter = ({ onSearch, loading }) => {
+
+  const {initialValuesFilter, FilterFields} = useModelForm(PersonaJuridicaFields)
+
   return (
     <>
       <h5 className="mb-3">Filtrar persona juridica</h5>
 
       <Formik
-        initialValues={{
-      persona: "",      razon_social: "",      nombre_fantasia: "",
-        }}
+        initialValues={initialValuesFilter}
         onSubmit={(values) => onSearch(values)}
       >
         {() => (
           <Form>
             <div className="row">
-
-
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Persona</RBForm.Label>
-              <Field name="persona" className="form-control" />
+            <FilterFields/>
             </div>
-          
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Razon social</RBForm.Label>
-              <Field name="razon_social" className="form-control" />
-            </div>
-          
-            <div className="col-md-3 mb-3">
-              <RBForm.Label>Nombre fantasia</RBForm.Label>
-              <Field name="nombre_fantasia" className="form-control" />
-            </div>
-          
-
-            </div>
-
             <div className="text-end">
               <Button type="submit" variant="primary" disabled={loading}>
                 Buscar
