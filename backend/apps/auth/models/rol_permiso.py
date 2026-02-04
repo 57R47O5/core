@@ -23,7 +23,7 @@ class RolPermiso(BaseModel):
     )
 
     class Meta:
-        db_table = "auth_rol_permiso"
+        db_table = "rol_permiso"
         managed = False
         unique_together = ("rol", "permiso")
 
