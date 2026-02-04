@@ -27,6 +27,7 @@ class MeView(APIView):
         }
         if token:
             user: User = token.user
+            permisos=user.user_roles.all()
 
             salida = {
                     "id": user.pk,

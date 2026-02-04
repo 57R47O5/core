@@ -4,8 +4,13 @@ from .user import User
 from .rol import Rol
 
 class UserRol(BaseModel):
-    user = models.ForeignKey(User, on_delete=SAFEDELETE_PROTECT, related_name='roles')
-    rol = models.ForeignKey(Rol, on_delete=SAFEDELETE_PROTECT)
+    user = models.ForeignKey(User, 
+        on_delete=SAFEDELETE_PROTECT, 
+        db_column='user',
+        related_name='user_roles')
+    rol = models.ForeignKey(Rol, 
+        on_delete=SAFEDELETE_PROTECT,
+        db_column='rol')
 
     class Meta:
         unique_together = ('user', 'rol')

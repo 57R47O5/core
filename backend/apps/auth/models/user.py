@@ -35,3 +35,17 @@ class User(models.Model):
 
     def __str__(self):
         return self.email
+    
+    @property
+    def roles(self):
+        roles = []
+        for user_rol in self.user_roles.all():
+            roles.append(user_rol.rol)
+        return roles
+    
+    @property
+    def permisos(self):
+        permisos = []
+        for rol in self.roles:
+            permisos.append(rol.permisos.all())
+        return permisos

@@ -41,7 +41,7 @@ class Rol(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = "role"
+        db_table = "rol"
         verbose_name = "Rol"
         verbose_name_plural = "Roles"
 

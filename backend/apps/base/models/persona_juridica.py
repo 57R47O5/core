@@ -21,6 +21,11 @@ class PersonaJuridica(BaseModel):
     def nombre_completo(self):
         return self.nombre_fantasia or self.razon_social
     
+    @property
+    def documentos_identidad(self):
+        documentos_identidad = self.persona.documentos.all().values("tipo", "numero")
+        return documentos_identidad
+    
     def delete(self, *args, **kwargs):
         persona=self.persona
         super().delete(*args, **kwargs)
