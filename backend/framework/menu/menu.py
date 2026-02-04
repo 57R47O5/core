@@ -133,14 +133,13 @@ class Node():
                             for node in self.content],
                         to=self.to,
                         permiso=self.permiso,
-                        menu_activo=self.menu_activo,
                         icon=self.icon,
                         key=self.key)
 
 
 def generar_menu(permisos: List[str]) -> dict:
     """
-    Genera el menú según los roles de un usuario.
+    Genera el menú según los permisos de un usuario.
     """
     # Crea una nueva instancia de menú para el usuario
     root_node = ROOT_MENU_NODE.clone()

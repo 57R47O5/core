@@ -27,12 +27,13 @@ class MeView(APIView):
         }
         if token:
             user: User = token.user
-            permisos=user.user_roles.all()
+            permisos=user.permisos
 
             salida = {
                     "id": user.pk,
                     "user": user.username,
                     "is_system": user.is_system,
+                    "permisos": user.permisos
                 }
         
 

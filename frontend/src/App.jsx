@@ -6,6 +6,7 @@ import Profile from "./pages/Profile";
 import LoginPage from "./pages/LoginPage"
 import Register from"./pages/RegisterPage"
 import { AuthProvider } from "../src/context/AuthContext";
+import { Sidebar } from "./components/SideBar";
 
 function RutasComunes (){
   
@@ -24,6 +25,7 @@ function App() {
       <AuthProvider>
         <NavBar>
         </NavBar>
+        <Sidebar/>
         <RutasComunes/>
         <Routes>
           {routes.map((route, i) => (

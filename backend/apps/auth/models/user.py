@@ -47,5 +47,6 @@ class User(models.Model):
     def permisos(self):
         permisos = []
         for rol in self.roles:
-            permisos.append(rol.permisos.all())
+            for permiso_del_usuario in rol.permisos.all():
+                permisos.append(permiso_del_usuario)
         return permisos

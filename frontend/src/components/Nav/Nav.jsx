@@ -34,7 +34,7 @@ const NavBar = ({children}) => {
       <Navbar expand="lg" bg="primary" data-bs-theme="dark" className="mb-4">
         <Container>
           <Navbar.Brand as={Link} to="/">
-            NombreProyecto
+            Nombre Proyecto
           </Navbar.Brand>
 
           <Navbar.Toggle aria-controls="main-navbar" />
