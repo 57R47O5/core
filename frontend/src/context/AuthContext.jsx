@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { login, logout, me } from "../api/auth";
+import { login, logout, me, menu as obtenerMenu} from "../api/auth";
 
 export const AuthContext = createContext(null);
 
@@ -7,6 +7,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const [menu, setMenu] = useState([]);
 
   // --------------------------------------------
   // Inicialización: verificar token (me)
@@ -22,16 +24,16 @@ export const AuthProvider = ({ children }) => {
         console.error("Auth init error:", error);
       } finally {
         if (!user)
-            setIsAuthenticated(false)
-          else
-            setIsAuthenticated(true);
+          setIsAuthenticated(false)
+        else
+          setIsAuthenticated(true);
         setLoading(false);
       }
     };
-
+    
     inicializarAuth();
   }, []);
-
+  
   // --------------------------------------------
   // Login
   // --------------------------------------------
@@ -47,10 +49,30 @@ export const AuthProvider = ({ children }) => {
   // --------------------------------------------
   const handleLogout = async () => {
     await logout();
-
+    
     setUser(null);
     setIsAuthenticated(false);
   };
+  
+  // --------------------------------------------
+  // Menu
+  // --------------------------------------------
+  
+  useEffect(()=>{
+    const getMenu = async()=>{
+        try {
+          const response = await obtenerMenu();
+          setMenu(response);
+        }catch(error){
+          console.error(error)
+          console.log("No se cargó el menu")
+        }
+    };
+    
+    getMenu();
+
+  },[])
+
 
   return (
     <AuthContext.Provider
@@ -60,6 +82,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         handleLogin,
         handleLogout,
+        menu
       }}
     >
       {children}

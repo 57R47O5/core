@@ -17,3 +17,4 @@ export const logout = async () => {
 };
 export const register = (data) => request.post(`register/`, data);
 export const me = ()=> request.get(`me/`)
+export const menu = ()=> request.get("menu/")
