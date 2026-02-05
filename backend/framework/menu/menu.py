@@ -1,3 +1,5 @@
+from importlib import import_module
+from django.conf import settings
 import unicodedata
 from typing  import Optional, List, Dict, Any
 
@@ -61,6 +63,7 @@ class Node():
         filtered_content = []
 
         for child_node in self.content:
+            #Esto no es válido para los subnodos, por algún motivo
             if condition_func(child_node):
                 filtered_content.append(child_node)
                 child_node.filter(condition_func)
@@ -137,44 +140,50 @@ class Node():
                         key=self.key)
 
 
-def generar_menu(permisos: List[str]) -> dict:
+def generar_menu(permisos: List[str]) -> list[dict]:
     """
-    Genera el menú según los permisos de un usuario.
+    Genera el menú según los permisos del usuario,
+    componiendo los menús de todas las apps instaladas.
     """
-    # Crea una nueva instancia de menú para el usuario
+
     root_node = ROOT_MENU_NODE.clone()
 
-    # Filtra los menús a mostrar según los permisos del usuario
+    # 1️⃣ Componemos el menú desde las apps
+    for menu_node in cargar_menus_apps():
+        root_node.content.append(menu_node)
+
+    # 2️⃣ Filtro por permisos
     def mostrar_nodo(node: Node):
         if node.permiso is None:
             return True
 
         if isinstance(node.permiso, str):
-            if node.permiso in permisos:
-                return True
-        elif isinstance(node.permiso, P):
+            return node.permiso in permisos
+
+        if isinstance(node.permiso, P):
             return node.permiso.evaluate(permisos)
-        return False   
 
-            
+        return False
+
     def mostrar_nodo_valido(node: Node):
-        if node.permiso is not None and not mostrar_nodo(node):
+        if not mostrar_nodo(node):
             return False
-
         return bool(node.to or node.content)
-
 
     root_node.filter(mostrar_nodo_valido)
 
-    # ordenamos los nodes del menu alfabéticamente, excluyendo 'Inicio'
-    root_node.sort_children(recursive=True, exclude_labels=['Inicio'])
+    # 3️⃣ Orden
+    root_node.sort_children(recursive=True, exclude_labels=["Inicio"])
 
+    # 4️⃣ Keys estables
     def agregar_key(node: Node):
         node.key = f"{node.label}:{node.to or ''}"
-        for child_node in node.content:
-            agregar_key(child_node)
+        for child in node.content:
+            agregar_key(child)
+
     agregar_key(root_node)
 
+    # 5️⃣ Serialización final
     def nodo_visible(nodo):
         return nodo.get("label") == "Inicio" or "content" in nodo or "to" in nodo
 
@@ -183,11 +192,20 @@ def generar_menu(permisos: List[str]) -> dict:
         if nodo_visible(nodo)
     ]
 
+def cargar_menus_apps() -> list[Node]:
+    menus = []
+
+    for app in settings.INSTALLED_APPS:
+        try:
+            menu_module = import_module(f"{app}.menu")
+            if hasattr(menu_module, "MENU"):
+                menus.append(menu_module.MENU.clone())
+        except ModuleNotFoundError:
+            continue
+
+    return menus
+
     
 ROOT_MENU_NODE = Node("root", content=[
-    Node("Inicio", icon="FaHome", to="/"),
-    Node("Base", icon="FaBed", content=[
-        Node("Persona", to="/persona-fisica"),
-        Node("Empresa", to="/persona-juridica"),
-    ]),
+    Node("Inicio", icon="FaHome", to="/"),    
 ])

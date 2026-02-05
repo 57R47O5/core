@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import getAPIBase from "../../api/BaseAPI";
 import { BaseListLayout } from "./BaseListLayout";
 import { DataTable } from "./DataTable";
@@ -52,6 +53,12 @@ export default function BaseListPage({
       onSearch={handleSearch}
       loading={loading}
     >
+      <div className="text-end">
+        <Button variant="primary" disabled={loading} 
+        onClick={(item) => navigate(`/${controller}/nuevo`)}>
+          Nuevo
+        </Button>
+      </div>
       <DataTable
         items={items}
         columns={columns}

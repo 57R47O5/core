@@ -9,7 +9,10 @@ from apps.base.serializers.persona_fisica_serializer import (
 from controllers.base.base_rest_controller import ModelRestController
 
 class PersonaFisicaRestController(ModelRestController):
+    label = "Persona"
     model = PersonaFisica
+    url = 'persona-fisica'
+    permisos= None
     create_serializer = PersonaFisicaInputSerializer
     update_serializer = PersonaFisicaUpdateSerializer
     retrieve_serializer = PersonaFisicaRetrieveSerializer    

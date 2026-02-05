@@ -12,6 +12,8 @@ from controllers.base.base_rest_controller import ModelRestController
 
 class PersonaUserRestController(ModelRestController):
     model = PersonaUser
+    url = 'persona-user'
+    permisos = []
     create_serializer = PersonaUserCreateSerializer
     update_serializer = PersonaUserUpdateSerializer
     retrieve_serializer = PersonaUserRetrieveSerializer
