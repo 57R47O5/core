@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from framework.menu.menu import Node
 from framework.exceptions import excepcion, ExcepcionValidacion
+from framework.permisos import Perm
 
 class BaseRestController(viewsets.ViewSet):
     label:str
@@ -24,6 +25,29 @@ class BaseRestController(viewsets.ViewSet):
             to=f'/{cls.url}'
             )
         return nodo_controller
+    
+    def dispatch(self, request, *args, **kwargs):
+        # 1. autenticación artesanal
+        if not getattr(request, "user", None):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        # 2. autorización por action
+        perm = self._get_required_perm()
+        if perm is not None:
+            user_perms = request.user.permisos  # set[str]
+            if not perm.evaluate(user_perms):
+                return Response(status=status.HTTP_403_FORBIDDEN)
+
+        return super().dispatch(request, *args, **kwargs)
+    
+    def _get_required_perm(self) -> Optional[Perm]:
+        if isinstance(self.action, str) and hasattr(self, self.action):
+            view = getattr(self, self.action)
+            return getattr(view, "_required_perm", None)
+        return None
 
 class ModelRestController(BaseRestController):
     model: Type[models.Model] = None

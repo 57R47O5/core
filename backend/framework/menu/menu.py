@@ -3,6 +3,8 @@ from django.conf import settings
 import unicodedata
 from typing  import Optional, List, Dict, Any
 
+from permisos import Perm
+
 class P:
     """
     Recibe uno o varios permisos y verifica que se encuentren en roles
@@ -205,6 +207,20 @@ def cargar_menus_apps() -> list[Node]:
 
     return menus
 
+
+def collect_all_permissions(menus: list[Node]) -> set[str]:
+    perms = set()
+
+    def walk(node):
+        if isinstance(node.permiso, Perm):
+            perms |= {p.code for p in node.permiso.collect()}
+        for c in node.content:
+            walk(c)
+
+    for m in menus:
+        walk(m)
+
+    return perms
     
 ROOT_MENU_NODE = Node("root", content=[
     Node("Inicio", icon="FaHome", to="/"),    
