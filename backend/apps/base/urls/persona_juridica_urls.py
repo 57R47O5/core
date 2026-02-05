@@ -1,11 +1,11 @@
 
 from rest_framework import routers
 from apps.base.rest_controllers.persona_juridica_rest_controller import (
-    PersonaJuridicaRestController
+    PersonaJuridicaRestController as Controller
 )
 
 router = routers.SimpleRouter()
-router.register(r'persona-juridica', PersonaJuridicaRestController, 'persona-juridica')
+router.register(Controller.url, Controller, Controller.url)
 
 urlpatterns = []
 

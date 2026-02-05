@@ -14,6 +14,8 @@ from controllers.base.base_rest_controller import ModelRestController
 
 class DocumentoIdentidadRestController(ModelRestController):
     model = DocumentoIdentidad
+    url='documento-identidad'
+    permisos=[]
     create_serializer = DocumentoIdentidadCreateSerializer
     update_serializer = DocumentoIdentidadUpdateSerializer
     retrieve_serializer = DocumentoIdentidadRetrieveSerializer

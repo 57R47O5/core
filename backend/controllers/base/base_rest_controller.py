@@ -1,14 +1,29 @@
-from typing import Type
+from typing import Type, List, Optional
 from django.db import models
 from django.db.models import Q, CharField, TextField, DateField, DateTimeField
 
 from rest_framework import status, viewsets, serializers
 from rest_framework.response import Response
 
+from framework.menu.menu import Node
 from framework.exceptions import excepcion, ExcepcionValidacion
 
 class BaseRestController(viewsets.ViewSet):
-    pass
+    label:str
+    url:str
+    permisos:Optional[List[str]]
+
+    @classmethod
+    def to_node(cls)->Node:
+        '''
+        Obtiene un nodo para el menu a partir del controller
+        '''
+        nodo_controller = Node(
+            label=cls.label, 
+            permiso=cls.permisos,
+            to=f'/{cls.url}'
+            )
+        return nodo_controller
 
 class ModelRestController(BaseRestController):
     model: Type[models.Model] = None

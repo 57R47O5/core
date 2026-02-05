@@ -11,7 +11,10 @@ from controllers.base.base_rest_controller import ModelRestController
 
 
 class PersonaJuridicaRestController(ModelRestController):
+    label="Empresas"
     model = PersonaJuridica
+    url = 'persona-juridica'
+    permisos = None
     create_serializer = PersonaJuridicaInputSerializer
     update_serializer = PersonaJuridicaUpdateSerializer
     retrieve_serializer = PersonaJuridicaRetrieveSerializer
