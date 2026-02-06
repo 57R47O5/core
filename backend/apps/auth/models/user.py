@@ -40,13 +40,10 @@ class User(models.Model):
     def roles(self):
         roles = []
         for user_rol in self.user_roles.all():
-            roles.append(user_rol.rol)
+            roles.append(user_rol.rol.nombre)
         return roles
     
     @property
     def permisos(self):
-        permisos = []
-        for rol in self.roles:
-            for permiso_del_usuario in rol.permisos.all():
-                permisos.append(permiso_del_usuario)
-        return permisos
+        return self.user_roles.values_list(
+            "rol__permisos__permiso",flat=True)

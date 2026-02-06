@@ -14,7 +14,6 @@ class PersonaFisicaRestController(ModelRestController):
     label = "Persona"
     model = PersonaFisica
     url = 'persona-fisica'
-    permisos= None
     create_serializer = PersonaFisicaInputSerializer
     update_serializer = PersonaFisicaUpdateSerializer
     retrieve_serializer = PersonaFisicaRetrieveSerializer 
@@ -23,3 +22,6 @@ class PersonaFisicaRestController(ModelRestController):
     update_permission = P(BasePermisos.PERSONA_FISICA_UPDATE)
     destroy_permission = P(BasePermisos.PERSONA_FISICA_DESTROY)
     view_permission = P(BasePermisos.PERSONA_FISICA_VIEW)
+    
+    permisos = create_permission and update_permission \
+        and destroy_permission and view_permission
