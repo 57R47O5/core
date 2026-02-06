@@ -1,7 +1,9 @@
 from django.db.models import Q
 from datetime import datetime
+from framework.permisos import P
 
 from framework.api.options import BaseOptionsAPIView
+from apps.base.permisos import BasePermisos
 from apps.base.models.persona_juridica import PersonaJuridica
 from apps.base.serializers.persona_juridica_serializer import (
     PersonaJuridicaUpdateSerializer,
@@ -14,10 +16,16 @@ class PersonaJuridicaRestController(ModelRestController):
     label="Empresas"
     model = PersonaJuridica
     url = 'persona-juridica'
-    permisos = None
     create_serializer = PersonaJuridicaInputSerializer
     update_serializer = PersonaJuridicaUpdateSerializer
     retrieve_serializer = PersonaJuridicaRetrieveSerializer
+
+    create_permission = P(BasePermisos.PERSONA_JURIDICA_CREATE)
+    update_permission = P(BasePermisos.PERSONA_JURIDICA_UPDATE)
+    destroy_permission = P(BasePermisos.PERSONA_JURIDICA_DESTROY)
+    view_permission = P(BasePermisos.PERSONA_JURIDICA_VIEW)
+    permisos = create_permission and update_permission \
+        and destroy_permission and view_permission
 
     def _get_filter(self, params):
         filtros = Q()

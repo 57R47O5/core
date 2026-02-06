@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from framework.menu.menu import Node
 from framework.exceptions import excepcion, ExcepcionValidacion
-from framework.permisos import Perm
+from framework.permisos import Perm, require_perm
 
 class BaseRestController(viewsets.ViewSet):
     label:str
@@ -42,18 +42,18 @@ class BaseRestController(viewsets.ViewSet):
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
         return super().dispatch(request, *args, **kwargs)
-    
-    def _get_required_perm(self) -> Optional[Perm]:
-        if isinstance(self.action, str) and hasattr(self, self.action):
-            view = getattr(self, self.action)
-            return getattr(view, "_required_perm", None)
-        return None
+
 
 class ModelRestController(BaseRestController):
     model: Type[models.Model] = None
     create_serializer: Type[serializers.ModelSerializer] = None
     update_serializer: Type[serializers.ModelSerializer] = None
     retrieve_serializer: Type[serializers.ModelSerializer] = None
+
+    create_permission: Type[Perm] = None
+    update_permission: Type[Perm] = None
+    destroy_permission: Type[Perm] = None
+    view_permission: Type[Perm] = None
 
     def serialize_list(self, queryset):
         """
@@ -62,6 +62,7 @@ class ModelRestController(BaseRestController):
         """
         return list(queryset.values())
 
+    @require_perm(view_permission)
     def list(self, request):
         LIMITE=100
         filtro=self._get_filter(request.query_params)
@@ -117,6 +118,7 @@ class ModelRestController(BaseRestController):
         return self.model.objects.filter(filtro)
 
     @excepcion
+    @require_perm(create_permission)
     def create(self, request):
         serializer=self.create_serializer(data=request.data)
         if not serializer.is_valid():
@@ -126,12 +128,14 @@ class ModelRestController(BaseRestController):
         return Response(retrieve_serializer.data, status=status.HTTP_201_CREATED)
 
     @excepcion
+    @require_perm(view_permission)
     def retrieve(self, request, pk=None):
         instancia=self.model.objects.get(pk=pk)
         serializer=self.retrieve_serializer(instancia)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @excepcion
+    @require_perm(update_permission)
     def update(self, request, pk=None):
         instancia=self.model.objects.get(pk=pk)
         serializer=self.update_serializer(instancia, data=request.data)
@@ -140,6 +144,7 @@ class ModelRestController(BaseRestController):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @excepcion
+    @require_perm(update_permission)
     def partial_update(self, request, pk=None):
         instancia = self.model.objects.get(pk=pk)
         serializer = self.update_serializer(
@@ -150,9 +155,8 @@ class ModelRestController(BaseRestController):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @excepcion
+    @require_perm(destroy_permission)
     def destroy(self, request, pk=None):
         instancia=self.model.objects.get(pk=pk)
         instancia.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-

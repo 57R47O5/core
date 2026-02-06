@@ -3,39 +3,14 @@ from django.conf import settings
 import unicodedata
 from typing  import Optional, List, Dict, Any
 
-from permisos import Perm
-
-class P:
-    """
-    Recibe uno o varios permisos y verifica que se encuentren en roles
-    """
-    def __init__(self, perm=None) -> None:
-        self.perm = perm
-
-    def evaluate(self, permisos):
-        return self.perm in permisos
-
-    def __and__(self, permiso2):
-        permiso1 = self
-        class PAnd(P):
-            def evaluate(self, permisos):
-                return permiso1.evaluate(permisos) and permiso2.evaluate(permisos)
-        return PAnd()
-
-    def __or__(self, permiso2):
-        permiso1 = self
-        class POr(P):
-            def evaluate(self, permisos):
-                return permiso1.evaluate(permisos) or permiso2.evaluate(permisos)
-        return POr()
-
+from framework.permisos import Perm
 
 class Node():
     def __init__(self, label=None, permiso=None, icon=None, key=None, content=None, to=None) -> None:
         self.label: Optional[str] = label
         self.content: List[Node] = content or []
         self.to: Optional[str] = to
-        self.permiso: Optional[str] = permiso
+        self.permiso: Optional[Perm] = permiso
         self.icon: Optional[str] = icon
         self.key: Optional[int] = key
 
@@ -162,7 +137,7 @@ def generar_menu(permisos: List[str]) -> list[dict]:
         if isinstance(node.permiso, str):
             return node.permiso in permisos
 
-        if isinstance(node.permiso, P):
+        if isinstance(node.permiso, Perm):
             return node.permiso.evaluate(permisos)
 
         return False
