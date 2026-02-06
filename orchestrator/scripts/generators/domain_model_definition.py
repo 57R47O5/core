@@ -174,10 +174,11 @@ def _fail(msg):
     raise ConstantModelGenerationError(msg)
 
 def resolve_model_file(app_name:str, model_name: str) -> Path:
-    model_file = APPS_DIR / app_name / "models" /f"{to_snake_case(model_name)}.py"
+    models_dir = APPS_DIR / app_name / "models" 
+    model_file = models_dir /f"{to_snake_case(model_name)}.py"
     
     if not model_file.exists():
-        _fail(f"Modelo '{model_name}' no encontrado en {APPS_DIR}")
+        _fail(f"Modelo '{model_name}' no encontrado en {models_dir}")
     return model_file
 
 def resolve_inherited_fields(base_names: list[str]) -> list[FieldDefinition]:
@@ -236,7 +237,7 @@ def extract_model_meta(model_class: ast.ClassDef) -> str:
 
     return db_table
 
-def extract_constants(manager_class: ast.ClassDef):
+def extract_constants(class_def: ast.ClassDef):
     """
     Extrae las constantes definidas en el Manager mediante Constant("XXX").
 
@@ -244,7 +245,7 @@ def extract_constants(manager_class: ast.ClassDef):
     """
     constants = []
 
-    for stmt in manager_class.body:
+    for stmt in class_def.body:
         if not isinstance(stmt, ast.Assign):
             continue
 
@@ -264,11 +265,12 @@ def extract_constants(manager_class: ast.ClassDef):
             {
                 "name": name,
                 "value": arg.value,
+                "owner": class_def.name,
             }
         )
 
     if not constants:
-        _fail(f"{manager_class.name} no define constantes")
+        _fail(f"{class_def.name} no define constantes")
 
     return constants
 
@@ -465,7 +467,11 @@ def build_domain_model_definition(
     # --------------------------------------------------
     # Constantes (datos iniciales)
     # --------------------------------------------------
-    constants = extract_constants(manager_class) if  manager_class else []
+    constants = (
+        extract_constants(manager_class)
+        if manager_class and is_constant_model_manager(manager_class)
+        else []
+    )
 
     # --------------------------------------------------
     # Herencia
@@ -509,3 +515,36 @@ def load_domain_model_definition(
     model_file = resolve_model_file(app_name, model_name)
     tree = parse_ast_file(model_file)
     return build_domain_model_definition(app_name, tree)
+
+
+def is_subclass_of(class_def: ast.ClassDef, base_name: str) -> bool:
+    for base in class_def.bases:
+        if isinstance(base, ast.Name) and base.id == base_name:
+            return True
+        if isinstance(base, ast.Attribute) and base.attr == base_name:
+            return True
+    return False
+
+def extract_composable_constants(
+    tree: ast.AST,
+    base_class_name: str,
+):
+    constants = []
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ClassDef):
+            continue
+
+        if not is_subclass_of(node, base_class_name):
+            continue
+
+        class_constants = extract_constants(node)
+        constants.extend(class_constants)
+
+    return constants
+
+def is_constant_model_manager(manager_class: ast.ClassDef) -> bool:
+    return any(
+        isinstance(base, ast.Name) and base.id == "ConstantModelManager"
+        for base in manager_class.bases
+    )

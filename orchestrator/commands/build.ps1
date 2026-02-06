@@ -25,7 +25,6 @@ if (!(Test-Path $orcPython)) {
 Write-Host "Orc build '$ProjectName'"
 Write-Host ""
 $backendPath = $projectModel.Project.BackendPath
-$frontendPath = $projectModel.Project.FrontendPath
 
 # ------------------------------------------------------------
 # Db
