@@ -154,3 +154,18 @@ class Constant:
 
 class ConstantModelManager(BasicModelManager):
     pass
+
+class ComposableManager(BasicModelManager):
+    """
+    Base para artefactos definidos por app pero
+    materializados a nivel proyecto.
+    """
+    __registry__ = []
+
+    @classmethod
+    def register(cls, subclass):
+        cls.__registry__.append(subclass)
+
+    @classmethod
+    def get_definitions(cls):
+        return cls.__registry__

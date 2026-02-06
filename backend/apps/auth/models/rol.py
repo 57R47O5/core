@@ -1,8 +1,8 @@
 from django.db import models
-from framework.models.basemodels import Constant, ConstantModel, ConstantModelManager
+from framework.models.basemodels import Constant, ConstantModel, ComposableManager
 
-class RolManager(ConstantModelManager):
-    OWNER = Constant("owner")
+class RolManager(ComposableManager):
+    ...
 
 class Rol(ConstantModel):
     """

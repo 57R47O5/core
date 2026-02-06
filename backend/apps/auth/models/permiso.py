@@ -1,7 +1,7 @@
 from django.db import models
-from framework.models.basemodels import ConstantModel, ConstantModelManager
+from framework.models.basemodels import ConstantModel, ComposableManager
 
-class PermisoManager(ConstantModelManager):
+class PermisoManager(ComposableManager):
     """
     Manager que expone permisos como constantes del dominio.
     Cada App debe heredar de este Manager

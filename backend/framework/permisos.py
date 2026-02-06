@@ -30,8 +30,8 @@ class AtomicPerm(Perm):
         self.code = code
 
 
-    def evaluate(self, permisos: set[str]) -> bool:
-        return self.code in permisos
+    def evaluate(self, permisos: set[Constant]) -> bool:
+        return self.code in [permiso.codigo for permiso in  permisos]
 
     def collect(self) -> set["AtomicPerm"]:
         return {self}
@@ -73,7 +73,7 @@ def require_perm(attr_name: str):
     Declara el atributo del controller que define el permiso requerido.
     """
     def decorator(func):
-        setattr(func, "_required_perm_attr", attr_name)
+        setattr(func, "_required_perm", attr_name)
         return func
     return decorator
 
