@@ -1,53 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="
-        http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
-<changeSet id="rol-seed" author="orco">
-    <!-- OWNER -->
-    <insert tableName="rol">
-        <column name="code" value="owner"/>
-        <column name="name" value="Owner"/>
-        <column name="description" value="Propietario de la cuenta con control total del sistema"/>
-        <column name="is_system" valueBoolean="true"/>
-        <column name="is_active" valueBoolean="true"/>
-        <column name="created_at" valueComputed="NOW()"/>
-        <column name="updated_at" valueComputed="NOW()"/>
-    </insert>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <!-- ADMIN -->
-    <insert tableName="rol">
-        <column name="code" value="admin"/>
-        <column name="name" value="Administrador"/>
-        <column name="description" value="Administrador del sistema y de los usuarios"/>
-        <column name="is_system" valueBoolean="true"/>
-        <column name="is_active" valueBoolean="true"/>
-        <column name="created_at" valueComputed="NOW()"/>
-        <column name="updated_at" valueComputed="NOW()"/>
-    </insert>
+    <changeSet id="rol-owner" author="orco">
+        <insert tableName="rol">
+            <column name="id" valueComputed="nextval('rol_id_seq')"/>
+            <column name="codigo" value="owner"/>
+            <column name="nombre" value="Owner"/>
+            <column name="descripcion" value="Rol Owner"/>
 
-    <!-- USER -->
-    <insert tableName="rol">
-        <column name="code" value="user"/>
-        <column name="name" value="Usuario"/>
-        <column name="description" value="Usuario estándar del sistema"/>
-        <column name="is_system" valueBoolean="true"/>
-        <column name="is_active" valueBoolean="true"/>
-        <column name="created_at" valueComputed="NOW()"/>
-        <column name="updated_at" valueComputed="NOW()"/>
-    </insert>
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
 
-    <!-- READONLY -->
-    <insert tableName="rol">
-        <column name="code" value="readonly"/>
-        <column name="name" value="Solo lectura"/>
-        <column name="description" value="Usuario con permisos de solo lectura"/>
-        <column name="is_system" valueBoolean="true"/>
-        <column name="is_active" valueBoolean="true"/>
-        <column name="created_at" valueComputed="NOW()"/>
-        <column name="updated_at" valueComputed="NOW()"/>
-    </insert>
-</changeSet>
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="rol">
+                <where>codigo = 'owner'</where>
+            </delete>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
