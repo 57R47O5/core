@@ -47,22 +47,29 @@ $dirs = @(
     "$appRoot\urls",
     "$appRoot\serializers",
     "$appRoot\tests"
-)
-
-foreach ($dir in $dirs) {
-    New-Item -ItemType Directory -Path $dir | Out-Null
-}
-
-# --------------------------------------------------
-# Archivos base
-# --------------------------------------------------
-$files = @(
-    "$appRoot\__init__.py",
-    "$appRoot\models\__init__.py",
-    "$appRoot\views\__init__.py",
-    "$appRoot\urls\__init__.py",
-    "$appRoot\serializers\__init__.py",
-    "$appRoot\tests\__init__.py"
+    "$appRoot\rest_controllers"
+    "$appRoot\services"
+    )
+    
+    foreach ($dir in $dirs) {
+        New-Item -ItemType Directory -Path $dir | Out-Null
+    }
+    
+    # --------------------------------------------------
+    # Archivos base
+    # --------------------------------------------------
+    $files = @(
+        "$appRoot\__init__.py",
+        "$appRoot\models\__init__.py",
+        "$appRoot\views\__init__.py",
+        "$appRoot\urls\__init__.py",
+        "$appRoot\serializers\__init__.py",
+        "$appRoot\rest_controllers\__init__.py"
+        "$appRoot\services\__init__.py"
+        "$appRoot\tests\__init__.py"
+        "$appRoot\permisos.py"
+        "$appRoot\roles.py"
+        "$appRoot\rest_urls.py"
 )
 
 foreach ($file in $files) {
