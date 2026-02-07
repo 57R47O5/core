@@ -1,5 +1,5 @@
 from pathlib import Path
-from generators.paths import REPO_ROOT
+from generators.paths import REPO_ROOT, LIQUIBASE_CHANGELOG_APPS
 from utils.naming import to_snake_case
 from execution_plan import ExecutionPlan
 
@@ -10,6 +10,7 @@ def generate_master_changelog(
 ) -> None:
     """
     Genera el changelog maestro del proyecto, incluyendo en orden:
+    0. Inicializaciones por app (init.xml)
     1. La estructura completa de la base de datos.
     2. Las cargas de datos distribuidas entre las apps.
     """
@@ -20,12 +21,21 @@ def generate_master_changelog(
 
     lines: list[str] = ["databaseChangeLog:"]
 
-    apps_in_order = include_structural_changelogs(
+    # 0. Inicializaciones (PostGIS, extensiones, schemas, etc.)
+    include_init_changelogs(
         execution_plan,
         lines,
         logger
     )
 
+    # 1. Estructura
+    apps_in_order = include_structural_changelogs(
+        execution_plan,
+        lines,
+        logger
+    )
+    
+    # 2. Datos
     include_data_changelogs(
         apps_in_order,
         lines,
@@ -146,3 +156,22 @@ def get_master_path(project_name:str):
         / project_name
         / "master.yaml"
     )
+
+def include_init_changelogs(
+    execution_plan: ExecutionPlan,
+    lines: list[str],
+    logger
+) -> None:
+    """
+    Incluye los init.xml de las apps, si existen.
+    Se ejecutan antes de cualquier estructura.
+    """
+    logger.info("Incluyendo inicializaciones por app (init.xml)")
+
+    for app in execution_plan.apps():
+        init_path = LIQUIBASE_CHANGELOG_APPS / app / "initial.xml"
+        if init_path.exists():
+            logger.info("Incluyendo init.xml de app %s", app)
+            lines.append(f"  - include:")
+            lines.append(f"      file: ../../apps/{app}/initial.xml")
+            lines.append(f"      relativeToChangelogFile: true")
