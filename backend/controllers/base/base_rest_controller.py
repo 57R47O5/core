@@ -31,8 +31,8 @@ class BaseRestController(viewsets.ViewSet):
         if not getattr(request, "user", None):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        if not request.user.is_authenticated:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        # if not request.user.is_authenticated:
+        #     return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         # 2. autorización por action
         perm = self._get_required_perm()
@@ -43,6 +43,24 @@ class BaseRestController(viewsets.ViewSet):
 
         return super().dispatch(request, *args, **kwargs)
 
+    def _get_required_perm(self):
+        """
+        Devuelve el permiso requerido por la view actual o None.
+        """
+
+        # 1. Resolver el método HTTP (get, post, put, etc.)
+        method_name = self.request.method.lower()
+        handler = getattr(self, method_name, None)
+
+        # 2. Permiso declarado en el método
+        if handler and hasattr(handler, "_required_perm"):
+            return handler._required_perm
+
+        # 3. Permiso declarado a nivel de clase (opcional)
+        if hasattr(self, "_required_perm"):
+            return self._required_perm
+
+        return None
 
 class ModelRestController(BaseRestController):
     model: Type[models.Model] = None
