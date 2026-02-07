@@ -66,5 +66,11 @@ databaseChangeLog:
       file: ../../apps/base/moneda-data.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/base/permiso-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/rol-data.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/base/tipo_documento_identidad-data.xml
       relativeToChangelogFile: true
