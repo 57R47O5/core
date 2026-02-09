@@ -2,7 +2,7 @@
 Django settings for elecciones project.
 
 Runtime-driven configuration.
-This project does not define infrastructure.
+Apps are managed by ORCO.
 """
 
 from pathlib import Path
@@ -10,19 +10,24 @@ import os
 import sys
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
+
 # -------------------------------------------------------------------
 # Paths
 # -------------------------------------------------------------------
 
-# backend/projects/elecciones/elecciones/settings.py
-BASE_DIR = Path(__file__).resolve().parent.parent
-BACKEND_DIR = BASE_DIR.parents[1]  # .../backend
+BASE_DIR = Path(__file__).resolve().parents[3]
+
+BACKEND_DIR = Path(
+    os.environ.get("BACKEND_DIR", BASE_DIR)
+).resolve()
+
 APPS_DIR = BACKEND_DIR / "apps"
-ENV_PATH = BASE_DIR / ".env"
 
 for p in (BACKEND_DIR, APPS_DIR):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
+
+ENV_PATH = BASE_DIR / "elecciones" / ".env"
 
 if ENV_PATH.exists():
     load_dotenv(ENV_PATH)
@@ -39,46 +44,48 @@ def env(name: str) -> str:
         raise ImproperlyConfigured(f"Missing environment variable: {name}")
     return value
 
-
 # -------------------------------------------------------------------
 # Core settings
 # -------------------------------------------------------------------
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
-
 DEBUG = env("DJANGO_DEBUG").lower() == "true"
-
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS").split(",")
-
 
 # -------------------------------------------------------------------
 # Application definition
 # -------------------------------------------------------------------
 
-INSTALLED_APPS = [
+from .orc_apps import ORC_APPS
+
+DJANGO_BASE_APPS = [
     "corsheaders",
-    "apps.base",
-    "apps.auditoria",
-    "django.contrib.admin",
-    "django.contrib.auth",
+    "rest_framework",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+INSTALLED_APPS = DJANGO_BASE_APPS + ORC_APPS
+
+# -------------------------------------------------------------------
+# Middleware
+# -------------------------------------------------------------------
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
+    "apps.auth.middleware.token.AuthTokenMiddleware",    
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "elecciones.urls"
+ORC_PUBLIC_PATHS = (
+    "/login/",
+    "/register/",
+    "/health/",
+)
+
+ROOT_URLCONF = "projects.elecciones.config.urls"
 
 TEMPLATES = [
     {
@@ -95,8 +102,16 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "elecciones.wsgi.application"
+WSGI_APPLICATION = "projects.elecciones.elecciones.wsgi.application"
 
+REST_FRAMEWORK = {
+    "UNAUTHENTICATED_USER": None,
+    "UNAUTHENTICATED_TOKEN": None,
+
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+    "apps.auth.authentication.OrcTokenAuthentication",
+    ],
+}
 
 # -------------------------------------------------------------------
 # Database (runtime-controlled)
@@ -113,12 +128,11 @@ DATABASES = {
     }
 }
 
-
 # -------------------------------------------------------------------
 # Authentication
 # -------------------------------------------------------------------
 
-AUTH_USER_MODEL = "base.User"
+AUTH_USER_MODEL = "auth.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -126,7 +140,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-
 
 # -------------------------------------------------------------------
 # Internationalization
@@ -137,13 +150,11 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-
 # -------------------------------------------------------------------
 # Static files
 # -------------------------------------------------------------------
 
 STATIC_URL = "static/"
-
 
 # -------------------------------------------------------------------
 # CORS / CSRF (runtime-controlled)
