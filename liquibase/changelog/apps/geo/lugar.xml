@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="lugar-0001-create-table" author="orco">
+
+        <createTable tableName="lugar">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="codigo" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="nombre" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="tipo" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="descripcion" type="TEXT"/>
+
+            <column name="geom" type="geometry(GEOMETRY,4326)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="centroide" type="geography(POINT,4326)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="padre_id" type="UUID"/>
+
+            <column name="nivel_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="activo" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Foreign Keys -->
+        <addForeignKeyConstraint
+            baseTableName="lugar"
+            baseColumnNames="padre_id"
+            referencedTableName="lugar"
+            referencedColumnNames="id"
+            constraintName="fk_lugar_padre"
+            onDelete="RESTRICT"/>
+
+        <addForeignKeyConstraint
+            baseTableName="lugar"
+            baseColumnNames="nivel_id"
+            referencedTableName="geo_nivel"
+            referencedColumnNames="id"
+            constraintName="fk_lugar_nivel"
+            onDelete="RESTRICT"/>
+
+        <!-- Indexes -->
+        <createIndex indexName="idx_lugar_tipo" tableName="lugar">
+            <column name="tipo"/>
+        </createIndex>
+
+        <createIndex indexName="idx_lugar_codigo" tableName="lugar">
+            <column name="codigo"/>
+        </createIndex>
+
+        <createIndex indexName="idx_lugar_nivel" tableName="lugar">
+            <column name="nivel_id"/>
+        </createIndex>
+
+        <!-- GIS Index -->
+        <sql>
+            CREATE INDEX idx_lugar_geom_gist
+            ON lugar
+            USING GIST (geom);
+        </sql>
+
+        <sql>
+            CREATE INDEX idx_lugar_centroide_gist
+            ON lugar
+            USING GIST (centroide);
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

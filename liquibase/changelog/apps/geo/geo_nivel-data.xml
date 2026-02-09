@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="geo-nivel-0002-seed-data" author="orco" runOnChange="true">
+        <insert tableName="geo_nivel">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="code" value="PAIS"/>
+            <column name="name" value="País"/>
+            <column name="orden" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="geo_nivel">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="code" value="DEPARTAMENTO"/>
+            <column name="name" value="Departamento"/>
+            <column name="orden" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="geo_nivel">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="code" value="DISTRITO"/>
+            <column name="name" value="Distrito"/>
+            <column name="orden" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="geo_nivel">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="code" value="BARRIO"/>
+            <column name="name" value="Barrio"/>
+            <column name="orden" valueNumeric="4"/>
+        </insert>
+
+        <insert tableName="geo_nivel">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="code" value="PUNTO"/>
+            <column name="name" value="Punto"/>
+            <column name="orden" valueNumeric="5"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
