@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="resultado_visita-rechazo" author="orco">
+        <insert tableName="resultado_visita">
+            <column name="id" valueComputed="nextval('resultado_visita_id_seq')"/>
+            <column name="codigo" value="Rechazo"/>
+            <column name="nombre" value="Rechazo"/>
+            <column name="descripcion" value="ResultadoVisita Rechazo"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+        <column name="valor" value=""/>
+
+        </insert>
+        <rollback>
+            <delete tableName="resultado_visita">
+                <where>codigo = 'Rechazo'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="resultado_visita-regular" author="orco">
+        <insert tableName="resultado_visita">
+            <column name="id" valueComputed="nextval('resultado_visita_id_seq')"/>
+            <column name="codigo" value="Regular"/>
+            <column name="nombre" value="Neutro"/>
+            <column name="descripcion" value="ResultadoVisita Neutro"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+        <column name="valor" value=""/>
+
+        </insert>
+        <rollback>
+            <delete tableName="resultado_visita">
+                <where>codigo = 'Regular'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="resultado_visita-interés" author="orco">
+        <insert tableName="resultado_visita">
+            <column name="id" valueComputed="nextval('resultado_visita_id_seq')"/>
+            <column name="codigo" value="Interés"/>
+            <column name="nombre" value="Interes"/>
+            <column name="descripcion" value="ResultadoVisita Interes"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+        <column name="valor" value=""/>
+
+        </insert>
+        <rollback>
+            <delete tableName="resultado_visita">
+                <where>codigo = 'Interés'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="resultado_visita-promesa de voto" author="orco">
+        <insert tableName="resultado_visita">
+            <column name="id" valueComputed="nextval('resultado_visita_id_seq')"/>
+            <column name="codigo" value="Promesa de Voto"/>
+            <column name="nombre" value="Promesa Voto"/>
+            <column name="descripcion" value="ResultadoVisita Promesa Voto"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+        <column name="valor" value=""/>
+
+        </insert>
+        <rollback>
+            <delete tableName="resultado_visita">
+                <where>codigo = 'Promesa de Voto'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

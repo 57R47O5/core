@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="estado_salida-planificada" author="orco">
+        <insert tableName="estado_salida">
+            <column name="id" valueComputed="nextval('estado_salida_id_seq')"/>
+            <column name="codigo" value="Planificada"/>
+            <column name="nombre" value="Planificada"/>
+            <column name="descripcion" value="EstadoSalida Planificada"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="estado_salida">
+                <where>codigo = 'Planificada'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="estado_salida-en curso" author="orco">
+        <insert tableName="estado_salida">
+            <column name="id" valueComputed="nextval('estado_salida_id_seq')"/>
+            <column name="codigo" value="En Curso"/>
+            <column name="nombre" value="En Curso"/>
+            <column name="descripcion" value="EstadoSalida En Curso"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="estado_salida">
+                <where>codigo = 'En Curso'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="estado_salida-finalizada" author="orco">
+        <insert tableName="estado_salida">
+            <column name="id" valueComputed="nextval('estado_salida_id_seq')"/>
+            <column name="codigo" value="Finalizada"/>
+            <column name="nombre" value="Finalizada"/>
+            <column name="descripcion" value="EstadoSalida Finalizada"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="estado_salida">
+                <where>codigo = 'Finalizada'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="estado_salida-cancelada" author="orco">
+        <insert tableName="estado_salida">
+            <column name="id" valueComputed="nextval('estado_salida_id_seq')"/>
+            <column name="codigo" value="Cancelada"/>
+            <column name="nombre" value="Cancelada"/>
+            <column name="descripcion" value="EstadoSalida Cancelada"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="estado_salida">
+                <where>codigo = 'Cancelada'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

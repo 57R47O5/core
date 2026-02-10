@@ -21,6 +21,9 @@ class PersonaFisica(BaseModel):
     @property
     def nombre_completo(self):
         return f"{self.nombres} {self.apellidos}".strip()
+
+    def __str__(self):
+        return f"{self.nombre_completo}"
     
     @property
     def documentos_identidad(self):

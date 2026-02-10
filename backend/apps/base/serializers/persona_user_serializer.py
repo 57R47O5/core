@@ -32,7 +32,7 @@ class PersonaUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonaUser
         fields = [
-            "id", "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "persona", "user", "principal"
+            "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "persona", "user", "principal"
         ]
 
 
