@@ -458,7 +458,6 @@ def build_domain_model_definition(
     # --------------------------------------------------
     model_class, manager_class = find_model_and_manager(tree)
 
-    print(f"El model es {model_class}")
     # --------------------------------------------------
     # Metadata del modelo
     # --------------------------------------------------

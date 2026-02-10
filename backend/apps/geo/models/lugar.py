@@ -1,5 +1,6 @@
 import uuid
 from django.contrib.gis.db import models
+from framework.models.basemodels import BaseModel
 from framework.constantes.mensajes_error import MensajesError
 from framework.exceptions import ExcepcionValidacion
 from apps.geo.models.geo_nivel import GeoNivel, GeoNivelManager
@@ -8,7 +9,7 @@ class ErrorLugar(MensajesError):
     NIVEL_INVALIDO="Nivel inválido para la jerarquía geográfica"
     GEOMETRIA_PUNTO="Un Punto debe tener geometría Point"
 
-class Lugar(models.Model):
+class Lugar(BaseModel):
     '''
     Clase básica para lugares. 
     Puede referirse a cualquier lugar, desde un país a un punto
@@ -95,7 +96,7 @@ class Punto(Lugar):
     '''
     Proxy model utilizado para registrar puntos
     Pensado específicamente para registrar desde
-    la ubicación del móvil
+    la ubicación del usuario
     '''
     objects = PuntoManager()
 
