@@ -20,24 +20,73 @@ class {ModelName}RestController(ModelRestController):
     retrieve_serializer = {ModelName}RetrieveSerializer    
 """
 
-def generate_rest_controller(definition: DomainModelDefinition):
+OPTIONS_VIEW_TEMPLATE='''
+from framework.api.options import BaseOptionsAPIView
+from apps.{app_name}.models.{model_name} import {ModelName}
+
+class {ModelName}OptionsView(BaseOptionsAPIView):
+    model = {ModelName}
+    url='{model_name_kebab}'
+    desc_field='Descripcion'
+    permisos=[]
+
+'''
+def generate_rest_controller(definition: DomainModelDefinition) -> None:
     """
-    Genera el archivo RestController para un modelo dado.
+    Genera el RestController correspondiente a un modelo de dominio.
+    - ConstantModel → OptionsView
+    - Modelo normal → RestController estándar
     """
+    file_path = resolve_rest_controller_path(definition)
+    content = render_rest_controller_content(definition)
 
-    model_name = definition.model_name
-    ModelName = definition.ModelName
-    app_name = definition.app_name
-
-    file_path = APPS_DIR / app_name / "rest_controllers" / f"{model_name}_rest_controller.py"
-
-    content = CONTROLLER_TEMPLATE.format(
-        model_name=model_name,
-        ModelName=ModelName,
-        app_name=app_name
-    )
-
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(content)
+    write_file(file_path, content)
 
     print(f"✔ RestController generado: {file_path}")
+
+def resolve_rest_controller_path(definition: DomainModelDefinition):
+    return (
+        APPS_DIR
+        / definition.app_name
+        / "rest_controllers"
+        / f"{definition.model_name}_rest_controller.py"
+    )
+
+def render_rest_controller_content(definition: DomainModelDefinition) -> str:
+    """
+    Devuelve el contenido del controller según el tipo de modelo.
+    """
+    if definition.is_constant_model:
+        return render_options_view(definition)
+
+    return render_standard_rest_controller(definition)
+
+def render_options_view(definition: DomainModelDefinition) -> str:
+    """
+    Renderiza un OptionsView para ConstantModels.
+    """
+    return OPTIONS_VIEW_TEMPLATE.format(
+        model_name=definition.model_name,
+        ModelName=definition.ModelName,
+        app_name=definition.app_name,
+        model_name_kebab=to_kebab_case(definition.model_name),
+    )
+
+def render_standard_rest_controller(definition: DomainModelDefinition) -> str:
+    """
+    Renderiza un RestController estándar.
+    """
+    return CONTROLLER_TEMPLATE.format(
+        model_name=definition.model_name,
+        ModelName=definition.ModelName,
+        app_name=definition.app_name,
+    )
+
+def to_kebab_case(value: str) -> str:
+    return value.replace("_", "-")
+
+def write_file(path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)

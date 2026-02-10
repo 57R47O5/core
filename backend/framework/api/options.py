@@ -1,6 +1,7 @@
 from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from framework.menu.menu import Node
 
 class BaseOptionsAPIView(APIView):
     """
@@ -16,6 +17,8 @@ class BaseOptionsAPIView(APIView):
     desc_field = None
     order_by = None
     filtro = None
+    url = ""
+    permisos = []
 
     def _get_fields(self):
         """Normaliza: devuelve una lista siempre."""
@@ -109,3 +112,10 @@ class BaseOptionsAPIView(APIView):
         ]
         return Response(data)
 
+    @classmethod
+    def route(cls):
+        return f"{cls.url}/options/"
+
+    @classmethod
+    def name(cls):
+        return f"{cls.url}-options/"   
