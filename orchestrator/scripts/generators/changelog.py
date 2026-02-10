@@ -108,6 +108,7 @@ FIELD_TYPE_MAP = {
     "CharField": lambda f: f'varchar({f.max_length or 255})',
     "TextField": lambda f: 'text',
     "IntegerField": lambda f: 'int',
+    "SmallIntegerField": lambda f: 'int',
     "BigIntegerField": lambda f: 'bigint',
     "BooleanField": lambda f: 'boolean',
     "DateField": lambda f: 'date',
