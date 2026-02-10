@@ -29,7 +29,6 @@ class AtomicPerm(Perm):
     def __init__(self, code: str):
         self.code = code
 
-
     def evaluate(self, permisos: set[Constant]) -> bool:
         return self.code in [permiso.codigo for permiso in  permisos]
 
