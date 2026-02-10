@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="ciclo_electoral-municipales 2026" author="orco">
+        <insert tableName="ciclo_electoral">
+            <column name="id" valueComputed="nextval('ciclo_electoral_id_seq')"/>
+            <column name="codigo" value="Municipales 2026"/>
+            <column name="nombre" value="Municipal2026"/>
+            <column name="descripcion" value="CicloElectoral Municipal2026"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="ciclo_electoral">
+                <where>codigo = 'Municipales 2026'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

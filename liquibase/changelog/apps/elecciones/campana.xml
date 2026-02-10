@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+<changeSet id="create-campana" author="orco">
+    <createSequence sequenceName="campana_id_seq" startValue="1" />
+    <createTable tableName="campana">
+        <column name="id" type="int">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+        <column name="is_deleted" type="boolean">
+            <constraints nullable="false"/>
+        </column>
+        <column name="createdby" type="varchar(255)">
+        </column>
+        <column name="updatedby" type="varchar(255)">
+        </column>
+        <column name="createdat" type="timestamp">
+        </column>
+        <column name="updatedat" type="timestamp">
+        </column>
+        <column name="candidato" type="int">
+            <constraints nullable="false"/>
+        </column>
+        <column name="cargo" type="varchar(255)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="distrito" type="int">
+            <constraints nullable="false"/>
+        </column>
+        <column name="ciclo" type="int">
+            <constraints nullable="false"/>
+        </column>
+        <column name="fecha_inicio" type="date">
+        </column>
+        <column name="fecha_fin" type="date">
+        </column>
+    </createTable>
+    <addDefaultValue tableName="campana" columnName="id" defaultValueComputed="nextval('campana_id_seq')" />
+</changeSet>
+</databaseChangeLog>
