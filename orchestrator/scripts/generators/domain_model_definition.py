@@ -57,6 +57,7 @@ class DomainModelDefinition:
     extra_fields: List[FieldDefinition]
 
     inherits_from_base_model: bool
+    is_constant_model: bool
 
     @property
     def has_initial_data(self) -> bool:
@@ -164,8 +165,6 @@ MODEL_INHERITANCE = {
     "BasicModel": "BaseModel",
     "BaseModel": None,
 }
-
-
 
 class ConstantModelGenerationError(RuntimeError):
     pass
@@ -391,7 +390,7 @@ def get_call_keyword(call: ast.Call, name: str, default=None):
 
 def find_model_and_manager(tree: ast.Module):
     """
-    Localiza el ConstantModel/BasicModel y su Manager asociado
+    Localiza el ConstantModel/BasicModel/BaseModel y su Manager asociado
     según la convención del monorepo:
 
     - Un solo modelo por archivo
@@ -417,7 +416,7 @@ def find_model_and_manager(tree: ast.Module):
             manager_class = node
 
     if not model_class:
-        _fail("No se encontró ConstantModel o BasicModel en el archivo")
+        _fail("No se encontró ConstantModel, BasicModel o BaseModel en el archivo")
 
     return model_class, manager_class
 
@@ -459,6 +458,7 @@ def build_domain_model_definition(
     # --------------------------------------------------
     model_class, manager_class = find_model_and_manager(tree)
 
+    print(f"El model es {model_class}")
     # --------------------------------------------------
     # Metadata del modelo
     # --------------------------------------------------
@@ -473,6 +473,7 @@ def build_domain_model_definition(
         else []
     )
 
+
     # --------------------------------------------------
     # Herencia
     # --------------------------------------------------
@@ -480,6 +481,11 @@ def build_domain_model_definition(
 
     inherits_from_base_model = any(
         base in ("BaseModel", "BasicModel")
+        for base in base_names
+    )
+
+    is_constant_model = any(
+        base in ("ConstantModel")
         for base in base_names
     )
 
@@ -501,6 +507,7 @@ def build_domain_model_definition(
         constants=constants,
         extra_fields=all_fields,
         inherits_from_base_model=inherits_from_base_model,
+        is_constant_model=is_constant_model
     )
 
 
