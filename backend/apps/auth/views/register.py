@@ -3,10 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from apps.auth.models.user import User
-
 from framework.exceptions import ExcepcionValidacion
 from framework.constantes.mensajes_error import MensajesError
+from framework.permisos import P, require_perm
+
+from apps.auth.models.user import User
+from apps.auth.permisos import AuthPermisos
 
 class UsernameError(MensajesError):
     OBLIGATORIO="El username es obligatorio."
@@ -21,6 +23,7 @@ class RegisterView(APIView):
     Registra un nuevo usuario en el sistema.
     """
 
+    @require_perm(P(AuthPermisos.REGISTER))
     def post(self, request):
         data = request.data or {}
 
