@@ -11,13 +11,15 @@ from controllers.base.base_rest_controller import ModelRestController
 
 
 class TipoDocumentoIdentidadRestController(ModelRestController):
-    model = TipoDocumentoIdentidad
     url = 'tipo-documento-identidad'
     permisos = [] 
+    model = TipoDocumentoIdentidad
     create_serializer = TipoDocumentoIdentidadCreateSerializer
     update_serializer = TipoDocumentoIdentidadUpdateSerializer
     retrieve_serializer = TipoDocumentoIdentidadRetrieveSerializer
 
 class TipoDocumentoIdentidadOptionsView(BaseOptionsAPIView):
     model=TipoDocumentoIdentidad
+    url = 'tipo-documento-identidad'
     desc_field = "nombre"
+    permisos = [] 
