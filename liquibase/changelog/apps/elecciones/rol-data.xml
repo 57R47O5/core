@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="rol-owner" author="orco">
+    <changeSet id="rol-elecciones.colaborador" author="orco">
         <insert tableName="rol">
             <column name="id" valueComputed="nextval('rol_id_seq')"/>
-            <column name="codigo" value="owner"/>
-            <column name="nombre" value="Owner"/>
-            <column name="descripcion" value="Rol Owner"/>
+            <column name="codigo" value="elecciones.colaborador"/>
+            <column name="nombre" value="Colaborador"/>
+            <column name="descripcion" value="Rol Colaborador"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -21,17 +21,17 @@
         </insert>
         <rollback>
             <delete tableName="rol">
-                <where>codigo = 'owner'</where>
+                <where>codigo = 'elecciones.colaborador'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="rol-admin" author="orco">
+    <changeSet id="rol-elecciones.jefe de campaña" author="orco">
         <insert tableName="rol">
             <column name="id" valueComputed="nextval('rol_id_seq')"/>
-            <column name="codigo" value="admin"/>
-            <column name="nombre" value="Admin"/>
-            <column name="descripcion" value="Rol Admin"/>
+            <column name="codigo" value="elecciones.jefe de campaña"/>
+            <column name="nombre" value="Jefe Campana"/>
+            <column name="descripcion" value="Rol Jefe Campana"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -46,7 +46,7 @@
         </insert>
         <rollback>
             <delete tableName="rol">
-                <where>codigo = 'admin'</where>
+                <where>codigo = 'elecciones.jefe de campaña'</where>
             </delete>
         </rollback>
     </changeSet>

@@ -8,7 +8,7 @@ from orchestrator.scripts.generators.changelog import (
     generate_liquibase_initial_data,
 )
 from orchestrator.scripts.generators.domain_model_definition import (
-    parse_ast_file, extract_constants)
+    parse_ast_file, extract_constants, extract_permission_manager_constants)
 from orchestrator.scripts.generators.domain_model_definition import (
     load_domain_model_definition, 
     )
@@ -77,13 +77,18 @@ def discover_app_permisos(app_name: str) -> list[dict]:
         return []
 
     tree = parse_ast_file(path)
+    class_index = {
+        node.name: node
+        for node in tree.body
+        if isinstance(node, ast.ClassDef)
+    }
 
     permiso_managers = find_classes_inheriting(tree, "PermisoManager")
 
     permisos = []
 
-    for manager in permiso_managers:
-        permisos.extend(extract_constants(manager))
+    for manager in permiso_managers:        
+        permisos.extend(extract_permission_manager_constants(manager, class_index))
 
     return permisos
 

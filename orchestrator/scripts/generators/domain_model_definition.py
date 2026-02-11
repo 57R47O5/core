@@ -268,8 +268,6 @@ def extract_constants(class_def: ast.ClassDef):
             }
         )
 
-    if not constants:
-        _fail(f"{class_def.name} no define constantes")
 
     return constants
 
@@ -466,11 +464,26 @@ def build_domain_model_definition(
     # --------------------------------------------------
     # Constantes (datos iniciales)
     # --------------------------------------------------
-    constants = (
-        extract_constants(manager_class)
-        if manager_class and is_constant_model_manager(manager_class)
-        else []
-    )
+    constants = []
+
+    if manager_class:
+
+        if is_constant_model_manager(manager_class):
+            # ConstantModel tradicional
+            constants = extract_constants(manager_class)
+
+        elif is_permission_manager(manager_class):
+            # PermisoManager con grupos jerárquicos
+            class_index = {
+                node.name: node
+                for node in tree.body
+                if isinstance(node, ast.ClassDef)
+            }
+
+            constants = extract_permission_manager_constants(
+                manager_class,
+                class_index
+            )
 
 
     # --------------------------------------------------
@@ -531,26 +544,88 @@ def is_subclass_of(class_def: ast.ClassDef, base_name: str) -> bool:
             return True
     return False
 
-def extract_composable_constants(
-    tree: ast.AST,
-    base_class_name: str,
-):
-    constants = []
-
-    for node in ast.walk(tree):
-        if not isinstance(node, ast.ClassDef):
-            continue
-
-        if not is_subclass_of(node, base_class_name):
-            continue
-
-        class_constants = extract_constants(node)
-        constants.extend(class_constants)
-
-    return constants
-
 def is_constant_model_manager(manager_class: ast.ClassDef) -> bool:
     return any(
         isinstance(base, ast.Name) and base.id == "ConstantModelManager"
         for base in manager_class.bases
     )
+
+def _extract_groups(class_def: ast.ClassDef) -> list[str]:
+    """
+    Extrae los nombres de clases definidos en el atributo 'grupos'.
+    """
+    for stmt in class_def.body:
+        if not isinstance(stmt, ast.Assign):
+            continue
+
+        for target in stmt.targets:
+            if isinstance(target, ast.Name) and target.id == "grupos":
+                if not isinstance(stmt.value, ast.List):
+                    _fail("'grupos' debe ser una lista")
+
+                group_names = []
+
+                for elt in stmt.value.elts:
+                    if not isinstance(elt, ast.Name):
+                        _fail("Los elementos de 'grupos' deben ser clases")
+
+                    group_names.append(elt.id)
+
+                return group_names
+
+    return []
+
+def extract_permission_manager_constants(
+    class_def: ast.ClassDef,
+    class_index: dict[str, ast.ClassDef],
+    visited: set[str] | None = None
+):
+    """
+    Extrae todas las constantes de un PermisoManager,
+    incluyendo las definidas en sus grupos.
+
+    - class_def: Clase actual
+    - class_index: diccionario nombre -> ClassDef
+    - visited: evita ciclos
+    """
+    if visited is None:
+        visited = set()
+
+    if class_def.name in visited:
+        _fail(f"Ciclo detectado en grupos de permisos: {class_def.name}")
+
+    visited.add(class_def.name)
+
+    constants = []
+
+    # 1️⃣ Constantes propias
+    constants.extend(extract_constants(class_def))
+
+    # 2️⃣ Constantes de grupos
+    group_names = _extract_groups(class_def)
+
+    for group_name in group_names:
+        if group_name not in class_index:
+            _fail(f"Grupo {group_name} no encontrado")
+
+        group_def = class_index[group_name]
+
+        constants.extend(
+            extract_permission_manager_constants(
+                group_def,
+                class_index,
+                visited
+            )
+        )
+
+    return constants
+
+def is_permission_manager(class_def: ast.ClassDef) -> bool:
+    """
+    Detecta si la clase hereda de PermisoManager
+    o indirectamente de ComposableManager.
+    """
+    for base in class_def.bases:
+        if isinstance(base, ast.Name) and base.id == "PermisoManager":
+            return True
+    return False
