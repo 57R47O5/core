@@ -1,8 +1,9 @@
 import os
 import sys
 import ast
+from pathlib import Path
 from orchestrator.scripts.generators.paths import (
-    LIQUIBASE_CHANGELOG_APPS, APPS_DIR)
+    LIQUIBASE_CHANGELOG_APPS, APPS_DIR, FRONTEND_DIR)
 from orchestrator.scripts.generators.changelog import (
     generate_liquibase_initial_data,
 )
@@ -20,6 +21,7 @@ def main():
 def build_app(app_name: str):
     build_app_permissions(app_name)
     build_app_roles(app_name)
+    build_app_routes(app_name)
 
 def build_app_permissions(app_name: str):
     permisos = discover_app_permisos(app_name)
@@ -114,6 +116,74 @@ def find_classes_inheriting(tree: ast.AST, base_name: str) -> list[ast.ClassDef]
                 classes.append(node)
 
     return classes
+
+def build_app_routes(app_name: str) -> None:
+    """
+    Construye el archivo {app_name}Routes.js
+    combinando todos los *Route.jsx de la app.
+    """
+    route_files = discover_app_route_files(app_name)
+
+    if not route_files:
+        print(f"No se encontraron rutas para {app_name}")
+        return
+
+    content = generate_routes_file_content(app_name, route_files)
+    write_routes_file(app_name, content)
+
+    print(f"✔ Routes generado para {app_name}")
+
+def discover_app_route_files(app_name: str) -> list[str]:
+    """
+    Devuelve los nombres de archivos *Route.jsx
+    dentro de la carpeta routes de la app.
+    """
+    routes_path = get_routes_path(app_name)
+
+    if not routes_path.exists():
+        return []
+
+    return [
+        file.stem  # sin extensión
+        for file in routes_path.iterdir()
+        if file.is_file() and file.name.endswith("Route.jsx")
+    ]
+
+def get_routes_path(app_name: str) -> Path:
+    return FRONTEND_DIR / "src" / "apps" / app_name / "routes"
+
+def generate_routes_file_content(app_name: str, route_modules: list[str]) -> str:
+    """
+    Genera el contenido del archivo {app_name}Routes.js
+    """
+    imports = generate_import_statements(route_modules)
+    spread_routes = generate_spread_routes(route_modules)
+
+    return f"""{imports}
+
+const {app_name}Routes = [
+{spread_routes}
+];
+
+export default {app_name}Routes;
+"""
+
+def generate_import_statements(route_modules: list[str]) -> str:
+    lines = []
+    for module in route_modules:
+        lines.append(f'import {module} from "./routes/{module}";')
+    return "\n".join(lines)
+
+
+def generate_spread_routes(route_modules: list[str]) -> str:
+    lines = []
+    for module in route_modules:
+        lines.append(f"    ...{module},")
+    return "\n".join(lines)
+
+def write_routes_file(app_name: str, content: str) -> None:
+    target_path = FRONTEND_DIR / "src" / "apps" / app_name / f"{app_name}Routes.js"
+    target_path.write_text(content, encoding="utf-8")
 
 if __name__ == "__main__":
     main()
