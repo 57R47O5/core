@@ -57,6 +57,54 @@ databaseChangeLog:
       file: ../../apps/base/documento_identidad-hist.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/geo/geo_nivel.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/geo/lugar.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/campana.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/campana-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/ciclo_electoral.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/colaborador.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/colaborador-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/estado_salida.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/resultado_visita.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/salida.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/salida-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/seccional.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/seccional-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/votante.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/votante-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/auth/permiso-data.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/auth/rol-data.xml
       relativeToChangelogFile: true
   - include:
@@ -76,4 +124,22 @@ databaseChangeLog:
       relativeToChangelogFile: true
   - include:
       file: ../../apps/base/tipo_documento_identidad-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/geo/geo_nivel-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/ciclo_electoral-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/estado_salida-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/permiso-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/resultado_visita-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/rol-data.xml
       relativeToChangelogFile: true

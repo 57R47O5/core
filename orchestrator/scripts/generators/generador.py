@@ -15,11 +15,10 @@ from orchestrator.scripts.generators.urls import generate_urls
 from orchestrator.scripts.generators.tests import generate_model_tests
 from orchestrator.scripts.generators.paths import REPO_ROOT
 from orchestrator.scripts.utils.logger import get_logger
-from orchestrator.scripts.generators.frontend_form_generator import generate_frontend_form, generate_frontend_filter
+from orchestrator.scripts.generators.frontend_form_generator import generate_frontend_form, generate_frontend_filter, generate_frontend_fields
 from orchestrator.scripts.generators.frontend_formpage_generator import generate_form_page
 from orchestrator.scripts.generators.frontend_list_page_generator import generate_frontend_list_page
 from orchestrator.scripts.generators.frontend_model_route_generator import generate_model_route
-
 
 log = get_logger("orc.generate")
 
@@ -32,7 +31,8 @@ def main():
     generate_rest_controller(definition)
     generate_serializer(definition)
     generate_urls(definition)
-    generate_rest_urls(app_name)
+    # #TODO:Ver como modificamos esto
+    # generate_rest_urls(app_name)
     generate_model_tests(definition)
 
     # Frontend
@@ -40,6 +40,7 @@ def main():
     generate_form_page(definition)
     generate_frontend_form(definition)
     generate_frontend_filter(definition)
+    generate_frontend_fields(definition)
     generate_frontend_list_page(definition)
     generate_model_route(definition)
 

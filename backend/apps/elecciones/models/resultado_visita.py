@@ -2,16 +2,15 @@ from django.db import models
 from framework.models.basemodels import Constant, ConstantModel, ConstantModelManager
 
 class ResultadoVisitaManager(ConstantModelManager):
-    RECHAZO=Constant("Rechazo", valor=1)
-    NEUTRO=Constant("Regular", valor=2)
-    INTERES=Constant("Interés", valor=3)
-    PROMESA_VOTO=Constant("Promesa de Voto", valor=4)
+    RECHAZO=Constant("Rechazo")
+    NEUTRO=Constant("Regular")
+    INTERES=Constant("Interés")
+    PROMESA_VOTO=Constant("Promesa de Voto")
 
 class ResultadoVisita(ConstantModel):
     """
     Resultado estandarizado de una visita
     """
-    valor=models.SmallIntegerField('Utilizamos para calcular el resultado de un conjunto de visitas')
 
     objects = ResultadoVisitaManager()
 

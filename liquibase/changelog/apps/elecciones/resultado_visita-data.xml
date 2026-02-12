@@ -17,7 +17,6 @@
 
             <!-- ConstantModel -->
             <column name="activo" valueBoolean="true"/>
-        <column name="valor" value=""/>
 
         </insert>
         <rollback>
@@ -43,7 +42,6 @@
 
             <!-- ConstantModel -->
             <column name="activo" valueBoolean="true"/>
-        <column name="valor" value=""/>
 
         </insert>
         <rollback>
@@ -69,7 +67,6 @@
 
             <!-- ConstantModel -->
             <column name="activo" valueBoolean="true"/>
-        <column name="valor" value=""/>
 
         </insert>
         <rollback>
@@ -95,7 +92,6 @@
 
             <!-- ConstantModel -->
             <column name="activo" valueBoolean="true"/>
-        <column name="valor" value=""/>
 
         </insert>
         <rollback>
