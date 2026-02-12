@@ -1,8 +1,6 @@
-from django.db.models import Q
-from datetime import datetime
-from framework.permisos import P
+from framework.permisos import PermisoGroup
+from framework.models.basemodels import Constant
 
-from apps.base.permisos import PermisosPersonaJuridica
 from apps.base.models.persona_juridica import PersonaJuridica
 from apps.base.serializers.persona_juridica_serializer import (
     PersonaJuridicaUpdateSerializer,
@@ -10,7 +8,11 @@ from apps.base.serializers.persona_juridica_serializer import (
     PersonaJuridicaRetrieveSerializer)
 from controllers.base.base_rest_controller import ModelRestController
 
-
+class PermisosPersonaJuridica(PermisoGroup):
+    VIEW=Constant("base.persona_juridica.view")
+    CREATE=Constant("base.persona_juridica.create")
+    UPDATE=Constant("base.persona_juridica.update")
+    DESTROY=Constant("base.persona_juridica.destroy")
 class PersonaJuridicaRestController(ModelRestController):
     label="Empresas"
     model = PersonaJuridica
@@ -18,43 +20,6 @@ class PersonaJuridicaRestController(ModelRestController):
     create_serializer = PersonaJuridicaInputSerializer
     update_serializer = PersonaJuridicaUpdateSerializer
     retrieve_serializer = PersonaJuridicaRetrieveSerializer
+    permisos = PermisosPersonaJuridica
 
-    create_permission = P(PermisosPersonaJuridica.CREATE)
-    update_permission = P(PermisosPersonaJuridica.UPDATE)
-    destroy_permission = P(PermisosPersonaJuridica.DESTROY)
-    view_permission = P(PermisosPersonaJuridica.VIEW)
-    permisos = create_permission and update_permission \
-        and destroy_permission and view_permission
 
-    def _get_filter(self, params):
-        filtros = Q()
-
-        # --- filtros automáticos por coincidencia de campos ---
-        for campo, valor in params.items():
-            if valor:
-                filtros &= Q(**{
-                    f"{campo}__icontains": valor.strip()
-                })
-
-        # --- filtros especiales (fecha_desde / fecha_hasta) ---
-        fecha_desde = params.get("fecha_desde")
-        fecha_hasta = params.get("fecha_hasta")
-
-        if fecha_desde:
-            try:
-                fecha = datetime.fromisoformat(fecha_desde)
-                filtros &= Q(fecha_creacion__date__gte=fecha.date())
-            except:
-                pass
-
-        if fecha_hasta:
-            try:
-                fecha = datetime.fromisoformat(fecha_hasta)
-                filtros &= Q(fecha_creacion__date__lte=fecha.date())
-            except:
-                pass
-
-        return filtros
-
-    def _get_queryset(self, filtro):
-        return self.model.objects.filter(filtro).order_by('id')

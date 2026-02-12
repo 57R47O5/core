@@ -1,20 +1,14 @@
-from apps.auth.models.permiso import PermisoManager, PermisoGroup
-from framework.models.basemodels import Constant
-
-class PermisosPersonaFisica(PermisoGroup):
-    VIEW=Constant("base.persona_fisica.view")
-    CREATE=Constant("base.persona_fisica.create")
-    UPDATE=Constant("base.persona_fisica.update")
-    DESTROY=Constant("base.persona_fisica.destroy")
-
-class PermisosPersonaJuridica(PermisoGroup):
-    VIEW=Constant("base.persona_juridica.view")
-    CREATE=Constant("base.persona_juridica.create")
-    UPDATE=Constant("base.persona_juridica.update")
-    DESTROY=Constant("base.persona_juridica.destroy")
+from apps.auth.models.permiso import PermisoManager
+from apps.base.rest_controllers.persona_fisica_rest_controller import PermisosPersonaFisica
+from apps.base.rest_controllers.persona_juridica_rest_controller import PermisosPersonaJuridica
+from apps.base.rest_controllers.documento_identidad_rest_controller import PermisosDocumentoIdentidad
 
 class BasePermisos(PermisoManager):
+    '''
+    Estos son todos los  permisos de la app base
+    '''
     grupos = [
         PermisosPersonaFisica,
-        PermisosPersonaJuridica
+        PermisosPersonaJuridica,
+        PermisosDocumentoIdentidad,
     ]

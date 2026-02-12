@@ -19,8 +19,9 @@ def main():
     print("Build done")
 
 def build_app(app_name: str):
-    build_app_permissions(app_name)
-    build_app_roles(app_name)
+    permisos=build_app_permissions(app_name)
+    roles=build_app_roles(app_name)
+    build_app_rol_permissions(app_name, roles)
     build_app_routes(app_name)
 
 def build_app_permissions(app_name: str):
@@ -46,6 +47,7 @@ def build_app_permissions(app_name: str):
 
         print(f"[GEN] data   -> {data_file}")
 
+    return permisos
 
 def build_app_roles(app_name: str):
     roles = discover_app_roles(app_name)
@@ -67,7 +69,9 @@ def build_app_roles(app_name: str):
         data_file = output_dir / "rol-data.xml"
         data_file.write_text(data_xml.strip() + "\n", encoding="utf-8")
 
-        print(f"[GEN] data   -> {data_file}")        
+        print(f"[GEN] data   -> {data_file}")
+
+    return roles        
 
 
 def discover_app_permisos(app_name: str) -> list[dict]:
@@ -189,6 +193,53 @@ def generate_spread_routes(route_modules: list[str]) -> str:
 def write_routes_file(app_name: str, content: str) -> None:
     target_path = FRONTEND_DIR / "src" / "apps" / app_name / f"{app_name}Routes.js"
     target_path.write_text(content, encoding="utf-8")
+
+def build_app_rol_permissions(app_name: str, roles: list):
+
+    if not roles:
+        return
+
+    output_dir = LIQUIBASE_CHANGELOG_APPS / app_name
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    change_sets = []
+
+    for rol in roles:
+        print(f"El rol es {rol}")
+        for permiso in rol.permisos:
+
+            change_sets.append(f"""
+        <insert tableName="rol_permiso">
+            <column name="rol_id"
+                    valueComputed="(SELECT id FROM rol WHERE code='{rol.code}')"/>
+            <column name="permiso_id"
+                    valueComputed="(SELECT id FROM permiso WHERE code='{permiso.code}')"/>
+        </insert>
+            """)
+
+    if not change_sets:
+        return
+
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="{app_name}-rol-permiso-data" author="orc">
+        {''.join(change_sets)}
+    </changeSet>
+
+</databaseChangeLog>
+"""
+
+    data_file = output_dir / "rol_permiso-data.xml"
+    data_file.write_text(xml.strip() + "\n", encoding="utf-8")
+
+    print(f"[GEN] data   -> {data_file}")
+
 
 if __name__ == "__main__":
     main()

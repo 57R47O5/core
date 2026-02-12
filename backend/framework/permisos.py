@@ -80,3 +80,52 @@ def check_permissions(self, request):
     perm = self._get_required_perm()
     if perm and not perm.evaluate(request.permisos):
         raise ExcepcionPermisos()
+    
+class PermisoGroup:
+    '''
+    Clase utilizada para agrupar permisos
+    '''
+    @classmethod
+    def constants(cls) -> dict[str, Constant]:
+        return {
+            name: value
+            for name, value in vars(cls).items()
+            if isinstance(value, Constant)
+        }
+
+    @classmethod
+    def all(cls):
+        permisos = []
+
+        # 1. permisos propios
+        permisos.extend(
+            value for value in vars(cls).values()
+            if isinstance(value, Constant)
+        )
+
+        # 2. permisos de grupos
+        for group in getattr(cls, "grupos", []):
+            permisos.extend(group.all())
+
+        return permisos
+    
+    @classmethod
+    def _get_groups(cls):
+        return getattr(cls, "grupos", [])
+    
+    @classmethod
+    def to_perm(cls) -> Perm:
+        """
+        Crea un objeto Perm agrupando los permisos
+        de la clase con OR lógico.
+        """
+        perms = [P(const) for const in cls.constants().values()]
+        
+        if not perms:
+            raise ValueError(f"{cls.__name__} no define permisos.")
+
+        expr = perms[0]
+        for perm in perms[1:]:
+            expr = expr | perm
+
+        return expr

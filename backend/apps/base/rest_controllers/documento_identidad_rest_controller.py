@@ -1,9 +1,7 @@
 from django.db.models import F, Q
 
-from rest_framework import status, viewsets, serializers
-from rest_framework.response import Response
-
-from framework.api.options import BaseOptionsAPIView
+from framework.permisos import PermisoGroup
+from framework.models.basemodels import Constant
 from apps.base.models.documento_identidad import DocumentoIdentidad
 from apps.base.serializers.documento_identidad_serializer import (
     DocumentoIdentidadCreateSerializer,
@@ -11,11 +9,16 @@ from apps.base.serializers.documento_identidad_serializer import (
     DocumentoIdentidadRetrieveSerializer)
 from controllers.base.base_rest_controller import ModelRestController
 
-
+class PermisosDocumentoIdentidad(PermisoGroup):
+    VIEW=Constant("base.documento_identidad.view")
+    CREATE=Constant("base.documento_identidad.create")
+    UPDATE=Constant("base.documento_identidad.update")
+    DESTROY=Constant("base.documento_identidad.destroy")
 class DocumentoIdentidadRestController(ModelRestController):
+    label = "Documento Identidad"
     model = DocumentoIdentidad
     url='documento-identidad'
-    permisos=[]
+    permisos=PermisosDocumentoIdentidad
     create_serializer = DocumentoIdentidadCreateSerializer
     update_serializer = DocumentoIdentidadUpdateSerializer
     retrieve_serializer = DocumentoIdentidadRetrieveSerializer
