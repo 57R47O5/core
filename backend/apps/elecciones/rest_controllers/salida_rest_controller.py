@@ -15,7 +15,7 @@ class PermisosSalida(PermisoGroup):
     CREATE=Constant("elecciones.salida.create")
     UPDATE=Constant("elecciones.salida.update")
     DESTROY=Constant("elecciones.salida.destroy")
-
+    ESTADO_SALIDA_VIEW=Constant("elecciones.estado_salida.view")
 
 class SalidaRestController(ModelRestController):
     label = "Salida"
