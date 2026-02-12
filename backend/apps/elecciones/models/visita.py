@@ -1,4 +1,5 @@
 from django.db import models
+from framework.models.basemodels import BaseModel
 from framework.exceptions import ExcepcionValidacion
 from framework.constantes.mensajes_error import MensajesError
 from apps.geo.models.lugar import Punto
@@ -9,7 +10,7 @@ from apps.elecciones.models.resultado_visita import ResultadoVisita
 class ErrorVisita(MensajesError):
     NO_REGISTRABLE="No se pueden registrar visitas si la salida no está en curso"
 
-class Visita(models.Model):
+class Visita(BaseModel):
     """
     Registro de cada visita. Se autoregistra fecha y ubicación (si la app la provee).
     - notes: texto libre
