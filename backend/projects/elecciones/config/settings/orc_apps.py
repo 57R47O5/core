@@ -6,4 +6,6 @@ Do not edit manually.
 ORC_APPS = [
     "apps.auth",
     "apps.base",
+    "apps.geo",
+    "apps.elecciones",
 ]
