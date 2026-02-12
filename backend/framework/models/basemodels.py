@@ -153,7 +153,44 @@ class Constant:
         return self._cache
 
 class ConstantModelManager(BasicModelManager):
-    pass
+    """
+    Manager base para modelos constantes.
+
+    Además de exponer los métodos estándar de acceso a constantes,
+    este manager define un ORDEN LÓGICO implícito entre ellas basado
+    exclusivamente en el orden de declaración en la clase.
+
+    Importante:
+    - El orden NO se persiste en la base de datos.
+    - El orden NO forma parte del esquema ni de los changelogs.
+    - El orden es puramente lógico y está determinado por el orden
+      en que las constantes son definidas en el manager.
+    - Modificar el orden implica únicamente reordenar las constantes
+      en el código.
+
+    Esto permite expresar jerarquías o comparaciones (por ejemplo,
+    validaciones entre niveles) sin introducir complejidad innecesaria
+    en el modelo físico.
+    """
+
+    @classmethod
+    def ordered_constants(cls):
+        """
+        Retorna las constantes respetando el orden de declaración
+        en la clase.
+        """
+        return list(cls.constants().values())
+
+    @classmethod
+    def get_order(cls, codigo):
+        """
+        Devuelve la posición (índice) lógica de una constante
+        según su orden de declaración.
+        """
+        for index, const in enumerate(cls.ordered_constants()):
+            if const.codigo == codigo:
+                return index
+        raise ValueError("Nivel no encontrado")
 
 class ComposableManager(BasicModelManager):
     """

@@ -12,7 +12,7 @@ import {
 
 const NavBar = ({children}) => {
   const navigate = useNavigate();
-  const { isAuthenticated, handleLogout, user } = useContext(AuthContext);
+  const { isAuthenticated, handleLogout } = useContext(AuthContext);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogoutClick = () => setShowLogoutModal(true);
@@ -43,8 +43,7 @@ const NavBar = ({children}) => {
               <Nav.Link as={Link} to="/">Inicio</Nav.Link>
 
               {!isAuthenticated && (
-                <>
-                  <Nav.Link as={Link} to="/register">Registro</Nav.Link>
+                <>                  
                   <Nav.Link as={Link} to="/login">Iniciar Sesión</Nav.Link>
                 </>
               )}
