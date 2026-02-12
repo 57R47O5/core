@@ -1,6 +1,6 @@
 
-from framework.api.options import BaseOptionsAPIView
-from framework.permisos import P
+from framework.permisos import PermisoGroup
+from framework.models.basemodels import Constant
 
 from apps.base.models.persona_fisica import PersonaFisica
 from apps.base.permisos import PermisosPersonaFisica
@@ -10,6 +10,11 @@ from apps.base.serializers.persona_fisica_serializer import (
     PersonaFisicaInputSerializer)
 from controllers.base.base_rest_controller import ModelRestController
 
+class PermisosPersonaFisica(PermisoGroup):
+    VIEW=Constant("base.persona_fisica.view")
+    CREATE=Constant("base.persona_fisica.create")
+    UPDATE=Constant("base.persona_fisica.update")
+    DESTROY=Constant("base.persona_fisica.destroy")
 class PersonaFisicaRestController(ModelRestController):
     label = "Persona"
     model = PersonaFisica
@@ -17,11 +22,4 @@ class PersonaFisicaRestController(ModelRestController):
     create_serializer = PersonaFisicaInputSerializer
     update_serializer = PersonaFisicaUpdateSerializer
     retrieve_serializer = PersonaFisicaRetrieveSerializer 
-
-    create_permission = P(PermisosPersonaFisica.CREATE)
-    update_permission = P(PermisosPersonaFisica.UPDATE)
-    destroy_permission = P(PermisosPersonaFisica.DESTROY)
-    view_permission = P(PermisosPersonaFisica.VIEW)
-    
-    permisos = create_permission and update_permission \
-        and destroy_permission and view_permission
+    permisos=PermisosPersonaFisica

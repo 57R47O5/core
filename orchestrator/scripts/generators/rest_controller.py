@@ -2,7 +2,8 @@ from orchestrator.scripts.generators.domain_model_definition import DomainModelD
 from orchestrator.scripts.generators.paths import APPS_DIR
 
 CONTROLLER_TEMPLATE = """from django.db.models import Q
-from datetime import datetime
+from framework.permisos import PermisoGroup
+from framework.models.basemodels import Constant
 
 from framework.api.options import BaseOptionsAPIView
 from apps.{app_name}.models.{model_name} import {ModelName}
@@ -12,12 +13,21 @@ from apps.{app_name}.serializers.{model_name}_serializer import (
     {ModelName}RetrieveSerializer)
 from controllers.base.base_rest_controller import ModelRestController
 
+class Permisos{ModelName}(PermisoGroup):
+    VIEW=Constant("{app_name}.{model_name}.view")
+    CREATE=Constant("{app_name}.{model_name}.create")
+    UPDATE=Constant("{app_name}.{model_name}.update")
+    DESTROY=Constant("{app_name}.{model_name}.destroy")
+
 
 class {ModelName}RestController(ModelRestController):
+    label = "{ModelName}"
     model = {ModelName}
+    url = "{model_name_kebab}"
     create_serializer = {ModelName}CreateSerializer
     update_serializer = {ModelName}UpdateSerializer
     retrieve_serializer = {ModelName}RetrieveSerializer    
+    permisos = Permisos{ModelName}
 """
 
 OPTIONS_VIEW_TEMPLATE='''
@@ -80,6 +90,7 @@ def render_standard_rest_controller(definition: DomainModelDefinition) -> str:
         model_name=definition.model_name,
         ModelName=definition.ModelName,
         app_name=definition.app_name,
+        model_name_kebab=to_kebab_case(definition.model_name),
     )
 
 def to_kebab_case(value: str) -> str:

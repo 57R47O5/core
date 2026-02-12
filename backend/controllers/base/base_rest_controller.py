@@ -7,12 +7,31 @@ from rest_framework.response import Response
 
 from framework.menu.menu import Node
 from framework.exceptions import excepcion, ExcepcionValidacion
-from framework.permisos import Perm, require_perm
+from framework.permisos import Perm, require_perm, PermisoGroup, P
 
 class BaseRestController(viewsets.ViewSet):
     label:str
     url:str
-    permisos:Optional[List[str]]
+    permisos: Type[PermisoGroup] = None
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+
+        if cls.permisos:
+
+            constants = cls.permisos.constants()
+
+            if "VIEW" in constants:
+                cls.view_permission = P(constants["VIEW"])
+
+            if "CREATE" in constants:
+                cls.create_permission = P(constants["CREATE"])
+
+            if "UPDATE" in constants:
+                cls.update_permission = P(constants["UPDATE"])
+
+            if "DESTROY" in constants:
+                cls.destroy_permission = P(constants["DESTROY"])
 
     @classmethod
     def to_node(cls)->Node:
@@ -21,7 +40,7 @@ class BaseRestController(viewsets.ViewSet):
         '''
         nodo_controller = Node(
             label=cls.label, 
-            permiso=cls.permisos,
+            permiso=cls.permisos.to_perm(),
             to=f'/{cls.url}'
             )
         return nodo_controller
