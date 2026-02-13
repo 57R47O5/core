@@ -18,6 +18,9 @@ databaseChangeLog:
       file: ../../apps/auth/rol_permiso.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/auth/rol_permiso-hist.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/auth/token.xml
       relativeToChangelogFile: true
   - include:
@@ -142,4 +145,7 @@ databaseChangeLog:
       relativeToChangelogFile: true
   - include:
       file: ../../apps/elecciones/rol-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/rol_permiso-data.xml
       relativeToChangelogFile: true

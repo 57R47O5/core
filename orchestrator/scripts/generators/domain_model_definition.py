@@ -10,6 +10,7 @@ from orchestrator.scripts.utils.resolve_model_app import resolve_model_app
 class FieldDefinition:
     name: str
     type: str          
+    db_column: Optional[str] = None
     max_length: Optional[int] = None
     blank: bool = False
     null: bool = False
@@ -27,6 +28,11 @@ class FieldDefinition:
     references_model: str | None = None
     references_app: str | None = None
     appears_in_form: bool | None = True
+
+    def __post_init__(self):
+        # Si no se pasó db_column, usar name
+        if self.db_column is None:
+            object.__setattr__(self, "db_column", self.name)
 
     def __str__(self):
         return self.name
@@ -264,7 +270,7 @@ def extract_constants(class_def: ast.ClassDef):
             {
                 "name": name,
                 "value": arg.value,
-                "owner": class_def.name,
+                #"owner": class_def.name,
             }
         )
 
@@ -317,6 +323,10 @@ def extract_extra_fields(model_class: ast.ClassDef):
         field_type = getattr(call.func, "attr", None)
 
         blank = get_call_keyword(call, "blank", False)
+        db_column = get_call_keyword(call, "db_column", None)
+
+        if not db_column:
+            db_column = field_name 
         null = get_call_keyword(call, "null", False)
 
         # ----------------------------------------------
@@ -352,6 +362,7 @@ def extract_extra_fields(model_class: ast.ClassDef):
             extra_fields.append(
                 FieldDefinition(
                     name=field_name,
+                    db_column=db_column,
                     type="ForeignKey",
                     blank=blank,
                     null=null,

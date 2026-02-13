@@ -101,6 +101,76 @@ def generate_liquibase_initial_data(
 
     return "\n".join(xml)
 
+def generate_liquibase_relation_data(
+    table_name: str,
+    relations: list[tuple[str, str]],
+    left_table: str,
+    right_table: str,
+    left_fk_column: str,
+    right_fk_column: str,
+    author: str = "orco",
+) -> str:
+    """
+    Genera changelog Liquibase para tablas relacionales (join tables).
+
+    relations = [
+        (left_codigo, right_codigo)
+    ]
+
+    Inserta registros resolviendo FKs por subquery sobre campo 'codigo'.
+    """
+
+    if not relations:
+        return ""
+
+    xml = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<databaseChangeLog '
+        'xmlns="http://www.liquibase.org/xml/ns/dbchangelog" '
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+        'xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog '
+        'http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">'
+    ]
+
+    for left_codigo, right_codigo in relations:
+
+        change_id = f"{table_name}-{left_codigo}-{right_codigo}".lower()
+
+        xml.append(f"""
+    <changeSet id="{change_id}" author="{author}">
+        <insert tableName="{table_name}">
+            <column name="id" valueComputed="nextval('{table_name}_id_seq')"/>
+
+            <column name="{left_fk_column}"
+                valueComputed="(SELECT id FROM {left_table} WHERE codigo = '{left_codigo}')"/>
+
+            <column name="{right_fk_column}"
+                valueComputed="(SELECT id FROM {right_table} WHERE codigo = '{right_codigo}')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="{table_name}">
+                <where>
+                    {left_fk_column} = (SELECT id FROM {left_table} WHERE codigo = '{left_codigo}')
+                    AND
+                    {right_fk_column} = (SELECT id FROM {right_table} WHERE codigo = '{right_codigo}')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+        """.rstrip())
+
+    xml.append("</databaseChangeLog>")
+
+    return "\n".join(xml)
+
+
 FIELD_TYPE_MAP = {
     "AutoField": lambda f: "int",
     "ForeignKey": lambda f: "int",
@@ -128,7 +198,7 @@ def generate_column_xml(field: FieldDefinition) -> str:
     liquibase_type = map_field_type(field)
     # Column base (SIN constraints)
     column_xml = [
-        f'        <column name="{field.name}" type="{liquibase_type}">'
+        f'        <column name="{field.db_column}" type="{liquibase_type}">'
     ]
 
     constraints = []
