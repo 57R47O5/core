@@ -26,17 +26,17 @@ $OrcRoot = $Context.OrcRoot
 
 Remove-PostgresDatabase -Context $Context
 
-if ($LASTEXITCODE -ne 0) {
-    throw "[orc] Error eliminando base de datos"
-}
+# if ($LASTEXITCODE -ne 0) {
+#     throw "[orc] Error eliminando base de datos"
+# }
 
 Write-Host "[orc] Creando base de datos..."
 
 Ensure-PostgresDatabase -Context $Context
 
-if ($LASTEXITCODE -ne 0) {
-    throw "[orc] Error creando base de datos"
-}
+# if ($LASTEXITCODE -ne 0) {
+#     throw "[orc] Error creando base de datos"
+# }
 
 $liquibaseCmd = Join-Path $Context.OrcRoot "commands\liquibase.ps1"
 
