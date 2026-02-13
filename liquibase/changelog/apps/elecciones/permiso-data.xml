@@ -5,8 +5,8 @@
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.colaborador.view"/>
-            <column name="nombre" value="View"/>
-            <column name="descripcion" value="Permiso View"/>
+            <column name="nombre" value="Elecciones Colaborador View"/>
+            <column name="descripcion" value="Permiso Elecciones Colaborador View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -26,37 +26,12 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-elecciones.colaborador.create" author="orco">
-        <insert tableName="permiso">
-            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="elecciones.colaborador.create"/>
-            <column name="nombre" value="Create"/>
-            <column name="descripcion" value="Permiso Create"/>
-
-            <!-- BaseModel -->
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-
-            <!-- ConstantModel -->
-            <column name="activo" valueBoolean="true"/>
-
-        </insert>
-        <rollback>
-            <delete tableName="permiso">
-                <where>codigo = 'elecciones.colaborador.create'</where>
-            </delete>
-        </rollback>
-    </changeSet>
-
     <changeSet id="permiso-elecciones.colaborador.update" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.colaborador.update"/>
-            <column name="nombre" value="Update"/>
-            <column name="descripcion" value="Permiso Update"/>
+            <column name="nombre" value="Elecciones Colaborador Update"/>
+            <column name="descripcion" value="Permiso Elecciones Colaborador Update"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -76,12 +51,37 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="permiso-elecciones.colaborador.create" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="elecciones.colaborador.create"/>
+            <column name="nombre" value="Elecciones Colaborador Create"/>
+            <column name="descripcion" value="Permiso Elecciones Colaborador Create"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'elecciones.colaborador.create'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
     <changeSet id="permiso-elecciones.colaborador.destroy" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.colaborador.destroy"/>
-            <column name="nombre" value="Destroy"/>
-            <column name="descripcion" value="Permiso Destroy"/>
+            <column name="nombre" value="Elecciones Colaborador Destroy"/>
+            <column name="descripcion" value="Permiso Elecciones Colaborador Destroy"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -105,8 +105,8 @@
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.campana.view"/>
-            <column name="nombre" value="View"/>
-            <column name="descripcion" value="Permiso View"/>
+            <column name="nombre" value="Elecciones Campana View"/>
+            <column name="descripcion" value="Permiso Elecciones Campana View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -126,37 +126,12 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-elecciones.campana.create" author="orco">
-        <insert tableName="permiso">
-            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="elecciones.campana.create"/>
-            <column name="nombre" value="Create"/>
-            <column name="descripcion" value="Permiso Create"/>
-
-            <!-- BaseModel -->
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-
-            <!-- ConstantModel -->
-            <column name="activo" valueBoolean="true"/>
-
-        </insert>
-        <rollback>
-            <delete tableName="permiso">
-                <where>codigo = 'elecciones.campana.create'</where>
-            </delete>
-        </rollback>
-    </changeSet>
-
     <changeSet id="permiso-elecciones.campana.update" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.campana.update"/>
-            <column name="nombre" value="Update"/>
-            <column name="descripcion" value="Permiso Update"/>
+            <column name="nombre" value="Elecciones Campana Update"/>
+            <column name="descripcion" value="Permiso Elecciones Campana Update"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -176,12 +151,37 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="permiso-elecciones.campana.create" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="elecciones.campana.create"/>
+            <column name="nombre" value="Elecciones Campana Create"/>
+            <column name="descripcion" value="Permiso Elecciones Campana Create"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'elecciones.campana.create'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
     <changeSet id="permiso-elecciones.campana.destroy" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.campana.destroy"/>
-            <column name="nombre" value="Destroy"/>
-            <column name="descripcion" value="Permiso Destroy"/>
+            <column name="nombre" value="Elecciones Campana Destroy"/>
+            <column name="descripcion" value="Permiso Elecciones Campana Destroy"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -205,8 +205,8 @@
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.salida.view"/>
-            <column name="nombre" value="View"/>
-            <column name="descripcion" value="Permiso View"/>
+            <column name="nombre" value="Elecciones Salida View"/>
+            <column name="descripcion" value="Permiso Elecciones Salida View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -226,37 +226,12 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-elecciones.salida.create" author="orco">
-        <insert tableName="permiso">
-            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="elecciones.salida.create"/>
-            <column name="nombre" value="Create"/>
-            <column name="descripcion" value="Permiso Create"/>
-
-            <!-- BaseModel -->
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-
-            <!-- ConstantModel -->
-            <column name="activo" valueBoolean="true"/>
-
-        </insert>
-        <rollback>
-            <delete tableName="permiso">
-                <where>codigo = 'elecciones.salida.create'</where>
-            </delete>
-        </rollback>
-    </changeSet>
-
     <changeSet id="permiso-elecciones.salida.update" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.salida.update"/>
-            <column name="nombre" value="Update"/>
-            <column name="descripcion" value="Permiso Update"/>
+            <column name="nombre" value="Elecciones Salida Update"/>
+            <column name="descripcion" value="Permiso Elecciones Salida Update"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -276,12 +251,37 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="permiso-elecciones.salida.create" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="elecciones.salida.create"/>
+            <column name="nombre" value="Elecciones Salida Create"/>
+            <column name="descripcion" value="Permiso Elecciones Salida Create"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'elecciones.salida.create'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
     <changeSet id="permiso-elecciones.salida.destroy" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.salida.destroy"/>
-            <column name="nombre" value="Destroy"/>
-            <column name="descripcion" value="Permiso Destroy"/>
+            <column name="nombre" value="Elecciones Salida Destroy"/>
+            <column name="descripcion" value="Permiso Elecciones Salida Destroy"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -301,12 +301,12 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-elecciones.estado_salida.view" author="orco">
+    <changeSet id="permiso-elecciones.estado-salida.view" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="elecciones.estado_salida.view"/>
-            <column name="nombre" value="Estado Salida View"/>
-            <column name="descripcion" value="Permiso Estado Salida View"/>
+            <column name="codigo" value="elecciones.estado-salida.view"/>
+            <column name="nombre" value="Elecciones Estado-Salida View"/>
+            <column name="descripcion" value="Permiso Elecciones Estado-Salida View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -321,7 +321,7 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'elecciones.estado_salida.view'</where>
+                <where>codigo = 'elecciones.estado-salida.view'</where>
             </delete>
         </rollback>
     </changeSet>
@@ -330,8 +330,8 @@
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.seccional.view"/>
-            <column name="nombre" value="View"/>
-            <column name="descripcion" value="Permiso View"/>
+            <column name="nombre" value="Elecciones Seccional View"/>
+            <column name="descripcion" value="Permiso Elecciones Seccional View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -351,37 +351,12 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-elecciones.seccional.create" author="orco">
-        <insert tableName="permiso">
-            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="elecciones.seccional.create"/>
-            <column name="nombre" value="Create"/>
-            <column name="descripcion" value="Permiso Create"/>
-
-            <!-- BaseModel -->
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-
-            <!-- ConstantModel -->
-            <column name="activo" valueBoolean="true"/>
-
-        </insert>
-        <rollback>
-            <delete tableName="permiso">
-                <where>codigo = 'elecciones.seccional.create'</where>
-            </delete>
-        </rollback>
-    </changeSet>
-
     <changeSet id="permiso-elecciones.seccional.update" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.seccional.update"/>
-            <column name="nombre" value="Update"/>
-            <column name="descripcion" value="Permiso Update"/>
+            <column name="nombre" value="Elecciones Seccional Update"/>
+            <column name="descripcion" value="Permiso Elecciones Seccional Update"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -401,12 +376,37 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="permiso-elecciones.seccional.create" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="elecciones.seccional.create"/>
+            <column name="nombre" value="Elecciones Seccional Create"/>
+            <column name="descripcion" value="Permiso Elecciones Seccional Create"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'elecciones.seccional.create'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
     <changeSet id="permiso-elecciones.seccional.destroy" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.seccional.destroy"/>
-            <column name="nombre" value="Destroy"/>
-            <column name="descripcion" value="Permiso Destroy"/>
+            <column name="nombre" value="Elecciones Seccional Destroy"/>
+            <column name="descripcion" value="Permiso Elecciones Seccional Destroy"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -430,8 +430,8 @@
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.visita.view"/>
-            <column name="nombre" value="View"/>
-            <column name="descripcion" value="Permiso View"/>
+            <column name="nombre" value="Elecciones Visita View"/>
+            <column name="descripcion" value="Permiso Elecciones Visita View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -451,37 +451,12 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-elecciones.visita.create" author="orco">
-        <insert tableName="permiso">
-            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="elecciones.visita.create"/>
-            <column name="nombre" value="Create"/>
-            <column name="descripcion" value="Permiso Create"/>
-
-            <!-- BaseModel -->
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-
-            <!-- ConstantModel -->
-            <column name="activo" valueBoolean="true"/>
-
-        </insert>
-        <rollback>
-            <delete tableName="permiso">
-                <where>codigo = 'elecciones.visita.create'</where>
-            </delete>
-        </rollback>
-    </changeSet>
-
     <changeSet id="permiso-elecciones.visita.update" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.visita.update"/>
-            <column name="nombre" value="Update"/>
-            <column name="descripcion" value="Permiso Update"/>
+            <column name="nombre" value="Elecciones Visita Update"/>
+            <column name="descripcion" value="Permiso Elecciones Visita Update"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -501,12 +476,37 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="permiso-elecciones.visita.create" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="elecciones.visita.create"/>
+            <column name="nombre" value="Elecciones Visita Create"/>
+            <column name="descripcion" value="Permiso Elecciones Visita Create"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'elecciones.visita.create'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
     <changeSet id="permiso-elecciones.visita.destroy" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.visita.destroy"/>
-            <column name="nombre" value="Destroy"/>
-            <column name="descripcion" value="Permiso Destroy"/>
+            <column name="nombre" value="Elecciones Visita Destroy"/>
+            <column name="descripcion" value="Permiso Elecciones Visita Destroy"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -526,12 +526,12 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-elecciones.resultado_visita.view" author="orco">
+    <changeSet id="permiso-elecciones.resultado-visita.view" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="elecciones.resultado_visita.view"/>
-            <column name="nombre" value="Resultado Visita View"/>
-            <column name="descripcion" value="Permiso Resultado Visita View"/>
+            <column name="codigo" value="elecciones.resultado-visita.view"/>
+            <column name="nombre" value="Elecciones Resultado-Visita View"/>
+            <column name="descripcion" value="Permiso Elecciones Resultado-Visita View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -546,7 +546,7 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'elecciones.resultado_visita.view'</where>
+                <where>codigo = 'elecciones.resultado-visita.view'</where>
             </delete>
         </rollback>
     </changeSet>
@@ -555,8 +555,8 @@
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.votante.view"/>
-            <column name="nombre" value="View"/>
-            <column name="descripcion" value="Permiso View"/>
+            <column name="nombre" value="Elecciones Votante View"/>
+            <column name="descripcion" value="Permiso Elecciones Votante View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -576,37 +576,12 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-elecciones.votante.create" author="orco">
-        <insert tableName="permiso">
-            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="elecciones.votante.create"/>
-            <column name="nombre" value="Create"/>
-            <column name="descripcion" value="Permiso Create"/>
-
-            <!-- BaseModel -->
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-
-            <!-- ConstantModel -->
-            <column name="activo" valueBoolean="true"/>
-
-        </insert>
-        <rollback>
-            <delete tableName="permiso">
-                <where>codigo = 'elecciones.votante.create'</where>
-            </delete>
-        </rollback>
-    </changeSet>
-
     <changeSet id="permiso-elecciones.votante.update" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.votante.update"/>
-            <column name="nombre" value="Update"/>
-            <column name="descripcion" value="Permiso Update"/>
+            <column name="nombre" value="Elecciones Votante Update"/>
+            <column name="descripcion" value="Permiso Elecciones Votante Update"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -626,12 +601,37 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="permiso-elecciones.votante.create" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="elecciones.votante.create"/>
+            <column name="nombre" value="Elecciones Votante Create"/>
+            <column name="descripcion" value="Permiso Elecciones Votante Create"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'elecciones.votante.create'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
     <changeSet id="permiso-elecciones.votante.destroy" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
             <column name="codigo" value="elecciones.votante.destroy"/>
-            <column name="nombre" value="Destroy"/>
-            <column name="descripcion" value="Permiso Destroy"/>
+            <column name="nombre" value="Elecciones Votante Destroy"/>
+            <column name="descripcion" value="Permiso Elecciones Votante Destroy"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>

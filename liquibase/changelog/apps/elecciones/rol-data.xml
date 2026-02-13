@@ -4,9 +4,9 @@
     <changeSet id="rol-elecciones.colaborador" author="orco">
         <insert tableName="rol">
             <column name="id" valueComputed="nextval('rol_id_seq')"/>
-            <column name="codigo" value="elecciones.colaborador"/>
-            <column name="nombre" value="Colaborador"/>
-            <column name="descripcion" value="Rol Colaborador"/>
+            <column name="codigo" value="elecciones.COLABORADOR"/>
+            <column name="nombre" value="Elecciones Colaborador"/>
+            <column name="descripcion" value="Rol Elecciones Colaborador"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -21,17 +21,17 @@
         </insert>
         <rollback>
             <delete tableName="rol">
-                <where>codigo = 'elecciones.colaborador'</where>
+                <where>codigo = 'elecciones.COLABORADOR'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="rol-elecciones.jefe de campaña" author="orco">
+    <changeSet id="rol-elecciones.jefe_campana" author="orco">
         <insert tableName="rol">
             <column name="id" valueComputed="nextval('rol_id_seq')"/>
-            <column name="codigo" value="elecciones.jefe de campaña"/>
-            <column name="nombre" value="Jefe Campana"/>
-            <column name="descripcion" value="Rol Jefe Campana"/>
+            <column name="codigo" value="elecciones.JEFE_CAMPANA"/>
+            <column name="nombre" value="Elecciones Jefe Campana"/>
+            <column name="descripcion" value="Rol Elecciones Jefe Campana"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -46,7 +46,7 @@
         </insert>
         <rollback>
             <delete tableName="rol">
-                <where>codigo = 'elecciones.jefe de campaña'</where>
+                <where>codigo = 'elecciones.JEFE_CAMPANA'</where>
             </delete>
         </rollback>
     </changeSet>
