@@ -43,7 +43,18 @@ class User(models.Model):
             roles.append(user_rol.rol.nombre)
         return roles
     
+    def is_owner(self):
+        return "Owner" in self.roles
+    
     @property
     def permisos(self):
+        from django.apps import apps
+        # Caso especial técnico
+        if self.is_owner():
+            Permiso = apps.get_model("auth", "Permiso")
+            return Permiso.objects.values_list("codigo", flat=True)
+
         return self.user_roles.values_list(
-            "rol__permisos__permiso",flat=True)
+            "rol__permisos__permiso",
+            flat=True
+        )

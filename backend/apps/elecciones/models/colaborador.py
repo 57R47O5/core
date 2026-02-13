@@ -13,7 +13,9 @@ class Colaborador(BaseModel):
         db_table="colaborador"
 
     constraints = [
-        models.UniqueConstraint(fields=["persona", "campana"])
+        models.UniqueConstraint(
+            fields=["persona", "campana"],
+            name="uq_colaborador_persona_campana")
         ]
 
     def __str__(self):

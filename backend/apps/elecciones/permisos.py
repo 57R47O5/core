@@ -1,5 +1,3 @@
-from framework.permisos import PermisoGroup
-from framework.models.basemodels import Constant
 from apps.auth.models.permiso import PermisoManager
 from apps.elecciones.rest_controllers.colaborador_rest_controller import PermisosColaborador
 from apps.elecciones.rest_controllers.campana_rest_controller import PermisosCampana

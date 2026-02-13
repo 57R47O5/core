@@ -18,7 +18,7 @@ class PermisosSalida(PermisoGroup):
     ESTADO_SALIDA_VIEW=Constant("elecciones.estado_salida.view")
 
 class SalidaRestController(ModelRestController):
-    label = "Salida"
+    label = "Salidas"
     model = Salida
     url = "salida"
     create_serializer = SalidaCreateSerializer

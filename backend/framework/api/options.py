@@ -1,7 +1,7 @@
 from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from framework.menu.menu import Node
+from framework.permisos import require_perm
 
 class BaseOptionsAPIView(APIView):
     """
@@ -18,7 +18,7 @@ class BaseOptionsAPIView(APIView):
     order_by = None
     filtro = None
     url = ""
-    permisos = []
+    view_permission = []
 
     def _get_fields(self):
         """Normaliza: devuelve una lista siempre."""
@@ -32,6 +32,7 @@ class BaseOptionsAPIView(APIView):
         """Devuelve el campo Django del modelo."""
         return self.model._meta.get_field(name)
 
+    @require_perm(view_permission)
     def get_queryset(self):
         assert self.model is not None, (
             f"{self.__class__.__name__} debe definir 'model'"
@@ -78,6 +79,7 @@ class BaseOptionsAPIView(APIView):
     def get_desc(self, obj):
         return getattr(obj, self.desc_field) if self.desc_field else str(obj)
 
+    @require_perm(view_permission)
     def get(self, request):
 
         fields = self._get_fields()

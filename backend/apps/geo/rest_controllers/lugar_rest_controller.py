@@ -1,13 +1,19 @@
 
-from framework.permisos import P
+from framework.permisos import PermisoGroup
+from framework.models.basemodels import Constant
 
 from apps.geo.models.lugar import Lugar
-from apps.geo.permisos import GeoPermisos
 from apps.geo.serializers.lugar_serializer import (
     LugarUpdateSerializer,
     LugarRetrieveSerializer,
     LugarInputSerializer)
 from controllers.base.base_rest_controller import ModelRestController
+
+class PermisosLugar(PermisoGroup):
+    VIEW=Constant("geo.lugar.view")
+    CREATE=Constant("geo.lugar.create")
+    UPDATE=Constant("geo.lugar.update")
+    DESTROY=Constant("geo.lugar.destroy")
 
 class LugarRestController(ModelRestController):
     label = "Lugar"
@@ -16,11 +22,5 @@ class LugarRestController(ModelRestController):
     create_serializer = LugarInputSerializer
     update_serializer = LugarUpdateSerializer
     retrieve_serializer = LugarRetrieveSerializer 
-
-    create_permission = P(GeoPermisos.LUGAR_CREATE)
-    update_permission = P(GeoPermisos.LUGAR_UPDATE)
-    destroy_permission = P(GeoPermisos.LUGAR_DESTROY)
-    view_permission = P(GeoPermisos.LUGAR_VIEW)
     
-    permisos = create_permission and update_permission \
-        and destroy_permission and view_permission
+    permisos = PermisosLugar

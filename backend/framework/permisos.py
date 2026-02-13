@@ -30,7 +30,7 @@ class AtomicPerm(Perm):
         self.code = code
 
     def evaluate(self, permisos: set[Constant]) -> bool:
-        return self.code in [permiso.codigo for permiso in  permisos]
+        return self.code in permisos
 
     def collect(self) -> set["AtomicPerm"]:
         return {self}
