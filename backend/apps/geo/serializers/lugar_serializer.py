@@ -1,15 +1,25 @@
 import json
-from django.contrib.gis.geos import GEOSGeometry, Point
-from django.db.transaction import atomic
+from decimal import Decimal
 
+from django.db.transaction import atomic
 from rest_framework import serializers
+
 from apps.geo.models import Lugar, GeoNivel
+from apps.geo.framework.geometries import Geometry, Point
+
+
+# =====================================================
+# Base Output Serializer
+# =====================================================
 
 class LugarSerializer(serializers.ModelSerializer):
     nivel = serializers.SlugRelatedField(
         slug_field="code",
         queryset=GeoNivel.objects.all()
     )
+
+    geometry = serializers.SerializerMethodField()
+    centroide = serializers.SerializerMethodField()
 
     class Meta:
         model = Lugar
@@ -22,9 +32,23 @@ class LugarSerializer(serializers.ModelSerializer):
             "nivel",
             "padre",
             "activo",
+            "geometry",
+            "centroide",
             "created_at",
             "updated_at",
         ]
+
+    def get_geometry(self, obj: Lugar):
+        return obj.geometry_data
+
+    def get_centroide(self, obj: Lugar):
+        if obj.centroide_lat is None or obj.centroide_lon is None:
+            return None
+
+        return {
+            "lat": float(obj.centroide_lat),
+            "lon": float(obj.centroide_lon),
+        }
 
 class LugarInputSerializer(serializers.Serializer):
     codigo = serializers.CharField(max_length=50)
@@ -43,24 +67,26 @@ class LugarInputSerializer(serializers.Serializer):
         allow_null=True
     )
 
-    geom = serializers.JSONField()
+    geometry = serializers.JSONField(required=False, allow_null=True)
 
     @atomic
     def create(self, validated_data):
-        geom_json = validated_data.pop("geom")
+        geometry_json = validated_data.pop("geometry", None)
 
-        geom = GEOSGeometry(
-            json.dumps(geom_json),
-            srid=4326
-        )
+        instancia = Lugar.objects.create(**validated_data)
 
-        centroide = geom.centroid
+        # ------------------------------------------------
+        # Asignar geometry usando propiedad de dominio
+        # ------------------------------------------------
+        if geometry_json:
+            geometry = Geometry.from_geojson(geometry_json)
+            instancia.geometry = geometry
 
-        instancia = Lugar.objects.create(
-            geom=geom,
-            centroide=centroide,
-            **validated_data
-        )
+            # calcular centroide desde dominio
+            centroide = geometry.centroid()
+            instancia.centroide = centroide
+
+            instancia.save()
 
         return instancia
 
@@ -74,21 +100,7 @@ class LugarUpdateSerializer(serializers.ModelSerializer):
         ]
 
 class LugarRetrieveSerializer(LugarSerializer):
-    geom = serializers.SerializerMethodField()
-    centroide = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Lugar
-        fields = LugarSerializer.Meta.fields + [
-            "geom",
-            "centroide",
-        ]
-
-    def get_geom(self, obj:Lugar):
-        return json.loads(obj.geom.geojson) if obj.geom else None
-
-    def get_centroide(self, obj:Lugar):
-        return json.loads(obj.centroide.geojson) if obj.centroide else None
+    pass
 
 class PuntoInputSerializer(LugarInputSerializer):
     lat = serializers.FloatField()
@@ -99,15 +111,17 @@ class PuntoInputSerializer(LugarInputSerializer):
         lat = validated_data.pop("lat")
         lon = validated_data.pop("lon")
 
-        point = Point(lon, lat, srid=4326)
+        validated_data.pop("geometry", None)
 
-        validated_data["geom"] = point
-        validated_data["nivel"] = GeoNivel.objects.get(code="PUNTO")
+        nivel_punto = GeoNivel.objects.get(code="PUNTO")
+        validated_data["nivel"] = nivel_punto
 
-        instancia = Lugar.objects.create(
-            geom=point,
-            centroide=point,
-            **validated_data
-        )
+        instancia = Lugar.objects.create(**validated_data)
+
+        point = Point(lat=lat, lon=lon)
+
+        instancia.geometry = point
+        instancia.centroide = point
+        instancia.save()
 
         return instancia

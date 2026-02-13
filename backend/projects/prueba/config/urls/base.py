@@ -4,6 +4,7 @@ Base URL configuration.
 Routes are provided by ORCO-managed apps.
 """
 
+import traceback
 from django.urls import include, path
 from config.settings.orc_apps import ORC_APPS
 
@@ -14,5 +15,5 @@ for app in ORC_APPS:
         urlpatterns.append(
             path("", include(f"{app}.urls"))
         )
-    except ModuleNotFoundError:
-        pass
+    except ModuleNotFoundError as error:
+        traceback.print_exc()

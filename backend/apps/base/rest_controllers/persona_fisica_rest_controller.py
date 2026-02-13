@@ -3,7 +3,6 @@ from framework.permisos import PermisoGroup
 from framework.models.basemodels import Constant
 
 from apps.base.models.persona_fisica import PersonaFisica
-from apps.base.permisos import PermisosPersonaFisica
 from apps.base.serializers.persona_fisica_serializer import (
     PersonaFisicaUpdateSerializer,
     PersonaFisicaRetrieveSerializer,

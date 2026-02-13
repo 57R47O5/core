@@ -132,6 +132,9 @@ databaseChangeLog:
       file: ../../apps/geo/geo_nivel-data.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/geo/permiso-data.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/elecciones/ciclo_electoral-data.xml
       relativeToChangelogFile: true
   - include:

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="permiso-geo.lugar.create" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="geo.lugar.create"/>
+            <column name="nombre" value="Geo Lugar Create"/>
+            <column name="descripcion" value="Permiso Geo Lugar Create"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'geo.lugar.create'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-geo.lugar.destroy" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="geo.lugar.destroy"/>
+            <column name="nombre" value="Geo Lugar Destroy"/>
+            <column name="descripcion" value="Permiso Geo Lugar Destroy"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'geo.lugar.destroy'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-geo.lugar.update" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="geo.lugar.update"/>
+            <column name="nombre" value="Geo Lugar Update"/>
+            <column name="descripcion" value="Permiso Geo Lugar Update"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'geo.lugar.update'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-geo.lugar.view" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="geo.lugar.view"/>
+            <column name="nombre" value="Geo Lugar View"/>
+            <column name="descripcion" value="Permiso Geo Lugar View"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'geo.lugar.view'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -21,7 +21,9 @@ class Salida(BaseModel):
         related_name="salidas"
     )
     fecha = models.DateField(auto_created=True)
-    estado = models.ForeignKey(EstadoSalida, default=EstadoSalidaManager.EN_CURSO)
+    estado = models.ForeignKey(EstadoSalida, 
+        on_delete=models.PROTECT,
+        default=EstadoSalidaManager.EN_CURSO)
 
     class Meta:
         managed = False
