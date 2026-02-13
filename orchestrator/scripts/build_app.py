@@ -160,7 +160,6 @@ def extract_permiso_group_constants(class_node: ast.ClassDef) -> list[dict]:
 
     return permisos
 
-
 def discover_app_roles(app_name: str) -> list[dict]:
     path = APPS_DIR / app_name / "roles.py"
 
@@ -248,7 +247,6 @@ def generate_import_statements(route_modules: list[str]) -> str:
         lines.append(f'import {module} from "./routes/{module}";')
     return "\n".join(lines)
 
-
 def generate_spread_routes(route_modules: list[str]) -> str:
     lines = []
     for module in route_modules:
@@ -258,51 +256,6 @@ def generate_spread_routes(route_modules: list[str]) -> str:
 def write_routes_file(app_name: str, content: str) -> None:
     target_path = FRONTEND_DIR / "src" / "apps" / app_name / f"{app_name}Routes.js"
     target_path.write_text(content, encoding="utf-8")
-
-def build_app_rol_permissions(app_name: str, roles: list):
-
-    if not roles:
-        return
-
-    output_dir = LIQUIBASE_CHANGELOG_APPS / app_name
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    change_sets = []
-
-    for rol in roles:
-        for permiso in rol.permisos:
-
-            change_sets.append(f"""
-        <insert tableName="rol_permiso">
-            <column name="rol_id"
-                    valueComputed="(SELECT id FROM rol WHERE code='{rol.code}')"/>
-            <column name="permiso_id"
-                    valueComputed="(SELECT id FROM permiso WHERE code='{permiso.code}')"/>
-        </insert>
-            """)
-
-    if not change_sets:
-        return
-
-    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="
-        http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
-
-    <changeSet id="{app_name}-rol-permiso-data" author="orc">
-        {''.join(change_sets)}
-    </changeSet>
-
-</databaseChangeLog>
-"""
-
-    data_file = output_dir / "rol_permiso-data.xml"
-    data_file.write_text(xml.strip() + "\n", encoding="utf-8")
-
-    print(f"[GEN] data   -> {data_file}")
 
 def build_resources_from_constants(constants: list[dict]) -> dict[str, ResourceDefinition]:
     '''
@@ -619,8 +572,6 @@ def build_permission_index(all_permission_constants):
         index.setdefault(resource, set()).add(action)
 
     return index
-
-
 
 def infer_resource_from_group(group_name: str) -> str:
     """
