@@ -1,12 +1,13 @@
 
-from rest_framework import routers
+from django.urls import path
 from apps.elecciones.rest_controllers.resultado_visita_rest_controller import (
-    ResultadoVisitaRestController
+    ResultadoVisitaOptionsView as Controller
 )
 
-router = routers.SimpleRouter()
-router.register(r'resultado-visita', ResultadoVisitaRestController, 'resultado-visita')
-
-urlpatterns = []
-
-urlpatterns += router.urls
+urlpatterns = [
+    path(
+        Controller.route(),
+        Controller.as_view(),
+        name=Controller.name()
+    ),
+]
