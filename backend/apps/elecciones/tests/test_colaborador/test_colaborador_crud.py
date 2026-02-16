@@ -1,63 +1,29 @@
 import json
-from django.urls import reverse
+from datetime import date
 from rest_framework import status
-from rest_framework.test import APITestCase
-
-from apps.elecciones.models.colaborador import Colaborador
+from apps.base.models.persona_fisica import PersonaFisica, Persona
 
 
-class TestColaboradorCRUD(APITestCase):
+URL = "/colaborador/"
+DATOS_CREACION={
+    'nombres': 'Pedro Juan', 
+    'apellidos': 'Caballero',
+    'fecha_nacimiento': date.today().isoformat()
+    }
 
-    def setUp(self):
-        self.list_url = reverse('elecciones:colaborador-list')
-        self.payload = {
-            "name": "Test Colaborador"
-        }
+def test_create_colaborador(auth_client):
+    salida=auth_client.post(URL, DATOS_CREACION)
+    assert salida.status_code == status.HTTP_201_CREATED
+    assert  creacion_persona_fisica_exitosa(salida)
+    instancia = PersonaFisica.objects.get(pk=salida.data["id"])
+    return instancia
 
-    def test_create(self):
-        response = self.client.post(
-            self.list_url,
-            data=json.dumps(self.payload),
-            content_type="application/json"
-        )
-        assert response.status_code == status.HTTP_201_CREATED
-        assert Colaborador.objects.count() == 1
-
-    def test_list(self):
-        Colaborador.objects.create(name="Item 1")
-        Colaborador.objects.create(name="Item 2")
-
-        response = self.client.get(self.list_url)
-        assert response.status_code == status.HTTP_200_OK
-        assert len(response.data) == 2
-
-    def test_update(self):
-        instance = Colaborador.objects.create(name="Old Name")
-
-        detail_url = reverse(
-            'elecciones:colaborador-detail',
-            args=[instance.id]
-        )
-
-        response = self.client.put(
-            detail_url,
-            data=json.dumps({"name": "Updated Name"}),
-            content_type="application/json"
-        )
-
-        assert response.status_code == status.HTTP_200_OK
-        instance.refresh_from_db()
-        assert instance.name == "Updated Name"
-
-    def test_delete(self):
-        instance = Colaborador.objects.create(name="To delete")
-
-        detail_url = reverse(
-            'elecciones:colaborador-detail',
-            args=[instance.id]
-        )
-
-        response = self.client.delete(detail_url)
-
-        assert response.status_code == status.HTTP_204_NO_CONTENT
-        assert Colaborador.objects.count() == 0
+def creacion_persona_fisica_exitosa(salida):
+    assert salida.data["nombres"] == DATOS_CREACION["nombres"]
+    assert salida.data["apellidos"] == DATOS_CREACION["apellidos"]
+    assert salida.data["fecha_nacimiento"] == DATOS_CREACION["fecha_nacimiento"]
+    id = salida.data["id"]
+    persona_id = salida.data["persona_id"]
+    assert Persona.objects.filter(pk=persona_id).exists()
+    assert PersonaFisica.objects.filter(pk=id).exists()
+    return True
