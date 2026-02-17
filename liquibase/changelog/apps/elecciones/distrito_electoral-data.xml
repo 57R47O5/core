@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="distrito_electoral-asuncion" author="orco">
+        <insert tableName="distrito_electoral">
+            <column name="id" valueComputed="nextval('distrito_electoral_id_seq')"/>
+            <column name="codigo" value="Asuncion"/>
+            <column name="nombre" value="Asuncion"/>
+            <column name="descripcion" value="DistritoElectoral Asuncion"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="distrito_electoral">
+                <where>codigo = 'Asuncion'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="distrito_electoral-san lorenzo" author="orco">
+        <insert tableName="distrito_electoral">
+            <column name="id" valueComputed="nextval('distrito_electoral_id_seq')"/>
+            <column name="codigo" value="San Lorenzo"/>
+            <column name="nombre" value="San Lorenzo"/>
+            <column name="descripcion" value="DistritoElectoral San Lorenzo"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="distrito_electoral">
+                <where>codigo = 'San Lorenzo'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="distrito_electoral-luque" author="orco">
+        <insert tableName="distrito_electoral">
+            <column name="id" valueComputed="nextval('distrito_electoral_id_seq')"/>
+            <column name="codigo" value="Luque"/>
+            <column name="nombre" value="Luque"/>
+            <column name="descripcion" value="DistritoElectoral Luque"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="distrito_electoral">
+                <where>codigo = 'Luque'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
