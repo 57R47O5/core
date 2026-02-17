@@ -20,4 +20,4 @@ class LugarDistrito(BaseModel):
 
     class Meta:
         managed = False
-        db_column = "lugar_distrito"
+        db_table = "lugar_distrito"
