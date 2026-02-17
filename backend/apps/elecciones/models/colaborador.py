@@ -4,9 +4,10 @@ from apps.base.models.persona_fisica import PersonaFisica
 from apps.elecciones.models.campana import Campana
 
 class Colaborador(BaseModel):
-    persona = models.ForeignKey(PersonaFisica, on_delete=models.CASCADE)
+    persona = models.ForeignKey(PersonaFisica, 
+        on_delete=models.CASCADE, db_column='persona')
     campana = models.ForeignKey(Campana, on_delete=models.CASCADE, 
-        related_name='colaboradores', db_index=True)
+        related_name='colaboradores', db_column='campana')
 
     class Meta:
         managed=False
