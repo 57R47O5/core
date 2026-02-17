@@ -83,7 +83,6 @@ if ($frontendPath -and (Test-Path $frontendPath)) {
 
     Write-Host "Levantando frontend"
 
-    $npmCmd = "npm.cmd"
 
     Push-Location $frontendBaseDir
 
@@ -107,10 +106,12 @@ else {
 
 if ($backendPath -and (Test-Path $backendPath)) {
 
-    $installedApps = @("base")  # mínimo
+    <#
+    $installedApps = @("base")
     Initialize-FrontendRuntimeRoutes `
     -FrontendBaseDir $frontendBaseDir `
     -Apps $installedApps
+    #>
 
     $venvPath    = Join-Path $backendPath ".venv"
     $pythonExe   = Join-Path $venvPath "Scripts\python.exe"
