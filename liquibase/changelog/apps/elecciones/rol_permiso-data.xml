@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.salida.destroy" author="orco">
+    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.visita.update" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
@@ -9,7 +9,7 @@
                 valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.destroy')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.visita.update')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -23,7 +23,7 @@
                 <where>
                     rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.destroy')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.visita.update')
                 </where>
             </delete>
         </rollback>
@@ -85,7 +85,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.salida.view" author="orco">
+    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.salida.destroy" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
@@ -93,7 +93,7 @@
                 valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.view')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.destroy')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -107,119 +107,7 @@
                 <where>
                     rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.view')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.visita.view" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.visita.view')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.visita.view')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.salida.create" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.create')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.create')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.visita.update" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.visita.update')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.visita.update')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.votante.create" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.votante.create')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.votante.create')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.destroy')
                 </where>
             </delete>
         </rollback>
@@ -253,15 +141,15 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.colaborador.create" author="orco">
+    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.salida.create" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
             <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.colaborador.create')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.create')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -273,9 +161,93 @@
         <rollback>
             <delete tableName="rol_permiso">
                 <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.colaborador.create')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.create')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.votante.create" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.votante.create')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.votante.create')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.visita.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.visita.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.visita.view')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.colaborador-elecciones.salida.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.COLABORADOR')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.view')
                 </where>
             </delete>
         </rollback>
@@ -309,7 +281,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.seccional.create" author="orco">
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.colaborador.view" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
@@ -317,7 +289,7 @@
                 valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.create')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.colaborador.view')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -331,7 +303,7 @@
                 <where>
                     rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.create')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.colaborador.view')
                 </where>
             </delete>
         </rollback>
@@ -360,6 +332,62 @@
                     rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
                     AND
                     permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.visita.destroy')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.votante.destroy" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.votante.destroy')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.votante.destroy')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.campana.create" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.campana.create')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.campana.create')
                 </where>
             </delete>
         </rollback>
@@ -421,7 +449,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.votante.create" author="orco">
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.seccional.create" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
@@ -429,7 +457,7 @@
                 valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.votante.create')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.create')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -443,203 +471,7 @@
                 <where>
                     rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.votante.create')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.campana.create" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.campana.create')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.campana.create')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.seccional.destroy" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.destroy')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.destroy')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.votante.destroy" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.votante.destroy')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.votante.destroy')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.campana.destroy" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.campana.destroy')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.campana.destroy')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.salida.update" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.update')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.update')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.salida.view" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.view')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.view')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.salida.create" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.create')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.create')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.create')
                 </where>
             </delete>
         </rollback>
@@ -673,6 +505,90 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.seccional.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.view')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.votante.update" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.votante.update')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.votante.update')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.campana.destroy" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.campana.destroy')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.campana.destroy')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
     <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.colaborador.update" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
@@ -696,6 +612,118 @@
                     rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
                     AND
                     permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.colaborador.update')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.salida.create" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.create')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.create')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.seccional.destroy" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.destroy')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.destroy')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.salida.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.view')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.campana.update" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.campana.update')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.campana.update')
                 </where>
             </delete>
         </rollback>
@@ -757,7 +785,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.votante.update" author="orco">
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.salida.update" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
@@ -765,7 +793,7 @@
                 valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.votante.update')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.salida.update')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -779,13 +807,13 @@
                 <where>
                     rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.votante.update')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.salida.update')
                 </where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.campana.update" author="orco">
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.colaborador.create" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
@@ -793,7 +821,7 @@
                 valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.campana.update')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.colaborador.create')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -807,63 +835,7 @@
                 <where>
                     rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.campana.update')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.visita.view" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.visita.view')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.visita.view')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.colaborador.view" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.colaborador.view')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.colaborador.view')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.colaborador.create')
                 </where>
             </delete>
         </rollback>
@@ -897,7 +869,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.seccional.view" author="orco">
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.votante.create" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
@@ -905,7 +877,7 @@
                 valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.view')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.votante.create')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -919,7 +891,35 @@
                 <where>
                     rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.seccional.view')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.votante.create')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-elecciones.jefe_campana-elecciones.visita.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'elecciones.visita.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'elecciones.JEFE_CAMPANA')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'elecciones.visita.view')
                 </where>
             </delete>
         </rollback>
