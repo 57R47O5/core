@@ -81,7 +81,16 @@ databaseChangeLog:
       file: ../../apps/elecciones/colaborador-hist.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/elecciones/distrito_electoral.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/elecciones/estado_salida.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/lugar_distrito.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/lugar_distrito-hist.xml
       relativeToChangelogFile: true
   - include:
       file: ../../apps/elecciones/resultado_visita.xml
@@ -136,6 +145,9 @@ databaseChangeLog:
       relativeToChangelogFile: true
   - include:
       file: ../../apps/elecciones/ciclo_electoral-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/distrito_electoral-data.xml
       relativeToChangelogFile: true
   - include:
       file: ../../apps/elecciones/estado_salida-data.xml
