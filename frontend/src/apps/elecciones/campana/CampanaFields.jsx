@@ -10,6 +10,7 @@ export const CampanaFields = {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),
+    endpoint:"persona-fisica",
     render: (props) => <SelectFormik {...props} />,
   },
 
@@ -28,6 +29,7 @@ export const CampanaFields = {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),
+    endpoint: "distrito-electoral/options",
     render: (props) => <SelectFormik {...props} />,
   },
 
@@ -37,6 +39,7 @@ export const CampanaFields = {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),
+    endpoint: "ciclo-electoral/options",
     render: (props) => <SelectFormik {...props} />,
   },
 

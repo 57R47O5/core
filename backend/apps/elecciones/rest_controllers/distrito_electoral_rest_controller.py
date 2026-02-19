@@ -5,6 +5,6 @@ from apps.elecciones.models.distrito_electoral import DistritoElectoral
 class DistritoElectoralOptionsView(BaseOptionsAPIView):
     model = DistritoElectoral
     url='distrito-electoral'
-    desc_field='Descripcion'
+    desc_field='descripcion'
     permisos=[]
 

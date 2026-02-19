@@ -13,7 +13,7 @@ class Campana(BaseModel):
         on_delete=models.PROTECT, db_column="candidato",
         related_name='campaigns')
     cargo = models.CharField(max_length=50)
-    distrito = models.ForeignKey(DistritoElectoral, db_column="distrito_electoral",
+    distrito = models.ForeignKey(DistritoElectoral, db_column="distrito",
         on_delete=models.PROTECT, related_name='campaigns')
     ciclo = models.ForeignKey(CicloElectoral, db_column="ciclo",
         on_delete=models.PROTECT, related_name='campaigns')
@@ -26,10 +26,14 @@ class Campana(BaseModel):
 
     constraints = [
         models.UniqueConstraint(
-            fields=["candidato", "distrito_electoral", "ciclo"],
+            fields=["candidato", "distrito", "ciclo"],
             name="uq_campana_candidato_distrito_ciclo"
         )
     ]
 
     def __str__(self):
         return f"{str(self.candidato)} ({self.ciclo})"
+
+    def create(self, candidato:PersonaFisica, **data):
+        self.candidato=candidato
+        return super().objects.create(**data)
