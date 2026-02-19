@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
+import DatePickerFormik from "../../../components/forms/DatePickerFormik";
 
 export const CampanaFields = {
 
@@ -49,7 +50,7 @@ export const CampanaFields = {
     form: true, 
     filter: true,
     validation: Yup.string().nullable(),
-    render: (props) => <InputFormik {...props} />,
+    render: (props) => <DatePickerFormik {...props} />,
   },
 
   fecha_fin: {
@@ -58,7 +59,7 @@ export const CampanaFields = {
     form: true, 
     filter: true,
     validation: Yup.string().nullable(),
-    render: (props) => <InputFormik {...props} />,
+    render: (props) => <DatePickerFormik {...props} />,
   },
 
 };

@@ -64,7 +64,7 @@ export function useModelForm(fields, order = null) {
           .map(([name, def]) =>
             def.render({
               name,
-              label: def.label,
+              ...def
             })
           )}
         </>
@@ -72,24 +72,25 @@ export function useModelForm(fields, order = null) {
     };
   }, [entries]);
 
-  const FilterFields = useMemo(() => {
-    return function FilterFields() {
-      return (
-        <>
-          {entries
-            .filter(([, def]) => def.filter)
-            .map(([name, def]) => (
-              <div className="col-md-3 mb-3" key={name}>
-                {def.render({
-                  name,
-                  label: def.label,
-                })}
-              </div>
-            ))}
-        </>
-      );
-    };
-  }, [entries]);
+const FilterFields = useMemo(() => {
+  return function FilterFields() {
+    return (
+      <>
+        {entries
+          .filter(([, def]) => def.filter)
+          .map(([name, def]) => (
+            <div className="col-md-3 mb-3" key={name}>
+              {def.render({
+                name,
+                ...def
+              })}
+            </div>
+          ))}
+      </>
+    );
+  };
+}, [entries]);
+
 
   return {
     fields,

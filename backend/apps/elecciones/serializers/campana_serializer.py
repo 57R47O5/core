@@ -1,8 +1,10 @@
+from django.db.transaction import atomic
 from rest_framework import serializers
 from apps.elecciones.models.campana import Campana
 from apps.base.models.persona_fisica import PersonaFisica
 from apps.geo.models.lugar import Lugar
 from apps.elecciones.models.ciclo_electoral import CicloElectoral
+from apps.base.serializers.persona_fisica_serializer import PersonaFisicaInputSerializer
 
 
 class PersonaFisicaLinkSerializer(serializers.ModelSerializer):
@@ -10,7 +12,7 @@ class PersonaFisicaLinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PersonaFisica
-        fields = ["id", "nombre", "controller"]
+        fields = ["id", "nombres", "controller"]
 
     def get_controller(self, obj):
         return "persona-fisica"
@@ -45,15 +47,21 @@ class CampanaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Campana
         fields = [
-            "id", "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "candidato", "cargo", "distrito", "ciclo", "fecha_inicio", "fecha_fin"
+            "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "candidato", "cargo", "distrito", "ciclo", "fecha_inicio", "fecha_fin"
         ]
 
 
 class CampanaCreateSerializer(serializers.ModelSerializer):
+
+    candidato=serializers.PrimaryKeyRelatedField(queryset=PersonaFisica.objects.all())
     class Meta:
         model = Campana
-        fields = "__all__"
-    pass
+        fields = ["candidato", "distrito", "ciclo", "fecha_inicio", "fecha_fin"]
+    
+    @atomic
+    def create(self, validated_data):
+        campana=Campana.objects.create(**validated_data)
+        return campana
 
 
 class CampanaUpdateSerializer(serializers.ModelSerializer):
