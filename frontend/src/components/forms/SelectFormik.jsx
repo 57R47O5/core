@@ -1,13 +1,25 @@
 import { useEffect, useState } from "react";
-import { useField } from "formik";
+import { useField, useFormikContext } from "formik";
 import { Form } from "react-bootstrap";
 import request from "../../api/requests";
+import EntityLink from "../displays/EntityLink";
 
-export default function SelectFormik({ name, endpoint, label, ...props }) {
-  const [field, meta] = useField(name);
+export default function SelectFormik({
+  name,
+  endpoint,
+  label,
+  disabled = false,
+  ...props
+}) {
+  const [field, meta, helpers] = useField(name);
+  const { values, setFieldValue } = useFormikContext();
+
   const [opciones, setOpciones] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const value = values[name];
+
+  // Cargar opciones
   useEffect(() => {
     let isMounted = true;
 
@@ -23,14 +35,40 @@ export default function SelectFormik({ name, endpoint, label, ...props }) {
       }
     };
 
-    cargarOpciones();
+    if (!disabled) {
+      cargarOpciones();
+    }
 
     return () => {
       isMounted = false;
     };
-  }, [endpoint]);
+  }, [endpoint, disabled]);
 
-  console.log("opciones: ", opciones)
+  // MODO EDICIÓN → mostrar EntityLink
+  if (disabled && value) {
+    const id = typeof value === "object" ? value.id : value;
+
+    const displayLabel =
+      typeof value === "object"
+        ? value.label ?? value.descripcion
+        : opciones.find((op) => op.id === value)?.descripcion;
+
+    const controller =
+      typeof value === "object"
+        ? value.controller ?? endpoint
+        : endpoint;
+
+    return (
+      <EntityLink
+        id={id}
+        label={displayLabel}
+        controller={controller}
+        fieldLabel={label}
+      />
+    );
+  }
+
+  // MODO NORMAL → Select
   return (
     <Form.Group className="mb-3">
       {label && <Form.Label>{label}</Form.Label>}
@@ -38,6 +76,35 @@ export default function SelectFormik({ name, endpoint, label, ...props }) {
       <Form.Select
         {...field}
         {...props}
+        value={
+          typeof value === "object" && value !== null
+            ? value.id
+            : value ?? ""
+        }
+        onChange={(e) => {
+          const selectedId = e.target.value;
+
+          if (!selectedId) {
+            setFieldValue(name, null);
+            return;
+          }
+
+          const selectedObj = opciones.find(
+            (op) => String(op.id) === String(selectedId)
+          );
+
+          // 🔥 Guardamos objeto completo (nuevo estándar)
+          if (selectedObj) {
+            setFieldValue(name, {
+              id: selectedObj.id,
+              label: selectedObj.label ?? selectedObj.descripcion,
+              controller: selectedObj.controller ?? endpoint,
+            });
+          } else {
+            // fallback viejo comportamiento
+            setFieldValue(name, selectedId);
+          }
+        }}
         isInvalid={meta.touched && meta.error}
       >
         <option value="">
@@ -47,7 +114,7 @@ export default function SelectFormik({ name, endpoint, label, ...props }) {
         {!loading &&
           opciones.map((op) => (
             <option key={op.id} value={op.id}>
-              {op.descripcion}
+              {op.label ?? op.descripcion}
             </option>
           ))}
       </Form.Select>
