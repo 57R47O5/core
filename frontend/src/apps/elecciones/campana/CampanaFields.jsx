@@ -3,17 +3,19 @@ import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
 import DatePickerFormik from "../../../components/forms/DatePickerFormik";
 
+
 export const CampanaFields = {
 
-  candidato: {
-    label: "Candidato",
-    initial: null,
-    form: true, 
-    filter: true,
-    validation: Yup.number().required("Requerido"),
-    endpoint:"persona-fisica",
-    render: (props) => <SelectFormik {...props} />,
-  },
+candidato: {
+  label: "Candidato",
+  initial: null,
+  form: true,
+  filter: true,
+  validation: Yup.number().required("Requerido"),
+  endpoint: "persona-fisica",
+  disabled: false,
+  render: (props) => <SelectFormik {...props} />,
+},
 
   cargo: {
     label: "Cargo",
@@ -31,6 +33,7 @@ export const CampanaFields = {
     filter: true,
     validation: Yup.number().required("Requerido"),
     endpoint: "distrito-electoral/options",
+    disabled: false,
     render: (props) => <SelectFormik {...props} />,
   },
 
@@ -41,6 +44,7 @@ export const CampanaFields = {
     filter: true,
     validation: Yup.number().required("Requerido"),
     endpoint: "ciclo-electoral/options",
+    disabled: true,
     render: (props) => <SelectFormik {...props} />,
   },
 

@@ -20,7 +20,7 @@ class PersonaFisica(BaseModel):
         managed = False    
 
     @property
-    def descri(self):
+    def nombre_completo(self):
         return f"{self.nombres} {self.apellidos}".strip()
 
     def __str__(self):
