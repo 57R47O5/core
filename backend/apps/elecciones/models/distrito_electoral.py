@@ -15,3 +15,6 @@ class DistritoElectoral(ConstantModel):
     class Meta:
         managed = False
         db_table = "distrito_electoral"
+
+    def __str__(self):
+        return self.codigo

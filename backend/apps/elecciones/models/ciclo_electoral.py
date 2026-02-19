@@ -13,3 +13,6 @@ class CicloElectoral(ConstantModel):
     class Meta:
         db_table= 'ciclo_electoral'
         managed = False
+
+    def __str__(self):
+        return self.codigo

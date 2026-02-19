@@ -3,6 +3,7 @@ import { Formik, Form } from "formik";
 import { Button } from "react-bootstrap";
 import { useModelForm } from "../../../hooks/useModelForm";
 import { CampanaFields } from "./CampanaFields";
+import { useRouteMode } from "../../../hooks/useRouteMode";
 
 export default function CampanaForm({
   initialValues: externalInitialValues,
@@ -10,13 +11,25 @@ export default function CampanaForm({
   submitText = "Guardar",
   submitting = false,
 }) {
+  const { isEdit } = useRouteMode();
+
+    const dynamicFields = {
+    ...CampanaFields,
+    candidato: {
+      ...CampanaFields.candidato,
+      disabled: isEdit,
+    },
+    distrito: {
+      ...CampanaFields.distrito,
+      disabled: isEdit,
+    },
+  };
+
   const {
     initialValues,
     validationSchema,
     FormFields,
-  } = useModelForm(
-    CampanaFields
-  );  
+  } = useModelForm(dynamicFields);
 
   return (
     <Formik
@@ -27,7 +40,7 @@ export default function CampanaForm({
     >
       {(formik) => (
         <Form>
-          <FormFields/>
+          <FormFields values={formik.values}/>
           <div className="text-end mt-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Guardando..." : submitText}
