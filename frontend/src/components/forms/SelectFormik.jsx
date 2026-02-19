@@ -30,6 +30,7 @@ export default function SelectFormik({ name, endpoint, label, ...props }) {
     };
   }, [endpoint]);
 
+  console.log("opciones: ", opciones)
   return (
     <Form.Group className="mb-3">
       {label && <Form.Label>{label}</Form.Label>}

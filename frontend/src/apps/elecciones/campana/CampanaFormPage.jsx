@@ -6,8 +6,8 @@ export default function CampanaFormPage() {
     <BaseFormPage
       controller="campana"
       FormComponent={CampanaForm}
-      titleNew="Nuevo Campana"
-      titleEdit="Editar Campana"
+      titleNew="Nueva Campaña Electoral"
+      titleEdit="Editar Campaña Electoral"
     />
   );
 }

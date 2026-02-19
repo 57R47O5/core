@@ -10,7 +10,6 @@ export const documentoIdentidadFields = {
     render: (props) => (
       <InputFormik
         {...props}
-        endpoint="tipo-documento-identidad"
         disabled
       />
     ),
@@ -23,7 +22,7 @@ export const documentoIdentidadFields = {
     render: (props) => (
       <SelectFormik
         {...props}
-        endpoint="tipo-documento-identidad"
+        endpoint="tipo-documento-identidad/options"
       />
     ),
   },

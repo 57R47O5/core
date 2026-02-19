@@ -1,4 +1,5 @@
-from django.db.models import Q
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 from framework.permisos import PermisoGroup
 from framework.models.basemodels import Constant
 
@@ -25,3 +26,18 @@ class CampanaRestController(ModelRestController):
     update_serializer = CampanaUpdateSerializer
     retrieve_serializer = CampanaRetrieveSerializer    
     permisos = PermisosCampana
+
+    def serialize_list(self, queryset):
+        """
+        Serialización rápida por defecto usando .values().
+        Puede ser sobrescrita por subclases si requieren algo custom.
+        """
+        return list(queryset.values().annotate(
+            candidato=Concat(
+                        F("candidato__nombres"),
+                        Value(" "),
+                        F("candidato__apellidos")),
+            distrito=F("distrito__nombre"),
+            ciclo=F("ciclo__nombre"),
+                        ).values()
+                        )

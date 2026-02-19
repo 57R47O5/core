@@ -1,4 +1,6 @@
 
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 from framework.permisos import PermisoGroup
 from framework.models.basemodels import Constant
 
@@ -22,3 +24,15 @@ class PersonaFisicaRestController(ModelRestController):
     update_serializer = PersonaFisicaUpdateSerializer
     retrieve_serializer = PersonaFisicaRetrieveSerializer 
     permisos=PermisosPersonaFisica
+
+    def serialize_list(self, queryset):
+        """
+        Serialización rápida por defecto usando .values().
+        Puede ser sobrescrita por subclases si requieren algo custom.
+        """
+        return list(queryset.values()
+                    .annotate(descripcion=Concat(
+                        F("nombres"),
+                        Value(" "),
+                        F("apellidos"),
+                        )))

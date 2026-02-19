@@ -34,6 +34,5 @@ class Campana(BaseModel):
     def __str__(self):
         return f"{str(self.candidato)} ({self.ciclo})"
 
-    def create(self, candidato:PersonaFisica, **data):
-        self.candidato=candidato
+    def create(self, **data):
         return super().objects.create(**data)
