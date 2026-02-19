@@ -13,7 +13,7 @@ export default function SelectFormik({ name, endpoint, label, ...props }) {
 
     const cargarOpciones = async () => {
       try {
-        const respuesta = await request.get(`${endpoint}/options/`);
+        const respuesta = await request.get(`${endpoint}/`);
         if (isMounted) setOpciones(respuesta ?? []);
       } catch (err) {
         console.error(`Error cargando opciones de ${endpoint}`, err);
