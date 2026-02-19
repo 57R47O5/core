@@ -17,15 +17,8 @@ class PersonaJuridicaSerializer(serializers.ModelSerializer):
 class PersonaJuridicaCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonaJuridica
-        fields = ["razon_social", "nombre_fantasia"]
-    
-    @atomic
-    def create(self, validated_data):
-        persona=Persona.objects.create()
-        instancia = PersonaJuridica.objects.create(
-            persona=persona,
-            **validated_data)
-        return instancia
+        fields = ["razon_social", "nombre_fantasia"]    
+
 
 
 class PersonaJuridicaUpdateSerializer(serializers.ModelSerializer):
@@ -46,13 +39,10 @@ class PersonaJuridicaInputSerializer(serializers.Serializer):
     nombre_fantasia = serializers.CharField()
 
     @atomic
-    def create(self, validated_data):       
-
-        persona = Persona.objects.create()
-
+    def create(self, validated_data):      
         instancia = PersonaJuridica.objects.create(
-            persona=persona,
             **validated_data
         )
 
-        return instancia    
+        return instancia
+

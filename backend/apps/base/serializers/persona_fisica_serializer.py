@@ -29,12 +29,8 @@ class PersonaFisicaInputSerializer(serializers.Serializer):
     fecha_nacimiento = serializers.DateField()
 
     @atomic
-    def create(self, validated_data):        
-
-        persona = Persona.objects.create()
-
+    def create(self, validated_data):      
         instancia = PersonaFisica.objects.create(
-            persona=persona,
             **validated_data
         )
 

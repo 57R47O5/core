@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.transaction import atomic
 from framework.models.basemodels import BaseModel
 from apps.base.models.persona import Persona
 
@@ -29,6 +30,12 @@ class PersonaFisica(BaseModel):
     def documentos_identidad(self):
         documentos_identidad = self.persona.documentos.all().values("tipo", "numero")
         return documentos_identidad
+    
+    @atomic
+    def create(self, **data):
+        persona=Persona.objects.create()
+        return self.objects.create(persona=persona, **data)
+
     
     def delete(self, *args, **kwargs):
         persona=self.persona
