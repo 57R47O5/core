@@ -74,14 +74,18 @@ def generate_serializer(definition: DomainModelDefinition):
                 link_serializers.append(
                     f"""
 class {link_serializer_name}(serializers.ModelSerializer):
+    label = serializers.SerializerMethodField()
     controller = serializers.SerializerMethodField()
 
     class Meta:
         model = {ref_model}
-        fields = ["id", "nombre", "controller"]
+        fields = ["id", "label", "controller"]
 
     def get_controller(self, obj):
         return "{controller_name}"
+
+    def get_label(self, obj:{ModelName}):
+        return str(obj)
 """.rstrip()
                 )
 
