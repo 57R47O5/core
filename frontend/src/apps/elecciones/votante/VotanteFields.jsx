@@ -17,9 +17,10 @@ export const VotanteFields = {
     label: "Distrito",
     initial: null,
     form: true, 
-    filter: true,
+    filter: false,
     validation: Yup.number().required("Requerido"),
-    render: (props) => <SelectFormik {...props} />,
+    render: (props) => <SelectFormik {...props} 
+      endpoint={"distrito"}/>,
   },
 
   seccional: {
@@ -28,7 +29,8 @@ export const VotanteFields = {
     form: true, 
     filter: true,
     validation: Yup.number().nullable(),
-    render: (props) => <SelectFormik {...props} />,
+    render: (props) => <SelectFormik {...props} 
+      endpoint={"seccional"}/>,
   },
 
 };
