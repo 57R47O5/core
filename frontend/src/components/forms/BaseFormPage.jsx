@@ -1,9 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { Spinner, Card, Button } from "react-bootstrap";
+import { Spinner, Card, Form } from "react-bootstrap";
+import { Formik } from "formik";
 import CenteredCard from "../displays/CenteredCard";
 import { useRouteMode } from "../../hooks/useRouteMode";
-import { InstanceProvider, useInstance } from "../../context/InstanceContext";
+import {
+  InstanceProvider,
+  useInstance,
+} from "../../context/InstanceContext";
 import getAPIBase from "../../api/BaseAPI";
+import Botonera from "../botonera/botonera";
 
 function BaseFormPageContent({
   controller,
@@ -18,23 +23,6 @@ function BaseFormPageContent({
 
   const { crear, editar, eliminar } = getAPIBase(controller);
 
-  const handleSubmit = async (values) => {
-    if (isCreate) {
-      await crear(values);
-      alert("Registro creado");
-    } else {
-      await editar(id, values);
-      alert("Registro actualizado");
-    }
-    navigate(redirectTo);
-  };
-
-  const handleDelete = async () => {
-    await eliminar(id);
-    alert("Registro eliminado");
-    navigate(redirectTo);
-  };
-
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -43,6 +31,27 @@ function BaseFormPageContent({
     );
   }
 
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      if (isCreate) {
+        await crear(values);
+        alert("Registro creado");
+      } else {
+        await editar(id, values);
+        alert("Registro actualizado");
+      }
+      navigate(redirectTo);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    await eliminar(id);
+    alert("Registro eliminado");
+    navigate(redirectTo);
+  };
+
   return (
     <CenteredCard>
       <Card.Body>
@@ -50,29 +59,28 @@ function BaseFormPageContent({
           {isCreate ? titleNew : titleEdit}
         </h3>
 
-        <FormComponent
+        <Formik
+          enableReinitialize
           initialValues={instance}
+          validationSchema={FormComponent.validationSchema}
           onSubmit={handleSubmit}
-          submitText={isCreate ? "Crear" : "Actualizar"}
-        />
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <FormComponent />
 
-        <div className="d-flex justify-content-between mt-3">
-          <Button
-            variant="secondary"
-            onClick={() => navigate(redirectTo)}
-          >
-            Volver
-          </Button>
-
-          {!isCreate && (
-            <Button
-              variant="danger"
-              onClick={handleDelete}
-            >
-              Eliminar
-            </Button>
+              <div className="d-flex justify-content-between mt-3">
+                <Botonera
+                  submitLabel={isCreate ? "Crear" : "Actualizar"}
+                  showDelete={!isCreate}
+                  onDelete={handleDelete}
+                  onCancel={() => navigate(redirectTo)}
+                  isSubmitting={isSubmitting}
+                />
+              </div>
+            </Form>
           )}
-        </div>
+        </Formik>
       </Card.Body>
     </CenteredCard>
   );
@@ -96,14 +104,13 @@ export default function BaseFormPage({
       id={isEdit && id}
       defaults={defaults}
     >
-    <BaseFormPageContent
-      controller={controller}
-      FormComponent={FormComponent}
-      redirectTo={redirectTo}
-      titleNew={titleNew}
-      titleEdit={titleEdit}
-    />
+      <BaseFormPageContent
+        controller={controller}
+        FormComponent={FormComponent}
+        redirectTo={redirectTo}
+        titleNew={titleNew}
+        titleEdit={titleEdit}
+      />
     </InstanceProvider>
   );
 }
-

@@ -1,11 +1,11 @@
 import { Formik, Form } from "formik";
 import { Button } from "react-bootstrap";
-import { personaFisicaFields } from "./PersonaFisicaFields";
+import { PersonaFisicaFields } from "./PersonaFisicaFields";
 import { useModelForm } from "../../../hooks/useModelForm";
 
 const PersonaFisicaFilter = ({ onSearch, loading }) => {
   const {initialValuesFilter, FilterFields } = useModelForm(
-    personaFisicaFields)
+    PersonaFisicaFields)
 
   return (
     <>
