@@ -5,12 +5,13 @@ from apps.geo.models.lugar import Lugar
 from apps.elecciones.models.seccional import Seccional
 
 class Votante(BaseModel):
-    persona = models.OneToOneField(PersonaFisica, on_delete=models.PROTECT)
+    persona = models.OneToOneField(PersonaFisica, 
+        on_delete=models.PROTECT, db_column="persona")
     distrito = models.ForeignKey(Lugar, on_delete=models.PROTECT, 
-        verbose_name="división territorial del votante")
+        db_column="distrito", verbose_name="división territorial del votante")
     seccional = models.ForeignKey(Seccional, on_delete=models.PROTECT,
         verbose_name="división territorial de la campaña", db_index=False, 
-        blank=True, null=True)
+        db_column="seccional", blank=True, null=True)
 
     class Meta:
         managed = False
