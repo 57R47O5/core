@@ -52,14 +52,8 @@ class ColaboradorCreateSerializer(serializers.ModelSerializer):
 
     @atomic
     def create(self, validated_data):
-
-        # persona_serializer = PersonaFisicaInputSerializer(data=validated_data)
-        # persona_serializer.is_valid(raise_exception=True)
-        # persona_fisica = persona_serializer.save()
         persona_fisica = PersonaFisicaInputSerializer().create(validated_data)
-
         campana=Campana.objects.last()
-
         colaborador = Colaborador.objects.create(
             persona=persona_fisica,
             campana=campana
@@ -74,8 +68,10 @@ class ColaboradorUpdateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ColaboradorRetrieveSerializer(ColaboradorSerializer):
-    persona =  PersonaFisicaRetrieveSerializer()
+class ColaboradorRetrieveSerializer(serializers.ModelSerializer):
+    nombres = serializers.CharField(source="persona.nombres")
+    apellidos = serializers.CharField(source="persona.apellidos")
+    fecha_nacimiento = serializers.DateField(source="persona.fecha_nacimiento")
     class Meta:
         model = Colaborador
-        fields = ["nombres", "apellidos", "fecha_nacimiento"]
+        fields = "__all__"
