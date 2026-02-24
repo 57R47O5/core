@@ -27,12 +27,15 @@ class VotanteRestController(ModelRestController):
     permisos = PermisosVotante
 
     def serialize_list(self, queryset):
-        """
-        Serialización rápida por defecto usando .values().
-        Puede ser sobrescrita por subclases si requieren algo custom.
-        """
         return list(queryset.values()
                     .annotate(
                         nombres=F("persona__nombres"),
                         apellidos=F("persona__apellidos"),
                     ).values())
+    
+    def _get_filter(self, params):
+        filtro = Q()
+        for key, value in params.items():
+            if key in  ['nombres', 'apellidos']:
+                filtro &= Q(**{f"persona__{key}__icontains":value})
+        return filtro
