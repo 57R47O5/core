@@ -5,8 +5,6 @@ from apps.base.models.persona_fisica import PersonaFisica
 from apps.elecciones.models.campana import Campana
 from apps.base.serializers.persona_fisica_serializer import (
     PersonaFisicaInputSerializer,
-    PersonaFisicaUpdateSerializer,
-    PersonaFisicaRetrieveSerializer,
     )
 
 class PersonaFisicaLinkSerializer(serializers.ModelSerializer):
