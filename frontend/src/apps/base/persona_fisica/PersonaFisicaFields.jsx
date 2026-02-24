@@ -2,7 +2,7 @@ import * as Yup from "yup";
 import InputFormik from "../../../components/forms/InputFormik";
 import DatePickerFormik from "../../../components/forms/DatePickerFormik";
 
-export const personaFisicaFields = {
+export const PersonaFisicaFields = {
   id: {
     label: "ID",
     initial: "",

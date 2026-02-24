@@ -1,7 +1,6 @@
 import os
 from orchestrator.scripts.generators.domain_model_definition import DomainModelDefinition
 from orchestrator.scripts.generators.paths import FRONTEND_DIR
-from orchestrator.scripts.utils.naming import to_snake_case
 
 # ============================================================
 #  GENERADOR DEL FORM 
@@ -13,44 +12,15 @@ def generate_frontend_form(definition:DomainModelDefinition):
     file_path = f"{model_folder}/{definition.ModelName}Form.jsx"
 
     content = f"""
-import {{ Formik, Form }} from "formik";
-import {{ Button }} from "react-bootstrap";
 import {{ useModelForm }} from "../../../hooks/useModelForm";
 import {{ {definition.ModelName}Fields }} from "./{definition.ModelName}Fields";
 
-export default function {definition.ModelName}Form({{
-  initialValues: externalInitialValues,
-  onSubmit,
-  submitText = "Guardar",
-  submitting = false,
-}}) {{
-  const {{
-    initialValues,
-    validationSchema,
-    FormFields,
-  }} = useModelForm(
-    {definition.ModelName}Fields
+export default function {definition.ModelName}Form() {{
+  const {{FormFields}} = useModelForm({definition.ModelName}Fields
   );  
 
   return (
-    <Formik
-      enableReinitialize
-      initialValues={{externalInitialValues ?? initialValues}}
-      validationSchema={{validationSchema}}
-      onSubmit={{onSubmit}}
-    >
-      {{(formik) => (
-        <Form>
-          <FormFields/>
-          <div className="text-end mt-3">
-            <Button type="submit" disabled={{submitting}}>
-              {{submitting ? "Guardando..." : submitText}}
-            </Button>
-          </div>
-
-        </Form>
-      )}}
-    </Formik>
+    <FormFields/>     
   );
 }} 
 """
