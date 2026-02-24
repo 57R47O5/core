@@ -76,9 +76,21 @@ class CampanaCreateSerializer(serializers.ModelSerializer):
 
 
 class CampanaUpdateSerializer(serializers.ModelSerializer):
+    candidato = serializers.SerializerMethodField()
+    distrito = serializers.SerializerMethodField()
+    ciclo = serializers.SerializerMethodField()
     class Meta:
         model = Campana
         fields = "__all__"
+
+    def get_candidato(self, obj:PersonaFisica):
+        return obj.pk
+
+    def get_distrito(self, obj):
+        return obj.pk
+
+    def get_ciclo(self, obj):
+        return obj.pk
 
 
 class CampanaRetrieveSerializer(CampanaSerializer):
