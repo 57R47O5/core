@@ -9,8 +9,8 @@ export default function ColaboradorListPage() {
       title="Colaborador"
       FilterComponent={ColaboradorFilter}
       columns={[
-      { label: "Persona", field: "persona" },
-      { label: "Campana", field: "campana" }
+      { label: "Nombres", field: "nombres" },
+      { label: "Apellidos", field: "apellidos" }
       ]}
     />
   );

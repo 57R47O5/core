@@ -21,7 +21,6 @@
             <constraints nullable="false"/>
         </column>
         <column name="distrito" type="int">
-            <constraints nullable="false"/>
         </column>
         <column name="seccional" type="int">
         </column>
