@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, F
 from framework.permisos import PermisoGroup
 from framework.models.basemodels import Constant
 
@@ -25,3 +25,14 @@ class VotanteRestController(ModelRestController):
     update_serializer = VotanteUpdateSerializer
     retrieve_serializer = VotanteRetrieveSerializer    
     permisos = PermisosVotante
+
+    def serialize_list(self, queryset):
+        """
+        Serialización rápida por defecto usando .values().
+        Puede ser sobrescrita por subclases si requieren algo custom.
+        """
+        return list(queryset.values()
+                    .annotate(
+                        nombres=F("persona__nombres"),
+                        apellidos=F("persona__apellidos"),
+                    ).values())

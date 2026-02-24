@@ -9,8 +9,8 @@ export default function VotanteListPage() {
       title="Votante"
       FilterComponent={VotanteFilter}
       columns={[
-      { label: "Persona", field: "persona" },
-      { label: "Distrito", field: "distrito" },
+      { label: "Nombres", field: "nombres" },
+      { label: "Apellidos", field: "apellidos" },
       { label: "Seccional", field: "seccional" }
       ]}
     />
