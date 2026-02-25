@@ -65,7 +65,7 @@ export default function SelectFormik({
       <Form.Select
         {...field}
         {...props}
-        value={value ?? ""}
+        value={value?.id ?? value ?? ""}
         onChange={(e) => {
           const selectedId = e.target.value || null;
           helpers.setValue(selectedId);
