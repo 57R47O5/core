@@ -15,7 +15,7 @@ export const VotanteFields = {
     filter: false,
     validation: Yup.number().required("Requerido"),
     render: (props) => <SelectFormik {...props} 
-      endpoint={"distrito-electoral/options"}/>,
+      endpoint={"distrito-electoral"}/>,
   },
 
   seccional: {

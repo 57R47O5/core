@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-<changeSet id="create-geo_nivel" author="orco">
-    <createSequence sequenceName="geo_nivel_id_seq" startValue="1" />
-    <createTable tableName="geo_nivel">
+<changeSet id="create-visita" author="orco">
+    <createSequence sequenceName="visita_id_seq" startValue="1" />
+    <createTable tableName="visita">
         <column name="id" type="int">
             <constraints primaryKey="true" nullable="false"/>
         </column>
@@ -17,18 +17,24 @@
         </column>
         <column name="updatedat" type="timestamp">
         </column>
-        <column name="nombre" type="varchar(200)">
+        <column name="salida" type="int">
             <constraints nullable="false"/>
         </column>
-        <column name="descripcion" type="text">
-        </column>
-        <column name="codigo" type="varchar(50)">
-            <constraints nullable="false" unique="true"/>
-        </column>
-        <column name="activo" type="boolean">
+        <column name="votante" type="int">
             <constraints nullable="false"/>
+        </column>
+        <column name="lugar" type="int">
+            <constraints nullable="false"/>
+        </column>
+        <column name="fecha" type="timestamp">
+            <constraints nullable="false"/>
+        </column>
+        <column name="resultado" type="int">
+            <constraints nullable="false"/>
+        </column>
+        <column name="notas" type="text">
         </column>
     </createTable>
-    <addDefaultValue tableName="geo_nivel" columnName="id" defaultValueComputed="nextval('geo_nivel_id_seq')" />
+    <addDefaultValue tableName="visita" columnName="id" defaultValueComputed="nextval('visita_id_seq')" />
 </changeSet>
 </databaseChangeLog>

@@ -1,6 +1,6 @@
 from django.db import models
 from framework.models.basemodels import BaseModel
-from apps.geo.models.lugar import Lugar
+from apps.geo.models.lugar import Punto
 from apps.elecciones.models.distrito_electoral import DistritoElectoral
 
 class LugarDistrito(BaseModel):
@@ -14,7 +14,7 @@ class LugarDistrito(BaseModel):
     )
 
     lugar = models.ForeignKey(
-        Lugar,
+        Punto,
         on_delete=models.PROTECT
     )
 

@@ -2,7 +2,7 @@
 from framework.permisos import PermisoGroup
 from framework.models.basemodels import Constant
 
-from apps.geo.models.lugar import Lugar
+from apps.geo.models.lugar import Punto
 from apps.geo.serializers.lugar_serializer import (
     LugarUpdateSerializer,
     LugarRetrieveSerializer,
@@ -17,7 +17,7 @@ class PermisosLugar(PermisoGroup):
 
 class LugarRestController(ModelRestController):
     label = "Lugar"
-    model = Lugar
+    model = Punto
     url = 'lugar'
     create_serializer = LugarInputSerializer
     update_serializer = LugarUpdateSerializer

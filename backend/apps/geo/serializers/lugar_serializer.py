@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.db.transaction import atomic
 from rest_framework import serializers
 
-from apps.geo.models import Lugar, GeoNivel
+from apps.geo.models import Punto, GeoNivel
 from apps.geo.framework.geometries import Geometry, Point
 
 
@@ -22,7 +22,7 @@ class LugarSerializer(serializers.ModelSerializer):
     centroide = serializers.SerializerMethodField()
 
     class Meta:
-        model = Lugar
+        model = Punto
         fields = [
             "id",
             "codigo",
@@ -38,10 +38,10 @@ class LugarSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def get_geometry(self, obj: Lugar):
+    def get_geometry(self, obj: Punto):
         return obj.geometry_data
 
-    def get_centroide(self, obj: Lugar):
+    def get_centroide(self, obj: Punto):
         if obj.centroide_lat is None or obj.centroide_lon is None:
             return None
 
@@ -62,7 +62,7 @@ class LugarInputSerializer(serializers.Serializer):
     )
 
     padre = serializers.PrimaryKeyRelatedField(
-        queryset=Lugar.objects.all(),
+        queryset=Punto.objects.all(),
         required=False,
         allow_null=True
     )
@@ -73,7 +73,7 @@ class LugarInputSerializer(serializers.Serializer):
     def create(self, validated_data):
         geometry_json = validated_data.pop("geometry", None)
 
-        instancia = Lugar.objects.create(**validated_data)
+        instancia = Punto.objects.create(**validated_data)
 
         # ------------------------------------------------
         # Asignar geometry usando propiedad de dominio
@@ -92,7 +92,7 @@ class LugarInputSerializer(serializers.Serializer):
 
 class LugarUpdateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Lugar
+        model = Punto
         fields = [
             "nombre",
             "descripcion",
@@ -116,7 +116,7 @@ class PuntoInputSerializer(LugarInputSerializer):
         nivel_punto = GeoNivel.objects.get(code="PUNTO")
         validated_data["nivel"] = nivel_punto
 
-        instancia = Lugar.objects.create(**validated_data)
+        instancia = Punto.objects.create(**validated_data)
 
         point = Point(lat=lat, lon=lon)
 

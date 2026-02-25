@@ -1,6 +1,6 @@
 from django.db import models
 from framework.models.basemodels import BaseModel
-from apps.geo.models.lugar import Lugar
+from apps.geo.models.lugar import Punto
 from apps.elecciones.models.campana import Campana
 
 class Seccional(BaseModel):
@@ -9,7 +9,7 @@ class Seccional(BaseModel):
     Su función es estratégica. Cada campaña decide 
     cómo dividir su territorio
     '''
-    zona = models.ForeignKey(Lugar, on_delete=models.PROTECT, 
+    zona = models.ForeignKey(Punto, on_delete=models.PROTECT, 
         db_column="zona",related_name='zonas')
     campana = models.ForeignKey(Campana, on_delete=models.CASCADE,
         db_column="campana", related_name="seccionales")

@@ -67,7 +67,7 @@ class CampanaCreateSerializer(serializers.ModelSerializer):
     candidato=serializers.PrimaryKeyRelatedField(queryset=PersonaFisica.objects.all())
     class Meta:
         model = Campana
-        fields = ["candidato", "distrito", "ciclo", "fecha_inicio", "fecha_fin"]
+        fields = ["candidato", "distrito", "cargo", "ciclo", "fecha_inicio", "fecha_fin"]
     
     @atomic
     def create(self, validated_data):
