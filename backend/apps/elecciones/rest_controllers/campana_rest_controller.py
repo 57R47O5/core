@@ -32,6 +32,7 @@ class CampanaRestController(ModelRestController):
         Serialización rápida por defecto usando .values().
         Puede ser sobrescrita por subclases si requieren algo custom.
         """
+        model=queryset.model
         return list(queryset.values().annotate(
             candidato=Concat(
                         F("candidato__nombres"),
@@ -39,5 +40,6 @@ class CampanaRestController(ModelRestController):
                         F("candidato__apellidos")),
             distrito=F("distrito__nombre"),
             ciclo=F("ciclo__nombre"),
+            descripcion=model.descripcion_expression()
                         ).values()
                         )

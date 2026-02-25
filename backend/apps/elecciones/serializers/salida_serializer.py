@@ -6,25 +6,33 @@ from apps.elecciones.models.estado_salida import EstadoSalida
 
 
 class CampanaLinkSerializer(serializers.ModelSerializer):
+    label = serializers.SerializerMethodField()
     controller = serializers.SerializerMethodField()
 
     class Meta:
         model = Campana
-        fields = ["id", "nombre", "controller"]
+        fields = ["id", "label", "controller"]
 
     def get_controller(self, obj):
         return "campana"
+    
+    def get_label(self, obj: Campana):
+        return str(obj)
 
 
 class ColaboradorLinkSerializer(serializers.ModelSerializer):
+    label = serializers.SerializerMethodField()
     controller = serializers.SerializerMethodField()
 
     class Meta:
         model = Colaborador
-        fields = ["id", "nombre", "controller"]
+        fields = ["id", "label", "controller"]
 
     def get_controller(self, obj):
         return "colaborador"
+    
+    def get_label(self, obj: Colaborador):
+        return str(obj)
 
 
 class EstadoSalidaLinkSerializer(serializers.ModelSerializer):

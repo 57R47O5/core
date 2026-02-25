@@ -1,4 +1,5 @@
-from django.db.models import Q, F
+from django.db.models import Q, F, Value
+from django.db.models.functions import Concat
 from framework.permisos import PermisoGroup
 from framework.models.basemodels import Constant
 
@@ -31,6 +32,12 @@ class ColaboradorRestController(ModelRestController):
                     .annotate(
                         nombres=F("persona__nombres"),
                         apellidos=F("persona__apellidos"),
+                    ).annotate(
+                        descripcion=Concat(
+                        F("nombres"),
+                        Value(" "),
+                        F("apellidos"),
+                        )
                     ).values())
     
     def _get_filter(self, params):

@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 from framework.models.basemodels import BaseModel
 from apps.base.models.persona_fisica import PersonaFisica
 from apps.elecciones.models.distrito_electoral import DistritoElectoral
@@ -36,3 +38,7 @@ class Campana(BaseModel):
 
     def create(self, **data):
         return super().objects.create(**data)
+    
+    @classmethod
+    def descripcion_expression(cls):
+        return Concat(F("candidato"), Value(" "), F("cargo"))
