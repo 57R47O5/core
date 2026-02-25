@@ -97,6 +97,12 @@ class ModelRestController(BaseRestController):
         Serialización rápida por defecto usando .values().
         Puede ser sobrescrita por subclases si requieren algo custom.
         """
+        model = queryset.model
+        if hasattr(model, "descripcion_expression"):
+            queryset = queryset.annotate(
+                descripcion=model.descripcion_expression()
+            )
+
         return list(queryset.values())
 
     @require_perm(view_permission)

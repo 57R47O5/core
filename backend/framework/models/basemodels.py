@@ -1,7 +1,7 @@
 
 import logging
-
 from django.db import IntegrityError, models
+from django.db.models import Value
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
 
 from .historicals import ORCHistoricalRecords
@@ -108,6 +108,13 @@ class BaseModel(SoftDeleteModel):
         indexes = [
             models.Index(fields=['deleted']),
         ]
+
+    @classmethod
+    def descripcion_expression(cls):
+        '''
+        Método utilizado para definir
+        '''
+        return Value(" ")
 
 class BasicModelManager(ORCModelManager):
     def get_queryset(self):
