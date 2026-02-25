@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Value, F
+from django.db.models.functions import Concat
 from framework.models.basemodels import ConstantModel,  ConstantModelManager, Constant
 
 class DistritoElectoralManager(ConstantModelManager):
@@ -17,4 +19,4 @@ class DistritoElectoral(ConstantModel):
         db_table = "distrito_electoral"
 
     def __str__(self):
-        return self.codigo
+        return self.codigo   

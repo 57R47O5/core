@@ -13,16 +13,19 @@ class Salida(BaseModel):
     campana = models.ForeignKey(
         Campana,
         on_delete=models.CASCADE,
-        related_name="salidas"
+        related_name="salidas",
+        db_column="campana"
     )
     colaborador = models.ForeignKey(
         Colaborador,
         on_delete=models.PROTECT,
+        db_column="colaborador",
         related_name="salidas"
     )
     fecha = models.DateField(auto_created=True)
     estado = models.ForeignKey(EstadoSalida, 
         on_delete=models.PROTECT,
+        db_column="estado",
         default=EstadoSalidaManager.EN_CURSO)
 
     class Meta:

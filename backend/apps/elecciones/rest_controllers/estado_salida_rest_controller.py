@@ -5,6 +5,6 @@ from apps.elecciones.models.estado_salida import EstadoSalida
 class EstadoSalidaOptionsView(BaseOptionsAPIView):
     model = EstadoSalida
     url='estado-salida'
-    desc_field='Descripcion'
+    desc_field='codigo'
     permisos=[]
 

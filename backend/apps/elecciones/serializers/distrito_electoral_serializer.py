@@ -7,7 +7,7 @@ class DistritoElectoralSerializer(serializers.ModelSerializer):
     class Meta:
         model = DistritoElectoral
         fields = [
-            "id", "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "nombre", "descripcion", "codigo", "activo"
+            "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "nombre", "descripcion", "codigo", "activo"
         ]
 
 
