@@ -1,13 +1,12 @@
 
-from django.urls import path
+from rest_framework import routers
 from apps.elecciones.rest_controllers.distrito_electoral_rest_controller import (
-    DistritoElectoralOptionsView as Controller
+    DistritoElectoralRestController as Controller
 )
 
-urlpatterns = [
-    path(
-        Controller.route(),
-        Controller.as_view(),
-        name=Controller.name()
-    ),
-]
+router = routers.SimpleRouter()
+router.register(r'distrito-electoral', Controller, 'distrito-electoral')
+
+urlpatterns = []
+
+urlpatterns += router.urls

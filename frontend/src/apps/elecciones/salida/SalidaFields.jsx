@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
+import DatePickerFormik from "../../../components/forms/DatePickerFormik";
 
 export const SalidaFields = {
 
@@ -8,9 +9,11 @@ export const SalidaFields = {
     label: "Campana",
     initial: null,
     form: true, 
-    filter: true,
+    filter: false,
     validation: Yup.number().required("Requerido"),
-    render: (props) => <SelectFormik {...props} />,
+    disabled:true,
+    render: (props) => <SelectFormik {...props} 
+      endpoint={"campana"}/>,
   },
 
   colaborador: {
@@ -19,7 +22,8 @@ export const SalidaFields = {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),
-    render: (props) => <SelectFormik {...props} />,
+    render: (props) => <SelectFormik {...props} 
+      endpoint={"colaborador"}/>,
   },
 
   fecha: {
@@ -28,7 +32,7 @@ export const SalidaFields = {
     form: true, 
     filter: true,
     validation: Yup.string().required("Requerido"),
-    render: (props) => <InputFormik {...props} />,
+    render: (props) => <DatePickerFormik {...props} />,
   },
 
   estado: {
@@ -37,7 +41,8 @@ export const SalidaFields = {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),
-    render: (props) => <SelectFormik {...props} />,
+    render: (props) => <SelectFormik {...props} 
+      endpoint={"estado-salida/options"}/>,
   },
 
 };

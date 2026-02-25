@@ -183,6 +183,8 @@ FIELD_TYPE_MAP = {
     "BooleanField": lambda f: 'boolean',
     "DateField": lambda f: 'date',
     "DateTimeField": lambda f: 'timestamp',
+    "JSONField": lambda f: "jsonb",
+    "DecimalField": lambda f: "decimal",
 }
 
 def map_field_type(field: FieldDefinition) -> str:

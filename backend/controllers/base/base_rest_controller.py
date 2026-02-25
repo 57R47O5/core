@@ -98,7 +98,8 @@ class ModelRestController(BaseRestController):
         Puede ser sobrescrita por subclases si requieren algo custom.
         """
         model = queryset.model
-        if hasattr(model, "descripcion_expression"):
+        if hasattr(model, "descripcion_expression") and \
+            not hasattr(model, "descripcion"):
             queryset = queryset.annotate(
                 descripcion=model.descripcion_expression()
             )
