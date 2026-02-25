@@ -24,19 +24,6 @@ class Lugar(BaseModel):
         editable=False
     )
 
-    codigo = models.CharField(
-        max_length=50,
-        unique=True
-    )
-
-    nombre = models.CharField(
-        max_length=255
-    )
-
-    tipo = models.CharField(
-        max_length=50
-    )
-
     descripcion = models.TextField(
         blank=True,
         null=True
@@ -129,7 +116,7 @@ class Lugar(BaseModel):
 class PuntoManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            nivel=GeoNivelManager.PUNTO
+            nivel=GeoNivel.objects.PUNTO.pk
         )
 
 class Punto(Lugar):
