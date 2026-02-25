@@ -19,11 +19,6 @@
         </column>
         <column name="tipo" type="varchar(255)">
             <constraints nullable="false"/>
-        <column name="nombre" type="varchar(255)">
-            <constraints nullable="false"/>
-        <column name="tipo" type="varchar(50)">
-        </column>
-        <column name="descripcion" type="varchar(255)">
         </column>
         <column name="geometry_data" type="jsonb">
         </column>
