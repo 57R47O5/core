@@ -1,46 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="
-        http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="geo-nivel-0002-seed-data" author="orco" runOnChange="true">
+    <changeSet id="geo_nivel-pais" author="orco">
         <insert tableName="geo_nivel">
-            <column name="id" valueComputed="gen_random_uuid()"/>
-            <column name="code" value="PAIS"/>
-            <column name="name" value="País"/>
-            <column name="orden" valueNumeric="1"/>
-        </insert>
+            <column name="id" valueComputed="nextval('geo_nivel_id_seq')"/>
+            <column name="codigo" value="PAIS"/>
+            <column name="nombre" value="Pais"/>
+            <column name="descripcion" value="GeoNivel Pais"/>
 
-        <insert tableName="geo_nivel">
-            <column name="id" valueComputed="gen_random_uuid()"/>
-            <column name="code" value="DEPARTAMENTO"/>
-            <column name="name" value="Departamento"/>
-            <column name="orden" valueNumeric="2"/>
-        </insert>
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
 
-        <insert tableName="geo_nivel">
-            <column name="id" valueComputed="gen_random_uuid()"/>
-            <column name="code" value="DISTRITO"/>
-            <column name="name" value="Distrito"/>
-            <column name="orden" valueNumeric="3"/>
-        </insert>
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
 
-        <insert tableName="geo_nivel">
-            <column name="id" valueComputed="gen_random_uuid()"/>
-            <column name="code" value="BARRIO"/>
-            <column name="name" value="Barrio"/>
-            <column name="orden" valueNumeric="4"/>
         </insert>
-
-        <insert tableName="geo_nivel">
-            <column name="id" valueComputed="gen_random_uuid()"/>
-            <column name="code" value="PUNTO"/>
-            <column name="name" value="Punto"/>
-            <column name="orden" valueNumeric="5"/>
-        </insert>
+        <rollback>
+            <delete tableName="geo_nivel">
+                <where>codigo = 'PAIS'</where>
+            </delete>
+        </rollback>
     </changeSet>
 
+    <changeSet id="geo_nivel-departamento" author="orco">
+        <insert tableName="geo_nivel">
+            <column name="id" valueComputed="nextval('geo_nivel_id_seq')"/>
+            <column name="codigo" value="DEPARTAMENTO"/>
+            <column name="nombre" value="Departamento"/>
+            <column name="descripcion" value="GeoNivel Departamento"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="geo_nivel">
+                <where>codigo = 'DEPARTAMENTO'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="geo_nivel-distrito" author="orco">
+        <insert tableName="geo_nivel">
+            <column name="id" valueComputed="nextval('geo_nivel_id_seq')"/>
+            <column name="codigo" value="DISTRITO"/>
+            <column name="nombre" value="Distrito"/>
+            <column name="descripcion" value="GeoNivel Distrito"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="geo_nivel">
+                <where>codigo = 'DISTRITO'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="geo_nivel-barrio" author="orco">
+        <insert tableName="geo_nivel">
+            <column name="id" valueComputed="nextval('geo_nivel_id_seq')"/>
+            <column name="codigo" value="BARRIO"/>
+            <column name="nombre" value="Barrio"/>
+            <column name="descripcion" value="GeoNivel Barrio"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="geo_nivel">
+                <where>codigo = 'BARRIO'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="geo_nivel-punto" author="orco">
+        <insert tableName="geo_nivel">
+            <column name="id" valueComputed="nextval('geo_nivel_id_seq')"/>
+            <column name="codigo" value="PUNTO"/>
+            <column name="nombre" value="Punto"/>
+            <column name="descripcion" value="GeoNivel Punto"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="geo_nivel">
+                <where>codigo = 'PUNTO'</where>
+            </delete>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

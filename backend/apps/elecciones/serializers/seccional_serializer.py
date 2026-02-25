@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from apps.elecciones.models.seccional import Seccional
-from apps.geo.models.lugar import Lugar
+from apps.geo.models.lugar import Punto
 from apps.elecciones.models.campana import Campana
 
 
@@ -8,7 +8,7 @@ class LugarLinkSerializer(serializers.ModelSerializer):
     controller = serializers.SerializerMethodField()
 
     class Meta:
-        model = Lugar
+        model = Punto
         fields = ["id", "nombre", "controller"]
 
     def get_controller(self, obj):

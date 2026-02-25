@@ -9,7 +9,7 @@ export const CicloElectoralFields = {
     form: true, 
     filter: true,
     validation: Yup.string().required("Requerido"),
-    endpoint: nombre
+    endpoint: "nombre",
     render: (props) => <InputFormik {...props} />,
   },
 
@@ -19,7 +19,7 @@ export const CicloElectoralFields = {
     form: true, 
     filter: true,
     validation: Yup.string().nullable(),
-    endpoint: descripcion
+    endpoint: "descripcion",
     render: (props) => <InputFormik {...props} />,
   },
 

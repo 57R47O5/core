@@ -19,7 +19,7 @@ candidato: {
 
   cargo: {
     label: "Cargo",
-    initial: "",
+    initial: null,
     form: true, 
     filter: true,
     validation: Yup.string().required("Requerido"),
@@ -42,10 +42,10 @@ candidato: {
     initial: null,
     form: true, 
     filter: true,
-    validation: Yup.number().required("Requerido"),
+    validation: Yup.number().required("Requerido"),    
+    disabled: false,
     endpoint: "ciclo-electoral/options",
-    disabled: true,
-    render: (props) => <SelectFormik {...props} />,
+    render: (props) => <SelectFormik {...props}/>,
   },
 
   fecha_inicio: {
