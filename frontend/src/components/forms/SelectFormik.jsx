@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useField, useFormikContext } from "formik";
+import { useField } from "formik";
 import { Form } from "react-bootstrap";
 import request from "../../api/requests";
 import EntityLink from "../displays/EntityLink";
@@ -12,12 +12,11 @@ export default function SelectFormik({
   ...props
 }) {
   const [field, meta, helpers] = useField(name);
-  const { values, setFieldValue } = useFormikContext();
 
   const [opciones, setOpciones] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const value = values[name];
+  const value = field.value;
 
   // Cargar opciones
   useEffect(() => {
@@ -44,31 +43,21 @@ export default function SelectFormik({
     };
   }, [endpoint, disabled]);
 
-  // MODO EDICIÓN → mostrar EntityLink
+  const selectedOption = opciones.find(
+    (op) => String(op.id) === String(value)
+  );
+
   if (disabled && value) {
-    const id = typeof value === "object" ? value.id : value;
-
-    const displayLabel =
-      typeof value === "object"
-        ? value.label ?? value.descripcion
-        : opciones.find((op) => op.id === value)?.descripcion;
-
-    const controller =
-      typeof value === "object"
-        ? value.controller ?? endpoint
-        : endpoint;
-
     return (
       <EntityLink
-        id={id}
-        label={displayLabel}
-        controller={controller}
+        id={value.id}
+        label={value.label ?? value.descripcion }
+        controller={endpoint}
         fieldLabel={label}
       />
     );
   }
 
-  // MODO NORMAL → Select
   return (
     <Form.Group className="mb-3">
       {label && <Form.Label>{label}</Form.Label>}
@@ -76,34 +65,10 @@ export default function SelectFormik({
       <Form.Select
         {...field}
         {...props}
-        value={
-          typeof value === "object" && value !== null
-            ? value.id
-            : value ?? ""
-        }
+        value={value ?? ""}
         onChange={(e) => {
-          const selectedId = e.target.value;
-
-          if (!selectedId) {
-            setFieldValue(name, null);
-            return;
-          }
-
-          const selectedObj = opciones.find(
-            (op) => String(op.id) === String(selectedId)
-          );
-
-          // 🔥 Guardamos objeto completo (nuevo estándar)
-          if (selectedObj) {
-            setFieldValue(name, {
-              id: selectedObj.id,
-              label: selectedObj.label ?? selectedObj.descripcion,
-              controller: selectedObj.controller ?? endpoint,
-            });
-          } else {
-            // fallback viejo comportamiento
-            setFieldValue(name, selectedId);
-          }
+          const selectedId = e.target.value || null;
+          helpers.setValue(selectedId);
         }}
         isInvalid={meta.touched && meta.error}
       >
