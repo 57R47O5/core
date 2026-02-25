@@ -14,14 +14,14 @@ const SalidaFilter = ({ onSearch, loading }) => {
 
       <Formik
         initialValues={initialValuesFilter}
-        onSubmit={(values) => onSearch(values)}
+        onSubmit={(values) => {
+          onSearch(values)}}
       >
         {() => (
           <Form>
             <div className="row">
             <FilterFields/>
             </div>
-
             <div className="text-end">
               <Button type="submit" variant="primary" disabled={loading}>
                 Buscar

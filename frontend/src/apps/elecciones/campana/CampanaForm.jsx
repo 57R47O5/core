@@ -21,6 +21,8 @@ export default function CampanaForm() {
   const {FormFields} = useModelForm(dynamicFields);
 
   return (
+  <>
     <FormFields/>
+  </>
   );
 } 

@@ -353,6 +353,12 @@ def extract_extra_fields(model_class: ast.ClassDef):
                     else:
                         ref_model = arg.value
 
+                    #  Caso especial: "self"
+                    if arg.value.strip().lower() == "self":
+                        is_self_reference = True
+                        # El modelo referenciado es el modelo actual
+                        ref_model = model_class.name
+
             # ------------------------------------
             # Inferir app si no viene explícita
             # ------------------------------------

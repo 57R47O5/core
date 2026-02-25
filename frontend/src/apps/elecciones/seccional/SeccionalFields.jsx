@@ -9,7 +9,8 @@ export const SeccionalFields = {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),
-    render: (props) => <SelectFormik {...props} />,
+    render: (props) => <SelectFormik {...props} 
+    endpoint={"lugar"}/>,
   },
 
   campana: {
@@ -18,7 +19,8 @@ export const SeccionalFields = {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),
-    render: (props) => <SelectFormik {...props} />,
+    render: (props) => <SelectFormik {...props} 
+    endpoint={"campana"}/>,
   },
 
 };

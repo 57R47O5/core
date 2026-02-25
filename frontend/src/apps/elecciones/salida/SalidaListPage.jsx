@@ -9,7 +9,6 @@ export default function SalidaListPage() {
       title="Salida"
       FilterComponent={SalidaFilter}
       columns={[
-      { label: "Campana", field: "campana" },
       { label: "Colaborador", field: "colaborador" },
       { label: "Fecha", field: "fecha" },
       { label: "Estado", field: "estado" }

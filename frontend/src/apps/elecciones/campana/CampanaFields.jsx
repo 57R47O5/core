@@ -32,7 +32,7 @@ candidato: {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),
-    endpoint: "distrito-electoral/options",
+    endpoint: "distrito-electoral",
     disabled: false,
     render: (props) => <SelectFormik {...props} />,
   },

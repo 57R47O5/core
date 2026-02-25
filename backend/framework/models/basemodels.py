@@ -1,7 +1,7 @@
 
 import logging
 from django.db import IntegrityError, models
-from django.db.models import Value
+from django.db.models import F, Value
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
 
 from .historicals import ORCHistoricalRecords
@@ -143,6 +143,10 @@ class ConstantModel(BasicModel):
 
     class Meta(BasicModel.Meta):
         abstract = True
+
+    @classmethod
+    def descripcion_expression(cls):
+        return F("codigo")
 
 class Constant:
     def __init__(self, codigo):
