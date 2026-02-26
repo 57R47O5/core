@@ -1,3 +1,4 @@
+import "./../styles/sidebar.css"
 import { useContext, useState } from "react";
 import * as Icons from "react-icons/fa";
 import { NavLink } from "react-router-dom";
@@ -18,7 +19,6 @@ const SidebarNode = ({ node }) => {
   return (
     <li>
       <div
-        className="sidebar-item d-flex align-items-center justify-content-between"
         onClick={toggle}
         style={{ cursor: hasChildren ? "pointer" : "default" }}
       >
@@ -28,21 +28,30 @@ const SidebarNode = ({ node }) => {
             className="sidebar-link flex-grow-1"
             onClick={e => hasChildren && e.preventDefault()}
           >
-            {Icon && <Icon className="me-2" />}
-            {node.label}
+            <span className="sidebar-group">
+          {Icon && (
+            <span className="sidebar-icon">
+              <Icon />
+                </span>
+              )}
+              <span className="sidebar-label">
+                {node.label}
+              </span>
+            </span>
           </NavLink>
         ) : (
-          <span className="sidebar-group flex-grow-1">
-            {Icon && <Icon className="me-2" />}
-            {node.label}
-          </span>
+          <span className="sidebar-group">
+          {Icon && (
+            <span className="sidebar-icon">
+              <Icon />
+                </span>
+              )}
+              <span className="sidebar-label">
+                {node.label}
+              </span>
+            </span>
         )}
-
-        {hasChildren && (
-          <span className="ms-2">
-            {open ? "▾" : "▸"}
-          </span>
-        )}
+        
       </div>
 
       {hasChildren && open && (
