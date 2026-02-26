@@ -25,8 +25,8 @@ export default function O2MRow({item}) {
               {col.render({ formik, item })}
             </td>
           ))}
-          <td className="text-end">
-            <div className="col-12 col-lg-2 d-flex align-items-center justify-content-center mt-3">
+          <td className="text-end align-middle">
+            <div className="d-flex justify-content-end gap-2">
               <Button
                 size="sm"
                 disabled={formik.isSubmitting}
@@ -39,14 +39,13 @@ export default function O2MRow({item}) {
                 variant="danger"
                 disabled={formik.isSubmitting}
                 onClick={async () => {
-                  if (!confirm("¿Eliminar este registro?")) return;
-                  
+                  if (!confirm("¿Eliminar este registro?")) return;                  
                   await eliminar(item.id);
                   refresh();
                 }}
                 >
                 Eliminar
-              </Button>
+              </Button>           
             </div>
           </td>
         </tr>
