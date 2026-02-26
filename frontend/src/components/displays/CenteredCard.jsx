@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 
-const CenteredCard = ({ children, maxWidth = "750px", className = "", ...props }) => {
+const CenteredCard = ({ children, maxWidth = "750px", className = "centered-card", ...props }) => {
   return (
     <div
       className="d-flex justify-content-center px-3 py-3"

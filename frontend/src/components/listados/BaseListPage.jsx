@@ -53,12 +53,7 @@ export default function BaseListPage({
       onSearch={handleSearch}
       loading={loading}
     >
-      <div className="text-end">
-        <Button variant="primary" disabled={loading} 
-        onClick={(item) => navigate(`/${controller}/nuevo`)}>
-          Nuevo
-        </Button>
-      </div>
+      
       <DataTable
         items={items}
         columns={columns}
