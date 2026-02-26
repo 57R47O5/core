@@ -72,13 +72,11 @@ class Lugar(BaseModel):
         db_table = "lugar"
         managed = False
         indexes = [
-            models.Index(fields=["tipo"]),
-            models.Index(fields=["codigo"]),
             models.Index(fields=["nivel"]),
         ]
 
     def __str__(self):
-        return f"{self.nombre} ({self.tipo})"
+        return f"{self.descripcion}"
 
     @property
     def geometry(self) -> Geometry | None:

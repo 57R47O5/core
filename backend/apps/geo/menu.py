@@ -3,7 +3,7 @@ from apps.geo.rest_controllers.lugar_rest_controller import LugarRestController
 
 MENU = Node(
     "Geografia",
-    icon="FaEarth-America",
+    icon="FaMapMarkerAlt",
     content=[
         LugarRestController.to_node()
     ]
