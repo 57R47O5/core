@@ -198,5 +198,5 @@ def collect_all_permissions(menus: list[Node]) -> set[str]:
     return perms
     
 ROOT_MENU_NODE = Node("root", content=[
-    Node("Inicio", icon="FaHome", to="/"),    
+    #Node("Inicio", icon="FaHome", to="/"),    
 ])

@@ -6,12 +6,12 @@ import DatePickerFormik from "../../../components/forms/DatePickerFormik";
 export const SalidaFields = {
 
   campana: {
-    label: "Campana",
+    label: "Campaña",
     initial: null,
     form: true, 
     filter: false,
     validation: Yup.number().required("Requerido"),
-    disabled:true,
+    disabled: false,
     render: (props) => <SelectFormik {...props} 
       endpoint={"campana"}/>,
   },
@@ -28,7 +28,7 @@ export const SalidaFields = {
 
   fecha: {
     label: "Fecha",
-    initial: "",
+    initial: null,
     form: true, 
     filter: true,
     validation: Yup.string().required("Requerido"),

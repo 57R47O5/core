@@ -8,7 +8,7 @@ from apps.elecciones.rest_controllers.votante_rest_controller import VotanteRest
 
 MENU = Node(
     "Elecciones",
-    icon="FaCheck-To-Slot",
+    icon="FaUniversity",
     content=[
         CampanaRestController.to_node(),
         ColaboradorRestController.to_node(),

@@ -4,7 +4,7 @@ import CenteredCard from "../displays/CenteredCard";
 export function BaseListLayout({ title, FilterComponent, onSearch, loading, children }) {
   return (
     <div className="container">
-      <h2 className="mb-4">{title}</h2>
+      <h2 className="mb-4 justify-content-center" style={{textAlign:"center"}}>{title}</h2>
 
       <CenteredCard>
         <Card.Body>

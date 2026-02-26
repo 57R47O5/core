@@ -6,7 +6,7 @@ export default function PersonaJuridicaListPage() {
   return (
     <BaseListPage
       controller="persona-juridica"
-      title="PersonaJuridica"
+      title="Persona Juridica"
       FilterComponent={PersonaJuridicaFilter}
       columns={[
       { label: "ID", field: "id" },

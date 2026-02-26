@@ -28,10 +28,11 @@ class PersonaJuridica(BaseModel):
         return documentos_identidad
     
     @atomic
-    def create(self, **data):
-        persona=Persona.objects.create()
-        return self.objects.create(persona=persona, **data)
-
+    def save(self, *args,  **kwargs):
+        if self._state.adding is True:
+            persona=Persona.objects.create()
+            self.persona=persona
+        return super().save(*args, **kwargs)
     
     def delete(self, *args, **kwargs):
         persona=self.persona
