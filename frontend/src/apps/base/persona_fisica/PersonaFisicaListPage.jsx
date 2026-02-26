@@ -6,7 +6,7 @@ export default function PersonaFisicaListPage() {
   return (
     <BaseListPage
       controller="persona-fisica"
-      title="PersonaFisica"
+      title="Persona Fisica"
       FilterComponent={PersonaFisicaFilter}
       columns={[
       { label: "Id", field: "id" },

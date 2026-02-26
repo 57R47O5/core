@@ -4,7 +4,7 @@ from apps.base.rest_controllers.persona_juridica_rest_controller import PersonaJ
 
 MENU = Node(
     "Base",
-    icon="FaBed",
+    icon="FaHome",
     content=[
         PersonaFisicaRestController.to_node(),
         PersonaJuridicaRestController.to_node(),

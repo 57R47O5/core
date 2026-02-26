@@ -55,7 +55,7 @@ function BaseFormPageContent({
   return (
     <CenteredCard>
       <Card.Body>
-        <h3 className="mb-4">
+        <h3 className="mb-4 justify-content-center" style={{textAlign:"center"}}>
           {isCreate ? titleNew : titleEdit}
         </h3>
 

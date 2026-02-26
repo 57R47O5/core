@@ -19,6 +19,7 @@ function DocumentosPersona({}) {
 
   if (!instance)
     return (<Spinner/>)
+  console.log("instance: ", instance)
   return (
     <O2MProvider
       controller="documento-identidad"
@@ -52,7 +53,7 @@ export default function PersonaFisicaFormPage() {
       />
       <InstanceProvider
         controller={controller}
-        id = {isEdit && id}>
+        id = {id}>
         {isEdit && (<DocumentosPersona/>)}
       </InstanceProvider>
     </>

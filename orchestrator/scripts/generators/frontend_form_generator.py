@@ -161,7 +161,7 @@ def generate_frontend_fields(definition: DomainModelDefinition):
     form: true, 
     filter: true,
     validation: {yup},
-    endpoint: {field.name}
+    endpoint: "{field.name}",
     render: (props) => <{component} {{...props}}{render_props} />,
   }},
 """

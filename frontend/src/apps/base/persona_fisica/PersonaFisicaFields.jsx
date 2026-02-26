@@ -32,7 +32,7 @@ export const PersonaFisicaFields = {
   
   fecha_nacimiento: {
     label: "Fecha nacimiento",
-    initial: null,
+    initial: (new Date()).toISOString().substring(0, 10),
     form: true,
     filter: false,
     validation: Yup.string().nullable(),
