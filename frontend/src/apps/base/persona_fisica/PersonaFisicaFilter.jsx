@@ -1,33 +1,17 @@
-import { Formik, Form } from "formik";
-import { Button } from "react-bootstrap";
+
+import ABMFilter from "../../../components/filtros/ABMFilter";
 import { PersonaFisicaFields } from "./PersonaFisicaFields";
-import { useModelForm } from "../../../hooks/useModelForm";
 
 const PersonaFisicaFilter = ({ onSearch, loading }) => {
-  const {initialValuesFilter, FilterFields } = useModelForm(
-    PersonaFisicaFields)
-
+  
   return (
-    <>
-      <h5 className="mb-3">Filtrar persona fisica</h5>
-      <Formik
-        initialValues={initialValuesFilter}
-        onSubmit={(values) => onSearch(values)}
-      >
-        {() => (
-          <Form>
-            <div className="row">
-            <FilterFields/>            
-            </div>
-            <div className="text-end">
-              <Button type="submit" variant="primary" disabled={loading}>
-                Buscar
-              </Button>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </>
+    <ABMFilter
+      title="Filtrar PersonaFisica"
+      fields={PersonaFisicaFields}
+      controller="persona-fisica"
+      onSearch={onSearch}
+      loading={loading}
+    />
   );
 };
 
