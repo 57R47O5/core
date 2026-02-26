@@ -25,10 +25,10 @@ const SidebarNode = ({ node }) => {
         {node.to ? (
           <NavLink
             to={node.to}
-            className="sidebar-link flex-grow-1"
+            className="sidebar-link"
             onClick={e => hasChildren && e.preventDefault()}
           >
-            <span className="sidebar-group">
+          <span className="sidebar-group">
           {Icon && (
             <span className="sidebar-icon">
               <Icon />
@@ -50,12 +50,10 @@ const SidebarNode = ({ node }) => {
                 {node.label}
               </span>
             </span>
-        )}
-        
+        )}        
       </div>
-
       {hasChildren && open && (
-        <ul className="list-unstyled ms-3 mt-1">
+        <ul className="sidebar-submenu">
           {node.content.map(child => (
             <SidebarNode key={child.key} node={child} />
           ))}
