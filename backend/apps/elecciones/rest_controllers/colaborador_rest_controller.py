@@ -1,6 +1,6 @@
 from django.db.models import Q, F, Value
 from django.db.models.functions import Concat
-from framework.permisos import PermisoGroup
+from framework.permisos import P, PermisoGroup
 from framework.models.basemodels import Constant
 
 from framework.api.options import BaseOptionsAPIView
@@ -9,7 +9,8 @@ from apps.elecciones.serializers.colaborador_serializer import (
     ColaboradorCreateSerializer,
     ColaboradorUpdateSerializer,
     ColaboradorRetrieveSerializer)
-from controllers.base.base_rest_controller import ModelRestController
+from controllers.base.base_rest_controller import ModelRestController,  Capability, CapabilitySet
+from apps.base.rest_controllers.persona_user_rest_controller import PermisosPersonaUser
 
 class PermisosColaborador(PermisoGroup):
     VIEW=Constant("elecciones.colaborador.view")
@@ -26,6 +27,14 @@ class ColaboradorRestController(ModelRestController):
     update_serializer = ColaboradorUpdateSerializer
     retrieve_serializer = ColaboradorRetrieveSerializer    
     permisos = PermisosColaborador
+
+    capabilities = CapabilitySet(
+        Capability(
+            name="crear_usuario",
+            permission=P(PermisosPersonaUser.CREATE),
+            business_rule=lambda instancia: instancia.usuario_agregable
+        )
+    )
 
     def serialize_list(self, queryset):
         return list(queryset.values()

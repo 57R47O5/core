@@ -13,10 +13,10 @@ from controllers.base.base_rest_controller import ModelRestController, Capabilit
 from apps.base.rest_controllers.persona_user_rest_controller import PermisosPersonaUser
 
 class PermisosPersonaFisica(PermisoGroup):
-    VIEW=Constant("base.persona_fisica.view")
-    CREATE=Constant("base.persona_fisica.create")
-    UPDATE=Constant("base.persona_fisica.update")
-    DESTROY=Constant("base.persona_fisica.destroy")
+    VIEW=Constant("base.persona-fisica.view")
+    CREATE=Constant("base.persona-fisica.create")
+    UPDATE=Constant("base.persona-fisica.update")
+    DESTROY=Constant("base.persona-fisica.destroy")
 
 class PersonaFisicaRestController(ModelRestController):
     label = "Persona"

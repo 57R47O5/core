@@ -21,3 +21,7 @@ class Colaborador(BaseModel):
 
     def __str__(self):
         return f"{str(self.persona)} - {self.campana}"
+    
+    @property
+    def usuario_agregable(self):
+        return not self.persona.tiene_usuario

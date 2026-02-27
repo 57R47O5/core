@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="permiso-base.persona_fisica.view" author="orco">
+    <changeSet id="permiso-base.persona-fisica.create" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="base.persona_fisica.view"/>
-            <column name="nombre" value="Persona Fisica View"/>
-            <column name="descripcion" value="Permiso Persona Fisica View"/>
+            <column name="codigo" value="base.persona-fisica.create"/>
+            <column name="nombre" value="Base Persona-Fisica Create"/>
+            <column name="descripcion" value="Permiso Base Persona-Fisica Create"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -21,17 +21,17 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'base.persona_fisica.view'</where>
+                <where>codigo = 'base.persona-fisica.create'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-base.persona_fisica.create" author="orco">
+    <changeSet id="permiso-base.persona-fisica.destroy" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="base.persona_fisica.create"/>
-            <column name="nombre" value="Persona Fisica Create"/>
-            <column name="descripcion" value="Permiso Persona Fisica Create"/>
+            <column name="codigo" value="base.persona-fisica.destroy"/>
+            <column name="nombre" value="Base Persona-Fisica Destroy"/>
+            <column name="descripcion" value="Permiso Base Persona-Fisica Destroy"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -46,17 +46,17 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'base.persona_fisica.create'</where>
+                <where>codigo = 'base.persona-fisica.destroy'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-base.persona_fisica.update" author="orco">
+    <changeSet id="permiso-base.persona-fisica.view" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="base.persona_fisica.update"/>
-            <column name="nombre" value="Persona Fisica Update"/>
-            <column name="descripcion" value="Permiso Persona Fisica Update"/>
+            <column name="codigo" value="base.persona-fisica.view"/>
+            <column name="nombre" value="Base Persona-Fisica View"/>
+            <column name="descripcion" value="Permiso Base Persona-Fisica View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -71,17 +71,17 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'base.persona_fisica.update'</where>
+                <where>codigo = 'base.persona-fisica.view'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-base.persona_fisica.destroy" author="orco">
+    <changeSet id="permiso-base.persona-fisica.update" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="base.persona_fisica.destroy"/>
-            <column name="nombre" value="Persona Fisica Destroy"/>
-            <column name="descripcion" value="Permiso Persona Fisica Destroy"/>
+            <column name="codigo" value="base.persona-fisica.update"/>
+            <column name="nombre" value="Base Persona-Fisica Update"/>
+            <column name="descripcion" value="Permiso Base Persona-Fisica Update"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -96,17 +96,17 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'base.persona_fisica.destroy'</where>
+                <where>codigo = 'base.persona-fisica.update'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-base.persona_juridica.view" author="orco">
+    <changeSet id="permiso-base.persona-juridica.create" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="base.persona_juridica.view"/>
-            <column name="nombre" value="Persona Juridica View"/>
-            <column name="descripcion" value="Permiso Persona Juridica View"/>
+            <column name="codigo" value="base.persona-juridica.create"/>
+            <column name="nombre" value="Base Persona-Juridica Create"/>
+            <column name="descripcion" value="Permiso Base Persona-Juridica Create"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -121,17 +121,17 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'base.persona_juridica.view'</where>
+                <where>codigo = 'base.persona-juridica.create'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-base.persona_juridica.create" author="orco">
+    <changeSet id="permiso-base.persona-juridica.destroy" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="base.persona_juridica.create"/>
-            <column name="nombre" value="Persona Juridica Create"/>
-            <column name="descripcion" value="Permiso Persona Juridica Create"/>
+            <column name="codigo" value="base.persona-juridica.destroy"/>
+            <column name="nombre" value="Base Persona-Juridica Destroy"/>
+            <column name="descripcion" value="Permiso Base Persona-Juridica Destroy"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -146,17 +146,17 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'base.persona_juridica.create'</where>
+                <where>codigo = 'base.persona-juridica.destroy'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-base.persona_juridica.update" author="orco">
+    <changeSet id="permiso-base.persona-juridica.view" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="base.persona_juridica.update"/>
-            <column name="nombre" value="Persona Juridica Update"/>
-            <column name="descripcion" value="Permiso Persona Juridica Update"/>
+            <column name="codigo" value="base.persona-juridica.view"/>
+            <column name="nombre" value="Base Persona-Juridica View"/>
+            <column name="descripcion" value="Permiso Base Persona-Juridica View"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -171,17 +171,17 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'base.persona_juridica.update'</where>
+                <where>codigo = 'base.persona-juridica.view'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="permiso-base.persona_juridica.destroy" author="orco">
+    <changeSet id="permiso-base.persona-juridica.update" author="orco">
         <insert tableName="permiso">
             <column name="id" valueComputed="nextval('permiso_id_seq')"/>
-            <column name="codigo" value="base.persona_juridica.destroy"/>
-            <column name="nombre" value="Persona Juridica Destroy"/>
-            <column name="descripcion" value="Permiso Persona Juridica Destroy"/>
+            <column name="codigo" value="base.persona-juridica.update"/>
+            <column name="nombre" value="Base Persona-Juridica Update"/>
+            <column name="descripcion" value="Permiso Base Persona-Juridica Update"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -196,7 +196,207 @@
         </insert>
         <rollback>
             <delete tableName="permiso">
-                <where>codigo = 'base.persona_juridica.destroy'</where>
+                <where>codigo = 'base.persona-juridica.update'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-base.documento-identidad.create" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="base.documento-identidad.create"/>
+            <column name="nombre" value="Base Documento-Identidad Create"/>
+            <column name="descripcion" value="Permiso Base Documento-Identidad Create"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'base.documento-identidad.create'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-base.documento-identidad.destroy" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="base.documento-identidad.destroy"/>
+            <column name="nombre" value="Base Documento-Identidad Destroy"/>
+            <column name="descripcion" value="Permiso Base Documento-Identidad Destroy"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'base.documento-identidad.destroy'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-base.documento-identidad.view" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="base.documento-identidad.view"/>
+            <column name="nombre" value="Base Documento-Identidad View"/>
+            <column name="descripcion" value="Permiso Base Documento-Identidad View"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'base.documento-identidad.view'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-base.documento-identidad.update" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="base.documento-identidad.update"/>
+            <column name="nombre" value="Base Documento-Identidad Update"/>
+            <column name="descripcion" value="Permiso Base Documento-Identidad Update"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'base.documento-identidad.update'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-base.persona-user.create" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="base.persona-user.create"/>
+            <column name="nombre" value="Base Persona-User Create"/>
+            <column name="descripcion" value="Permiso Base Persona-User Create"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'base.persona-user.create'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-base.persona-user.destroy" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="base.persona-user.destroy"/>
+            <column name="nombre" value="Base Persona-User Destroy"/>
+            <column name="descripcion" value="Permiso Base Persona-User Destroy"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'base.persona-user.destroy'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-base.persona-user.view" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="base.persona-user.view"/>
+            <column name="nombre" value="Base Persona-User View"/>
+            <column name="descripcion" value="Permiso Base Persona-User View"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'base.persona-user.view'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="permiso-base.persona-user.update" author="orco">
+        <insert tableName="permiso">
+            <column name="id" valueComputed="nextval('permiso_id_seq')"/>
+            <column name="codigo" value="base.persona-user.update"/>
+            <column name="nombre" value="Base Persona-User Update"/>
+            <column name="descripcion" value="Permiso Base Persona-User Update"/>
+
+            <!-- BaseModel -->
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+
+            <!-- ConstantModel -->
+            <column name="activo" valueBoolean="true"/>
+
+        </insert>
+        <rollback>
+            <delete tableName="permiso">
+                <where>codigo = 'base.persona-user.update'</where>
             </delete>
         </rollback>
     </changeSet>

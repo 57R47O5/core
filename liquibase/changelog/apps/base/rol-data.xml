@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="rol-base.viewer" author="orco">
+    <changeSet id="rol-base.base_viewer" author="orco">
         <insert tableName="rol">
             <column name="id" valueComputed="nextval('rol_id_seq')"/>
-            <column name="codigo" value="base.viewer"/>
-            <column name="nombre" value="Base Viewer"/>
-            <column name="descripcion" value="Rol Base Viewer"/>
+            <column name="codigo" value="base.BASE_VIEWER"/>
+            <column name="nombre" value="Base Base Viewer"/>
+            <column name="descripcion" value="Rol Base Base Viewer"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -21,17 +21,17 @@
         </insert>
         <rollback>
             <delete tableName="rol">
-                <where>codigo = 'base.viewer'</where>
+                <where>codigo = 'base.BASE_VIEWER'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="rol-base.admin" author="orco">
+    <changeSet id="rol-base.base_admin" author="orco">
         <insert tableName="rol">
             <column name="id" valueComputed="nextval('rol_id_seq')"/>
-            <column name="codigo" value="base.admin"/>
-            <column name="nombre" value="Base Admin"/>
-            <column name="descripcion" value="Rol Base Admin"/>
+            <column name="codigo" value="base.BASE_ADMIN"/>
+            <column name="nombre" value="Base Base Admin"/>
+            <column name="descripcion" value="Rol Base Base Admin"/>
 
             <!-- BaseModel -->
             <column name="is_deleted" valueBoolean="false"/>
@@ -46,7 +46,7 @@
         </insert>
         <rollback>
             <delete tableName="rol">
-                <where>codigo = 'base.admin'</where>
+                <where>codigo = 'base.BASE_ADMIN'</where>
             </delete>
         </rollback>
     </changeSet>
