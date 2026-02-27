@@ -2,10 +2,10 @@ from framework.models.basemodels import Constant
 from auth.models.rol import RolManager
 from base.permisos import (
     PermisosPersonaFisica,
-    PermisosPersonaJuridica
+    PermisosPersonaJuridica,
+    PermisosPersonaUser
 )
 
-#TODO: Asegurarnos de que esto funciona
 class BaseRoles(RolManager):    
     BASE_VIEWER = Constant(
         "base.viewer",
@@ -21,5 +21,6 @@ class BaseRoles(RolManager):
             PermisosPersonaFisica.VIEW,
             PermisosPersonaJuridica.VIEW,
             PermisosPersonaJuridica.UPDATE,
+            PermisosPersonaUser.all()
         ]
     )

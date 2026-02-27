@@ -11,12 +11,14 @@ class PersonaUser(BaseModel):
         Persona,
         on_delete=models.CASCADE,
         related_name="usuarios",
+        db_column="persona",
     )
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="personas",
+        db_column="user",
     )
 
     principal = models.BooleanField(default=False)
