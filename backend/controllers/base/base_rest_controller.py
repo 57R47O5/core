@@ -1,4 +1,4 @@
-from typing import Type, List, Optional
+from typing import Type, List, Optional, Callable
 from django.db import models
 from django.db.models import Q, CharField, TextField, DateField, DateTimeField
 
@@ -9,6 +9,68 @@ from framework.menu.menu import Node
 from framework.exceptions import excepcion, ExcepcionValidacion
 from framework.permisos import Perm, require_perm, PermisoGroup, P
 
+class Capability:
+    """
+    Representa una acción que puede realizarse sobre una instancia.
+    Combina:
+      - Permiso del usuario
+      - Regla de negocio del modelo
+    """
+
+    def __init__(self, name, 
+                 permission:Optional[Perm]=None, 
+                 business_rule:Optional[str|Callable]=None):
+        self.name = name
+        self.permission = permission
+        self.business_rule = business_rule
+
+    def is_allowed(self, request, instance):
+        allowed = True
+
+        # Permiso
+        if self.permission:
+            allowed = allowed and self.permission.evaluate(request.user.permisos)
+
+        # Regla de negocio
+        if self.business_rule:
+            if callable(self.business_rule):
+                allowed &= self.business_rule(instance)
+            else:
+                rule = getattr(instance, self.business_rule, None)
+                if callable(rule):
+                    allowed &= rule()
+
+        return allowed
+    
+class CapabilitySet:
+    """
+    Colección de capacidades evaluables.
+    """
+
+    def __init__(self, *capabilities):
+        self._capabilities = list(capabilities)
+
+    def evaluate(self, request, instance):
+        return {
+            cap.name: cap.is_allowed(request, instance)
+            for cap in self._capabilities
+        }
+
+    def __iter__(self):
+        return iter(self._capabilities)
+    
+    def __add__(self, other):
+        if not isinstance(other, CapabilitySet):
+            return NotImplemented
+
+        # merge por nombre (el segundo sobrescribe)
+        merged = {cap.name: cap for cap in self._capabilities}
+
+        for cap in other:
+            merged[cap.name] = cap
+
+        return CapabilitySet(*merged.values())
+    
 class BaseRestController(viewsets.ViewSet):
     label:str
     url:str
@@ -91,9 +153,33 @@ class ModelRestController(BaseRestController):
     update_permission: Type[Perm] = None
     destroy_permission: Type[Perm] = None
     view_permission: Type[Perm] = None
-    
-    def _get_capabilities(self, request, instance):
-        return {}
+   
+    capabilities = CapabilitySet()
+
+    def get_base_capabilities(self):
+
+        caps = []
+
+        if self.update_permission:
+            caps.append(
+                Capability(
+                    name="editar",
+                    permission=self.update_permission
+                )
+            )
+
+        if self.destroy_permission:
+            caps.append(
+                Capability(
+                    name="eliminar",
+                    permission=self.destroy_permission
+                )
+            )
+
+        return CapabilitySet(*caps)
+
+    def get_capabilities(self):
+        return self.get_base_capabilities() + self.capabilities
 
     def serialize_list(self, queryset):
         """
@@ -178,8 +264,8 @@ class ModelRestController(BaseRestController):
     @require_perm(view_permission)
     def retrieve(self, request, pk=None):
         instancia=self.model.objects.get(pk=pk)
-        serializer=self.retrieve_serializer(instancia)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(self._serialize_instance(request, instancia),
+                         status=status.HTTP_200_OK)
     
     @excepcion
     @require_perm(update_permission)
@@ -208,4 +294,36 @@ class ModelRestController(BaseRestController):
     def destroy(self, request, pk=None):
         instancia=self.model.objects.get(pk=pk)
         instancia.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)    
+    
+    def _get_capabilities(self, request, instancia):
+        '''
+        Obtiene todas las operaciones que se pueden realizar con la instancia
+        En esencia, combina Reglas del negocio con Permisos
+        '''
+        return self.get_capabilities().evaluate(request, instancia)
+
+
+    def _serialize_instance(self, request, instancia):
+        '''
+        Método unificado para serializar todas las instancias.  
+        Lo hacemos en dos partes. En primer lugar  serializamos 
+        la instancia propiamente dicha y luego la enriquecemos.
+
+        Esto nos permite mostrar no sólo lo que la instancia es,
+        sino lo que se puede hacer con ella de acuerdo a los permisos
+        que tenga el usuario
+        '''
+        serializer = self.retrieve_serializer(
+            instancia,
+            context={"request": request}
+        )
+
+        data = serializer.data
+
+        capabilities = self._get_capabilities(request, instancia)
+
+        if capabilities:
+            data["capabilities"] = capabilities
+
+        return data
