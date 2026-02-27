@@ -3,6 +3,7 @@ import { Button, Spinner } from "react-bootstrap";
 import { useFormikContext } from "formik";
 
 export default function Botonera({
+  showSubmit,
   onDelete,
   onCancel,
   showDelete = true,
@@ -14,7 +15,7 @@ export default function Botonera({
     <div className="d-flex gap-2">
 
       {/* GUARDAR */}
-      <Button
+      {showDelete && <Button
         variant="primary"
         onClick={submitForm}
         disabled={isSubmitting}
@@ -35,7 +36,7 @@ export default function Botonera({
             {submitLabel}
           </>
         )}
-      </Button>
+      </Button>}
 
       {/* ELIMINAR */}
       {showDelete && onDelete && (

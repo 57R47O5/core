@@ -1,7 +1,7 @@
 
 from django.db.models import F, Value
 from django.db.models.functions import Concat
-from framework.permisos import PermisoGroup
+from framework.permisos import P, PermisoGroup
 from framework.models.basemodels import Constant
 
 from apps.base.models.persona_fisica import PersonaFisica
@@ -9,13 +9,15 @@ from apps.base.serializers.persona_fisica_serializer import (
     PersonaFisicaUpdateSerializer,
     PersonaFisicaRetrieveSerializer,
     PersonaFisicaInputSerializer)
-from controllers.base.base_rest_controller import ModelRestController
+from controllers.base.base_rest_controller import ModelRestController, Capability, CapabilitySet
+from apps.base.rest_controllers.persona_user_rest_controller import PermisosPersonaUser
 
 class PermisosPersonaFisica(PermisoGroup):
     VIEW=Constant("base.persona_fisica.view")
     CREATE=Constant("base.persona_fisica.create")
     UPDATE=Constant("base.persona_fisica.update")
     DESTROY=Constant("base.persona_fisica.destroy")
+
 class PersonaFisicaRestController(ModelRestController):
     label = "Persona"
     model = PersonaFisica
@@ -24,6 +26,14 @@ class PersonaFisicaRestController(ModelRestController):
     update_serializer = PersonaFisicaUpdateSerializer
     retrieve_serializer = PersonaFisicaRetrieveSerializer 
     permisos=PermisosPersonaFisica
+   
+    capabilities = CapabilitySet(
+        Capability(
+            name="crear_usuario",
+            permission=P(PermisosPersonaUser.CREATE),
+            business_rule=lambda instancia: instancia.usuario_agregable
+        )
+    )
 
     def serialize_list(self, queryset):
         """
