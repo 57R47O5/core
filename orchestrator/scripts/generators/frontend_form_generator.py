@@ -42,38 +42,19 @@ def generate_frontend_filter(definition:DomainModelDefinition):
     file_path = f"{model_folder}/{definition.ModelName}Filter.jsx"
 
     content = f"""
-import {{ Formik, Form }} from "formik";
-import {{ Button }} from "react-bootstrap";
-import {{ useModelForm }} from "../../../hooks/useModelForm";
+import ABMFilter from "../../../components/filtros/ABMFilter";
 import {{ {definition.ModelName}Fields }} from "./{definition.ModelName}Fields";
 
 const {definition.ModelName}Filter = ({{ onSearch, loading }}) => {{
-  const {{ initialValuesFilter, FilterFields }} = useModelForm(
-  {definition.ModelName}Fields)
   
   return (
-    <>
-      <h5 className="mb-3">Filtrar {(definition.model_name).replace('_', ' ')}</h5>
-
-      <Formik
-        initialValues={{initialValuesFilter}}
-        onSubmit={{(values) => onSearch(values)}}
-      >
-        {{() => (
-          <Form>
-            <div className="row">
-            <FilterFields/>
-            </div>
-
-            <div className="text-end">
-              <Button type="submit" variant="primary" disabled={{loading}}>
-                Buscar
-              </Button>
-            </div>
-          </Form>
-        )}}
-      </Formik>
-    </>
+    <ABMFilter
+      title="Filtrar {definition.ModelName}"
+      fields={{{definition.ModelName}Fields}}
+      controller="{definition.model_name.replace("_", "-")}"
+      onSearch={{onSearch}}
+      loading={{loading}}
+    />
   );
 }};
 
