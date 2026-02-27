@@ -91,6 +91,9 @@ class ModelRestController(BaseRestController):
     update_permission: Type[Perm] = None
     destroy_permission: Type[Perm] = None
     view_permission: Type[Perm] = None
+    
+    def _get_capabilities(self, request, instance):
+        return {}
 
     def serialize_list(self, queryset):
         """
@@ -184,8 +187,9 @@ class ModelRestController(BaseRestController):
         instancia=self.model.objects.get(pk=pk)
         serializer=self.update_serializer(instancia, data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        instancia=serializer.save()
+        retrieve_serializer = self.retrieve_serializer(instancia)
+        return Response(retrieve_serializer.data, status=status.HTTP_200_OK)
 
     @excepcion
     @require_perm(update_permission)
@@ -195,8 +199,9 @@ class ModelRestController(BaseRestController):
             instancia, data=request.data, partial=True
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        instancia=serializer.save()
+        retrieve_serializer = self.retrieve_serializer(instancia)
+        return Response(retrieve_serializer.data, status=status.HTTP_200_OK)
 
     @excepcion
     @require_perm(destroy_permission)
