@@ -19,9 +19,13 @@ class PersonaFisicaUpdateSerializer(serializers.ModelSerializer):
 
 class PersonaFisicaRetrieveSerializer(PersonaFisicaSerializer):
     documentos_identidad = serializers.ReadOnlyField()
+    tiene_usuario = serializers.ReadOnlyField()
+
     class Meta:
         model = PersonaFisica
-        fields = ["id", "persona_id", "nombres", "apellidos", "fecha_nacimiento", "documentos_identidad"]
+        fields = ["id", "persona_id", "nombres", 
+                  "apellidos", "fecha_nacimiento", 
+                  "documentos_identidad", "tiene_usuario"]
 
 class PersonaFisicaInputSerializer(serializers.Serializer):
     nombres = serializers.CharField()

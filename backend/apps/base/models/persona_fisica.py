@@ -47,3 +47,11 @@ class PersonaFisica(BaseModel):
             documento.delete()
         persona.delete()
         return True
+
+    @property
+    def tiene_usuario(self):
+        return self.persona.usuarios.exists()
+    
+    @property
+    def usuario_agregable(self):
+        return self.tiene_usuario
