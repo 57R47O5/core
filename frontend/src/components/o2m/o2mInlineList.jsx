@@ -25,8 +25,7 @@ export default function O2MInlineList({
   if (cargando) return <Spinner />;
 
   return (
-    <CenteredCard>
-      {title && <h5 className="mt-4">{title}</h5>}
+    <CenteredCard title={title}>
       <Card.Body>
       <O2MTable
         items={items}

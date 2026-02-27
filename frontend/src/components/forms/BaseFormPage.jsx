@@ -71,8 +71,9 @@ function BaseFormPageContent({
 
               <div className="d-flex justify-content-between mt-3">
                 <Botonera
+                  showSubmit={isCreate || instance?.capabilities?.editar}
                   submitLabel={isCreate ? "Crear" : "Actualizar"}
-                  showDelete={!isCreate}
+                  showDelete={instance?.capabilities?.eliminar}
                   onDelete={handleDelete}
                   onCancel={() => navigate(redirectTo)}
                   isSubmitting={isSubmitting}

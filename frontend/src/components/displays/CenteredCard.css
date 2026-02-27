@@ -1,0 +1,45 @@
+/* Wrapper que centra horizontalmente */
+.centered-card-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  width: 100%;
+}
+
+/* Card base */
+.centered-card {
+  width: 100%;
+  border-radius: 14px;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* Header */
+.centered-card-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 1rem 1.25rem;
+}
+
+/* Header layout */
+.centered-card-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Title */
+.centered-card-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Subtitle */
+.centered-card-subtitle {
+  color: #6c757d;
+}
+
+/* Body */
+.centered-card-body {
+  padding: 1.5rem;
+}
