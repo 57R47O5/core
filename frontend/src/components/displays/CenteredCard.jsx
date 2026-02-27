@@ -1,22 +1,46 @@
-import React from "react";
 import { Card } from "react-bootstrap";
+import "./CenteredCard.css";
 
-const CenteredCard = ({ children, maxWidth = "750px", className = "centered-card", ...props }) => {
+const CenteredCard = ({
+  title,
+  subtitle,
+  headerActions,
+  children,
+  maxWidth = "750px",
+  className = "",
+  bodyClassName = "",
+  ...props
+}) => {
   return (
-    <div
-      className="d-flex justify-content-center px-3 py-3"
-      style={{ width: "100%" }}
-    >
+    <div className="centered-card-wrapper">
       <Card
-        className={`shadow-sm ${className}`}
-        style={{
-          width: "100%",
-          maxWidth: maxWidth,
-          borderRadius: "12px",
-        }}
+        className={`centered-card shadow-sm ${className}`}
+        style={{ maxWidth }}
         {...props}
       >
-        <Card.Body>{children}</Card.Body>
+        {(title || headerActions) && (
+          <Card.Header className="centered-card-header">
+            <div className="centered-card-header-content">
+              <div>
+                {title && <h5 className="centered-card-title">{title}</h5>}
+                {subtitle && (
+                  <small className="centered-card-subtitle">
+                    {subtitle}
+                  </small>
+                )}
+              </div>
+              {headerActions && (
+                <div className="centered-card-actions">
+                  {headerActions}
+                </div>
+              )}
+            </div>
+          </Card.Header>
+        )}
+
+        <Card.Body className={`centered-card-body ${bodyClassName}`}>
+          {children}
+        </Card.Body>
       </Card>
     </div>
   );
