@@ -58,3 +58,6 @@ class User(models.Model):
             "rol__permisos__permiso",
             flat=True
         )
+    
+    def has_perm(self, permiso:str):
+        return permiso in self.permisos

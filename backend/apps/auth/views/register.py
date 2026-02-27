@@ -1,49 +1,21 @@
-from framework.security.passwords import hash_password
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-
-from framework.exceptions import ExcepcionValidacion
-from framework.constantes.mensajes_error import MensajesError
+from rest_framework import status, serializers
 from framework.permisos import P, require_perm
-
-from apps.auth.models.user import User
 from apps.auth.permisos import AuthPermisos
-
-class UsernameError(MensajesError):
-    OBLIGATORIO="El username es obligatorio."
-    EXISTENTE="El username ya existe."
-
-class PasswordError(MensajesError):
-    OBLIGATORIO="La contraseña es obligatoria."
-
+from apps.auth.services.user_service import User, UserService
 
 class RegisterView(APIView):
-    """
-    Registra un nuevo usuario en el sistema.
-    """
 
     @require_perm(P(AuthPermisos.REGISTER))
     def post(self, request):
         data = request.data or {}
 
-        username = data.get("username")
-        email = data.get("email")
-        password = data.get("password")
-
-        if not username:
-            raise ExcepcionValidacion(UsernameError.OBLIGATORIO)
-
-        if not password:
-            raise ExcepcionValidacion(PasswordError.OBLIGATORIO)
-
-        if User.objects.filter(username=username).exists():
-            raise ExcepcionValidacion(UsernameError.EXISTENTE)
-
-        user = User.objects.create(
-            username=username,
-            email=email,
-            password_hash=hash_password(password),
+        user = UserService.create_user(
+            username=data.get("username"),
+            email=data.get("email"),
+            password=data.get("password"),
         )
 
         return Response(
@@ -55,3 +27,21 @@ class RegisterView(APIView):
             status=status.HTTP_201_CREATED,
         )
 
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "email"]
+
+
+class UserListView(APIView):
+    """
+    Lista los usuarios del sistema.
+    """
+
+    def get(self, request):
+
+        queryset = User.objects.all().order_by("username")
+
+        serializer = UserListSerializer(queryset, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
