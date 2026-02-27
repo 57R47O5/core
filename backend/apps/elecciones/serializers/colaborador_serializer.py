@@ -70,6 +70,7 @@ class ColaboradorRetrieveSerializer(serializers.ModelSerializer):
     nombres = serializers.CharField(source="persona.nombres")
     apellidos = serializers.CharField(source="persona.apellidos")
     fecha_nacimiento = serializers.DateField(source="persona.fecha_nacimiento")
+    usuario_agregable = serializers.ReadOnlyField()
     class Meta:
         model = Colaborador
         fields = "__all__"

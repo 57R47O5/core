@@ -6,7 +6,7 @@ const CampanaFilter = ({ onSearch, loading }) => {
   
   return (
     <ABMFilter
-      title="Filtrar Campana"
+      title="Filtrar Campaña"
       fields={CampanaFields}
       controller="campana"
       onSearch={onSearch}

@@ -9,10 +9,10 @@ from apps.base.serializers.persona_juridica_serializer import (
 from controllers.base.base_rest_controller import ModelRestController
 
 class PermisosPersonaJuridica(PermisoGroup):
-    VIEW=Constant("base.persona_juridica.view")
-    CREATE=Constant("base.persona_juridica.create")
-    UPDATE=Constant("base.persona_juridica.update")
-    DESTROY=Constant("base.persona_juridica.destroy")
+    VIEW=Constant("base.persona-juridica.view")
+    CREATE=Constant("base.persona-juridica.create")
+    UPDATE=Constant("base.persona-juridica.update")
+    DESTROY=Constant("base.persona-juridica.destroy")
 class PersonaJuridicaRestController(ModelRestController):
     label="Empresas"
     model = PersonaJuridica

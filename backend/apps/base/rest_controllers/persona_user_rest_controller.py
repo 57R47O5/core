@@ -8,10 +8,10 @@ from apps.base.serializers.persona_user_serializer import (
 from controllers.base.base_rest_controller import ModelRestController
 
 class PermisosPersonaUser(PermisoGroup):
-    VIEW=Constant("base.persona_user.view")
-    CREATE=Constant("base.persona_user.create")
-    UPDATE=Constant("base.persona_user.update")
-    DESTROY=Constant("base.persona_user.destroy")
+    VIEW=Constant("base.persona-user.view")
+    CREATE=Constant("base.persona-user.create")
+    UPDATE=Constant("base.persona-user.update")
+    DESTROY=Constant("base.persona-user.destroy")
 class PersonaUserRestController(ModelRestController):
     model = PersonaUser
     url = 'persona-user'
