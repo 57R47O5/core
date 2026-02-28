@@ -257,8 +257,7 @@ class ModelRestController(BaseRestController):
         if not serializer.is_valid():
             raise ExcepcionValidacion(str(serializer.errors))
         instancia=serializer.save()
-        retrieve_serializer = self.retrieve_serializer(instancia)
-        return Response(retrieve_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(self._serialize_instance(request, instancia), status=status.HTTP_201_CREATED)
 
     @excepcion
     @require_perm(view_permission)
@@ -274,8 +273,7 @@ class ModelRestController(BaseRestController):
         serializer=self.update_serializer(instancia, data=request.data)
         serializer.is_valid(raise_exception=True)
         instancia=serializer.save()
-        retrieve_serializer = self.retrieve_serializer(instancia)
-        return Response(retrieve_serializer.data, status=status.HTTP_200_OK)
+        return Response(self._serialize_instance(request, instancia), status=status.HTTP_200_OK)
 
     @excepcion
     @require_perm(update_permission)
@@ -286,8 +284,7 @@ class ModelRestController(BaseRestController):
         )
         serializer.is_valid(raise_exception=True)
         instancia=serializer.save()
-        retrieve_serializer = self.retrieve_serializer(instancia)
-        return Response(retrieve_serializer.data, status=status.HTTP_200_OK)
+        return Response(self._serialize_instance(request, instancia), status=status.HTTP_200_OK)
 
     @excepcion
     @require_perm(destroy_permission)

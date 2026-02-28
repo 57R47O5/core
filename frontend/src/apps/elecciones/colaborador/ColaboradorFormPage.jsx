@@ -1,5 +1,6 @@
 import BaseFormPage from "../../../components/forms/BaseFormPage";
 import ColaboradorForm from "./ColaboradorForm";
+import { colaboradorActions } from "./colaboradorActions";
 
 export default function ColaboradorFormPage() {
   return (
@@ -8,6 +9,7 @@ export default function ColaboradorFormPage() {
       FormComponent={ColaboradorForm}
       titleNew="Nuevo Colaborador"
       titleEdit="Editar Colaborador"
+      extraActions={colaboradorActions}
     />
   );
 }

@@ -16,12 +16,22 @@ function BaseFormPageContent({
   redirectTo,
   titleNew,
   titleEdit,
+  extraActions={},
 }) {
   const { id, isCreate } = useRouteMode();
   const navigate = useNavigate();
   const { instance, loading } = useInstance();
 
   const { crear, editar, eliminar } = getAPIBase(controller);
+
+  const dynamicButtons = Object.entries(extraActions)
+    .filter(([key]) => instance?.capabilities?.[key])
+    .map(([key, config]) => ({
+      label: config.label,
+      variant: config.variant,
+      onClick: () =>
+        config.action(instance, { crear, editar, eliminar }, navigate),
+    }));
 
   if (loading) {
     return (
@@ -77,6 +87,7 @@ function BaseFormPageContent({
                   onDelete={handleDelete}
                   onCancel={() => navigate(redirectTo)}
                   isSubmitting={isSubmitting}
+                   extraButtons={dynamicButtons}
                 />
               </div>
             </Form>
@@ -93,6 +104,7 @@ export default function BaseFormPage({
   redirectTo = `/${controller}`,
   titleNew = "Nuevo Registro",
   titleEdit = "Editar Registro",
+  extraActions
 }) {
   const { id, isEdit } = useRouteMode();
 
@@ -111,6 +123,7 @@ export default function BaseFormPage({
         redirectTo={redirectTo}
         titleNew={titleNew}
         titleEdit={titleEdit}
+        extraActions={extraActions}
       />
     </InstanceProvider>
   );

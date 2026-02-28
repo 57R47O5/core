@@ -1,7 +1,7 @@
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status, serializers
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from framework.permisos import P, require_perm
 from apps.auth.permisos import AuthPermisos
 from apps.auth.services.user_service import User, UserService
@@ -39,9 +39,5 @@ class UserListView(APIView):
     """
 
     def get(self, request):
-
         queryset = User.objects.all().order_by("username")
-
-        serializer = UserListSerializer(queryset, many=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(queryset.values("id", "username"), status=status.HTTP_200_OK)
