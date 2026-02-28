@@ -15,6 +15,7 @@ from apps.elecciones.serializers.colaborador_serializer import (
     ColaboradorRetrieveSerializer)
 from controllers.base.base_rest_controller import ModelRestController,  Capability, CapabilitySet
 from apps.base.rest_controllers.persona_user_rest_controller import PermisosPersonaUser
+from apps.auth.models.user import User
 
 class PermisosColaborador(PermisoGroup):
     VIEW=Constant("elecciones.colaborador.view")
@@ -60,7 +61,9 @@ class ColaboradorRestController(ModelRestController):
                 filtro &= Q(**{f"persona__{key}__icontains":value})
         return filtro
     
+    #Por ahora está bien así
     @action(methods=["get"], detail=False, url_path="usuarios-disponibles", url_name="usuarios-disponibles")
     def get_usuarios_disponibles(self, request):
-        personas = Colaborador.objects.values("persona__fisica")
-        return Response({}, status=status.HTTP_200_OK)
+        usuarios_sin_colaboradores = User.objects.filter(personas__persona__isnull=True)
+        salida= usuarios_sin_colaboradores.values("id", "username")
+        return Response(salida, status=status.HTTP_200_OK)
