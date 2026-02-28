@@ -5,6 +5,8 @@ from apps.base.urls.persona_juridica_urls import urlpatterns as persona_juridica
 from apps.base.urls.tipo_documento_identidad_urls import urlpatterns as tipo_doc_urls
 from apps.base.urls.documento_identidad_urls import urlpatterns as documento_urls
 
+app_name = "base"
+
 urlpatterns = (
     moneda_urls
     + persona_urls

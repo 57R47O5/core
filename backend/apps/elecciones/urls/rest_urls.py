@@ -9,6 +9,8 @@ from apps.elecciones.urls.salida_urls import urlpatterns as salida_urls
 from apps.elecciones.urls.seccional_urls import urlpatterns as seccional_urls
 from apps.elecciones.urls.votante_urls import urlpatterns as votante_urls
 
+app_name = "elecciones"
+
 urlpatterns = (
     campana_urls
     + colaborador_urls
@@ -21,3 +23,4 @@ urlpatterns = (
     + seccional_urls
     + votante_urls
 )
+

@@ -8,6 +8,7 @@ export default function Botonera({
   onCancel,
   showDelete = true,
   submitLabel = "Guardar",
+  extraButtons,
 }) {
   const { submitForm, isSubmitting } = useFormikContext();
 
@@ -61,6 +62,16 @@ export default function Botonera({
           Volver
         </Button>
       )}
+      {/* Botones Extra */}
+      {extraButtons?.map((btn, index) => (
+        <Button
+          key={index}
+          variant={btn.variant}
+          onClick={btn.onClick}
+        >
+          {btn.label}
+        </Button>
+      ))}
     </div>
   );
 }

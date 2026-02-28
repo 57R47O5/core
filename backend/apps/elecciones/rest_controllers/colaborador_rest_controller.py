@@ -1,5 +1,9 @@
 from django.db.models import Q, F, Value
 from django.db.models.functions import Concat
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from framework.permisos import P, PermisoGroup
 from framework.models.basemodels import Constant
 
@@ -55,3 +59,8 @@ class ColaboradorRestController(ModelRestController):
             if key in  ['nombres', 'apellidos']:
                 filtro &= Q(**{f"persona__{key}__icontains":value})
         return filtro
+    
+    @action(methods=["get"], detail=False, url_path="usuarios-disponibles", url_name="usuarios-disponibles")
+    def get_usuarios_disponibles(self, request):
+        personas = Colaborador.objects.values("persona__fisica")
+        return Response({}, status=status.HTTP_200_OK)
