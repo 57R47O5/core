@@ -7,7 +7,7 @@ import { useRouteMode } from "../../../hooks/useRouteMode";
 export default function CampanaForm() {
   const { isEdit } = useRouteMode();
 
-      const dynamicFields = useMemo(() => ({
+  const dynamicFields = useMemo(() => ({
     ...CampanaFields,
     candidato: {
       ...CampanaFields.candidato,

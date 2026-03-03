@@ -61,3 +61,8 @@ class User(models.Model):
     
     def has_perm(self, permiso:str):
         return permiso in self.permisos
+    
+    @property
+    def persona(self):
+        personas = self.personas.all()
+        return personas.first() if personas.exists() else None

@@ -53,7 +53,7 @@ class SalidaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Salida
         fields = [
-            "id", "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "campana", "colaborador", "fecha", "estado"
+            "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "campana", "colaborador", "fecha", "estado"
         ]
 
 

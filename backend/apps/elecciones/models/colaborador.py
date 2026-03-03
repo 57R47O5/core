@@ -25,3 +25,13 @@ class Colaborador(BaseModel):
     @property
     def usuario_agregable(self):
         return not self.persona.tiene_usuario
+    
+    @property
+    def user(self):
+        usuario = self.persona.persona.usuarios.first().user
+        user_serializado = {
+            "id": usuario.pk,
+            "label": usuario.username,
+            "controller": "user"
+        }
+        return user_serializado
