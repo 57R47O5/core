@@ -16,14 +16,18 @@ class PersonaLinkSerializer(serializers.ModelSerializer):
 
 
 class UserLinkSerializer(serializers.ModelSerializer):
+    label = serializers.SerializerMethodField()
     controller = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ["id", "nombre", "controller"]
+        fields = ["id", "label", "controller"]
 
     def get_controller(self, obj):
         return "user"
+    
+    def get_label(self, obj: User):
+        return obj.username
 
 class PersonaUserSerializer(serializers.ModelSerializer):
     persona = PersonaLinkSerializer()

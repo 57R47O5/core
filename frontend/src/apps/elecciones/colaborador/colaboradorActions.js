@@ -1,15 +1,18 @@
-import getAPIBase from "../../../api/BaseAPI";
+import { useInstance } from "../../../context/InstanceContext";
 
-const controller = "persona-user"
-const {crear} = getAPIBase(controller)
+export function useColaboradorActions() {
+  //const instance = useInstance();
 
-export const colaboradorActions = {
-  crear_usuario: {
-    label: "Agregar Usuario",
-    variant: "primary",
-    action: async (instance, navigate) => {
-      await crear("crear_usuario", instance.id);
-      alert("Usuario creado");
+  async function crearUsuario(navigate) {
+    await crear("crear_usuario", instance.id);
+    alert("Usuario creado");
+  }
+
+  return {
+    crear_usuario: {
+      label: "Agregar Usuario",
+      variant: "primary",
+      action: crearUsuario,
     },
-  },
-};
+  };
+}

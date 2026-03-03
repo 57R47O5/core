@@ -3,11 +3,9 @@ from django.db.models.functions import Concat
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from framework.permisos import P, PermisoGroup
 from framework.models.basemodels import Constant
 
-from framework.api.options import BaseOptionsAPIView
 from apps.elecciones.models.colaborador import Colaborador
 from apps.elecciones.serializers.colaborador_serializer import (
     ColaboradorCreateSerializer,
@@ -65,5 +63,7 @@ class ColaboradorRestController(ModelRestController):
     @action(methods=["get"], detail=False, url_path="usuarios-disponibles", url_name="usuarios-disponibles")
     def get_usuarios_disponibles(self, request):
         usuarios_sin_colaboradores = User.objects.filter(personas__persona__isnull=True)
-        salida= usuarios_sin_colaboradores.values("id", "username")
+        salida= usuarios_sin_colaboradores.values().annotate(
+            descripcion=F("username")
+        ).values("id", "descripcion")
         return Response(salida, status=status.HTTP_200_OK)
