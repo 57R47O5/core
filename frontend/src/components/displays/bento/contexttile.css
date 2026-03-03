@@ -1,0 +1,48 @@
+.context-grid {
+  display: grid;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+/* Columnas configurables */
+.context-grid.columns-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.context-grid.columns-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Cuando hay uno activo */
+.context-grid.has-active .context-tile.expanded {
+  grid-column: span 2;
+}
+
+/* Los colapsados cuando hay uno activo */
+.context-grid.has-active .context-tile.collapsed {
+  transform: scale(0.97);
+  opacity: 0.7;
+}
+
+/* Tile base */
+.context-tile {
+  transition: all 0.25s ease;
+  border-radius: 16px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Expandido */
+.context-tile.expanded {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  transform: scale(1.01);
+  z-index: 2;
+}
+
+/* Disabled */
+.context-tile.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
