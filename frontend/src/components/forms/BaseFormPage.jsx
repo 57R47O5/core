@@ -16,22 +16,13 @@ function BaseFormPageContent({
   redirectTo,
   titleNew,
   titleEdit,
-  extraActions={},
 }) {
   const { id, isCreate } = useRouteMode();
   const navigate = useNavigate();
   const { instance, loading } = useInstance();
 
-  const { crear, editar, eliminar } = getAPIBase(controller);
-
-  const dynamicButtons = Object.entries(extraActions)
-    .filter(([key]) => instance?.capabilities?.[key])
-    .map(([key, config]) => ({
-      label: config.label,
-      variant: config.variant,
-      onClick: () =>
-        config.action(instance, { crear, editar, eliminar }, navigate),
-    }));
+  const api = getAPIBase(controller);
+  const { crear, editar, eliminar } = api;
 
   if (loading) {
     return (
@@ -65,7 +56,7 @@ function BaseFormPageContent({
   return (
     <CenteredCard>
       <Card.Body>
-        <h3 className="mb-4 justify-content-center" style={{textAlign:"center"}}>
+        <h3 className="mb-4 text-center">
           {isCreate ? titleNew : titleEdit}
         </h3>
 
@@ -75,23 +66,43 @@ function BaseFormPageContent({
           validationSchema={FormComponent.validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
-            <Form>
-              <FormComponent />
+          {(formik) => {
+            // Acciones declaradas por el formulario
+            const declaredActions =
+              FormComponent.actions?.({
+                instance,
+                formik,
+                api,
+                navigate,
+                isCreate,
+              }) || {};
 
-              <div className="d-flex justify-content-between mt-3">
-                <Botonera
-                  showSubmit={isCreate || instance?.capabilities?.editar}
-                  submitLabel={isCreate ? "Crear" : "Actualizar"}
-                  showDelete={instance?.capabilities?.eliminar}
-                  onDelete={handleDelete}
-                  onCancel={() => navigate(redirectTo)}
-                  isSubmitting={isSubmitting}
-                   extraButtons={dynamicButtons}
-                />
-              </div>
-            </Form>
-          )}
+            const dynamicButtons = Object.entries(declaredActions)
+              .filter(([key]) => instance?.capabilities?.[key])
+              .map(([key, config]) => ({
+                label: config.label,
+                variant: config.variant,
+                onClick: config.action,
+              }));
+
+            return (
+              <Form>
+                <FormComponent formik={formik} instance={instance} />
+
+                <div className="d-flex justify-content-between mt-3">
+                  <Botonera
+                    showSubmit={isCreate || instance?.capabilities?.editar}
+                    submitLabel={isCreate ? "Crear" : "Actualizar"}
+                    showDelete={instance?.capabilities?.eliminar}
+                    onDelete={handleDelete}
+                    onCancel={() => navigate(redirectTo)}
+                    isSubmitting={formik.isSubmitting}
+                    extraButtons={dynamicButtons}
+                  />
+                </div>
+              </Form>
+            );
+          }}
         </Formik>
       </Card.Body>
     </CenteredCard>
@@ -104,12 +115,10 @@ export default function BaseFormPage({
   redirectTo = `/${controller}`,
   titleNew = "Nuevo Registro",
   titleEdit = "Editar Registro",
-  extraActions
 }) {
   const { id, isEdit } = useRouteMode();
 
-  const defaults =
-    FormComponent.initialValuesDefault || {};
+  const defaults = FormComponent.initialValuesDefault || {};
 
   return (
     <InstanceProvider
@@ -123,7 +132,6 @@ export default function BaseFormPage({
         redirectTo={redirectTo}
         titleNew={titleNew}
         titleEdit={titleEdit}
-        extraActions={extraActions}
       />
     </InstanceProvider>
   );
