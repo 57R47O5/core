@@ -1,0 +1,6 @@
+.form-plaintext-wrapper {
+  padding: 0.375rem 0;
+  min-height: calc(1.5em + 0.75rem + 2px);
+  display: flex;
+  align-items: center;
+}
