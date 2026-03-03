@@ -1,0 +1,22 @@
+.app-link {
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.app-link-default {
+  color: var(--bs-primary);
+}
+
+.app-link-default:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.app-link-muted {
+  color: var(--bs-body-color);
+}
+
+.app-link-muted:hover {
+  color: var(--bs-primary);
+}
