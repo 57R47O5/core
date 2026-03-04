@@ -1,0 +1,86 @@
+/* =========================
+   Variables de color
+========================= */
+
+:root {
+  --context-primary: #4387b4;
+  --context-primary-dark: #29577b;
+  --context-bg-soft: #eef5fa;
+  --context-bg-hover: #dcebf5;
+}
+
+/* =========================
+   Tile base refinado
+========================= */
+
+.context-tile {
+  transition: all 0.25s ease;
+  border-radius: 18px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border: 1px solid rgba(41, 87, 123, 0.08);
+}
+
+/* =========================
+   COLAPSADO
+========================= */
+
+.context-tile.collapsed {
+  background: var(--context-bg-soft);  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+/* Título grande cuando colapsado */
+.context-tile.collapsed .card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--context-primary-dark);
+  margin-bottom: 0.25rem;
+}
+
+/* Si NO hay subtítulo → centrar también verticalmente */
+.context-tile.collapsed.no-subtitle {
+  justify-content: center;
+}
+
+/* Si hay subtítulo → centrar en X pero mantener eje Y natural */
+.context-tile.collapsed.has-subtitle {
+  justify-content: center;
+}
+
+/* Subtítulo */
+.context-tile.collapsed .context-summary {
+  font-size: 0.85rem;
+  color: var(--context-primary);
+  opacity: 0.85;
+}
+
+/* Hover sutil */
+.context-tile.collapsed:hover {
+  background: var(--context-bg-hover);
+  transform: translateY(-2px);
+}
+
+/* =========================
+   EXPANDIDO
+========================= */
+
+.context-tile.expanded {
+  background: white;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  transform: scale(1.01);
+  z-index: 2;
+}
+
+/* Título normal cuando expandido */
+.context-tile.expanded .card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--context-primary-dark);
+}

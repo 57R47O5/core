@@ -34,6 +34,8 @@ export default function ContextTile({
       className={`context-tile 
         ${isActive ? "expanded" : "collapsed"} 
         ${disabled ? "disabled" : ""}
+        ${!isActive && summary ? "has-subtitle" : ""}
+        ${!isActive && !summary ? "no-subtitle" : ""} 
       `}
       onClick={handleToggle}
       style={{ cursor: canExpand && !disabled ? "pointer" : "default" }}
