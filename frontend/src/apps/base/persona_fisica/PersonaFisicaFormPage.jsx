@@ -7,6 +7,9 @@ import { useModelForm } from "../../../hooks/useModelForm";
 import { documentoIdentidadFields } from "../documento_identidad/DocumentoIdentidadFields";
 import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
+import ContextGrid from "../../../components/displays/bento/ContextGrid";
+import ContextTile from "../../../components/displays/bento/ContextTile";
+
 
 function DocumentosPersona({}) {
   const { instance } = useInstance();
@@ -43,18 +46,29 @@ export default function PersonaFisicaFormPage() {
   const controller = "persona-fisica";
 
   return (
-    <>
-      <BaseFormPage
-        controller={controller}
-        FormComponent={PersonaFisicaForm}
-        titleNew="Nueva Persona Física"
-        titleEdit="Editar Persona Física"
-      />
-      <InstanceProvider
-        controller={controller}
-        id = {id}>
-        {isEdit && (<DocumentosPersona/>)}
-      </InstanceProvider>
-    </>
+    <ContextGrid
+      defaultActive={0}
+    > 
+      <ContextTile
+        title="Datos Persona"
+      >
+        <BaseFormPage
+          controller={controller}
+          FormComponent={PersonaFisicaForm}
+          titleNew="Nueva Persona Física"
+          titleEdit="Editar Persona Física"
+          />
+      </ContextTile> 
+      <ContextTile
+        title = "Documentos"
+        summary = "Documentos de identidad de la persona"
+      >
+        <InstanceProvider
+          controller={controller}
+          id = {id}>
+          {isEdit && (<DocumentosPersona/>)}
+        </InstanceProvider>
+      </ContextTile>  
+    </ContextGrid>
   );
 }
