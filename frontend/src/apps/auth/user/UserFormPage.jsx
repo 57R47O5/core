@@ -10,6 +10,7 @@ import EntityLink from "../../../components/displays/EntityLink";
 import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useModelForm } from "../../../hooks/useModelForm";
 import { RolFields } from "../rol/RolFields"
+import { PermisoFields } from "../permiso/PermisoFields"
 
 function Persona({}){
   const { instance } = useInstance();
@@ -54,6 +55,37 @@ function RolesUser({}) {
   );
 }
 
+function PermisosUser({}) {
+  const { instance } = useInstance();
+
+  console.log("instance es: ", instance)
+
+  const {
+    initialValues,
+    validationSchema,
+    columns,
+  } = useModelForm(PermisoFields);
+
+  if (!instance)
+    return (<Spinner/>)
+  return (
+    <O2MProvider
+      controller="permiso"
+      columns={columns}
+      initialItem={{
+        ...initialValues,
+        id: instance.id, 
+      }}
+      validationSchema={validationSchema}
+    >
+      <O2MInlineList
+        title="Permisos"
+        filtros={{"roles__userrol__user":instance?.id}}
+      />
+    </O2MProvider>
+  );
+}
+
 export default function UserFormPage() {
   const {id } = useRouteMode();
   const controller = "user";
@@ -84,7 +116,12 @@ export default function UserFormPage() {
         title={"Roles"}
         >
           <RolesUser/>
-          </ContextTile>   
+          </ContextTile> 
+          <ContextTile
+          title={"Permisos"}
+          >
+            <PermisosUser/>
+          </ContextTile>  
       </ContextGrid>
     </InstanceProvider>
   );
