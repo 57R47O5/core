@@ -10,6 +10,23 @@
 }
 
 /* =========================
+   Grid
+========================= */
+
+.context-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  transition: all 0.3s ease;
+  grid-auto-flow: dense;
+}
+
+/* cuando uno está activo reorganizamos el grid */
+.context-grid.has-active {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* =========================
    Tile base refinado
 ========================= */
 

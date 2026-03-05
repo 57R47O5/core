@@ -50,7 +50,7 @@ export default function PersonaFisicaFormPage() {
       defaultActive={0}
     > 
       <ContextTile
-        title="Datos Persona"
+        title="Datos Personales"
       >
         <BaseFormPage
           controller={controller}
@@ -61,7 +61,6 @@ export default function PersonaFisicaFormPage() {
       </ContextTile> 
       <ContextTile
         title = "Documentos"
-        summary = "Documentos de identidad de la persona"
       >
         <InstanceProvider
           controller={controller}
