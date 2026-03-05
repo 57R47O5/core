@@ -10,6 +10,11 @@ MENU = Node(
             label="Registro",
             permiso=P(AuthPermisos.REGISTER),
             to="register/"
+        ),
+        Node(
+            label="User",
+            permiso=P(AuthPermisos.REGISTER),
+            to="user/"
         )
     ]
 )
