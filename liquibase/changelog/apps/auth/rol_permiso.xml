@@ -17,10 +17,10 @@
         </column>
         <column name="updatedat" type="timestamp">
         </column>
-        <column name="rol_code" type="int">
+        <column name="rol_code" type="varchar(255)">
             <constraints nullable="false"/>
         </column>
-        <column name="permiso_code" type="int">
+        <column name="permiso_code" type="varchar(255)">
             <constraints nullable="false"/>
         </column>
     </createTable>
