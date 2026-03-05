@@ -17,13 +17,29 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1rem;
-  transition: all 0.3s ease;
+  transition: grid-template-columns 0.35s ease;
   grid-auto-flow: dense;
 }
 
-/* cuando uno está activo reorganizamos el grid */
+/* cuando hay uno activo */
 .context-grid.has-active {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 3fr 1fr;
+  align-items: start;
+}
+
+/* tile expandido ocupa la columna grande */
+.context-grid.has-active .context-tile.expanded {
+  grid-column: 1;
+  grid-row: 1 / span 10;
+}
+
+/* tiles colapsados van a la columna lateral */
+.context-grid.has-active .context-tile.collapsed {
+  grid-column: 2;
+}
+
+.context-grid.has-active .context-tile.collapsed:hover {
+  transform: none;
 }
 
 /* =========================
