@@ -9,7 +9,7 @@ import ContextTile from "../../../components/displays/bento/ContextTile";
 import EntityLink from "../../../components/displays/EntityLink";
 import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useModelForm } from "../../../hooks/useModelForm";
-import { RolFields } from "../rol/RolFields"
+import { UserRolFields } from "../user_rol/UserRolFields"
 import { PermisoFields } from "../permiso/PermisoFields"
 
 function Persona({}){
@@ -33,23 +33,23 @@ function RolesUser({}) {
     initialValues,
     validationSchema,
     columns,
-  } = useModelForm(RolFields);
+  } = useModelForm(UserRolFields);
 
   if (!instance)
     return (<Spinner/>)
   return (
     <O2MProvider
-      controller="rol"
+      controller="user-rol"
       columns={columns}
       initialItem={{
         ...initialValues,
-        id: instance.id, 
+        user: instance.id, 
       }}
       validationSchema={validationSchema}
     >
       <O2MInlineList
         title="Roles"
-        filtros={{"userrol__user":instance?.id}}
+        filtros={{"user":instance?.id}}
       />
     </O2MProvider>
   );
@@ -58,7 +58,6 @@ function RolesUser({}) {
 function PermisosUser({}) {
   const { instance } = useInstance();
 
-  console.log("instance es: ", instance)
 
   const {
     initialValues,
@@ -70,7 +69,7 @@ function PermisosUser({}) {
     return (<Spinner/>)
   return (
     <O2MProvider
-      controller="permiso"
+      controller="rol-permiso"
       columns={columns}
       initialItem={{
         ...initialValues,
@@ -80,7 +79,7 @@ function PermisosUser({}) {
     >
       <O2MInlineList
         title="Permisos"
-        filtros={{"roles__userrol__user":instance?.id}}
+        filtros={{"roles":instance?.id}}
       />
     </O2MProvider>
   );
@@ -96,6 +95,7 @@ export default function UserFormPage() {
     >
       <ContextGrid
         defaultActive={0}
+        columns={2}
         >
         <ContextTile
           title="Datos Usuario"
