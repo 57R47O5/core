@@ -13,7 +13,7 @@ class RolPermiso(BaseModel):
         Rol,
         to_field="codigo",               
         db_column="rol_code",          
-        on_delete=SAFEDELETE_PROTECT,
+        on_delete=models.CASCADE,
         related_name="permisos"
     )
 
@@ -21,7 +21,7 @@ class RolPermiso(BaseModel):
         Permiso,
         to_field="codigo",               
         db_column="permiso_code",      
-        on_delete=SAFEDELETE_PROTECT,
+        on_delete=models.CASCADE,
         related_name="roles"
     )
 

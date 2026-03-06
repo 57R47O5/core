@@ -5,11 +5,11 @@ from .rol import Rol
 
 class UserRol(BaseModel):
     user = models.ForeignKey(User, 
-        on_delete=SAFEDELETE_PROTECT, 
+        on_delete=models.CASCADE, 
         db_column='user',
         related_name='user_roles')
     rol = models.ForeignKey(Rol, 
-        on_delete=SAFEDELETE_PROTECT,
+        on_delete=models.CASCADE,
         db_column='rol')
 
     class Meta:
