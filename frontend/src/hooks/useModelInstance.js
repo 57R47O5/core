@@ -6,7 +6,7 @@ export function useModelInstance({ controller, id, defaults }) {
   const [loading, setLoading] = useState(true);
 
   const {obtener} = getAPIBase(controller);
-  const exists = Boolean(id);
+  const exists = Boolean(id) && id !== 'nuevo';
 
   useEffect(() => {
     let mounted = true;
