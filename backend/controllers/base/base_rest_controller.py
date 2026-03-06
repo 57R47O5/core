@@ -6,7 +6,7 @@ from rest_framework import status, viewsets, serializers
 from rest_framework.response import Response
 
 from framework.menu.menu import Node
-from framework.exceptions import excepcion, ExcepcionValidacion
+from framework.exceptions import excepcion, ExcepcionValidacion, ExcepcionPermisos
 from framework.permisos import Perm, require_perm, PermisoGroup, P
 
 class Capability:
@@ -70,7 +70,25 @@ class CapabilitySet:
             merged[cap.name] = cap
 
         return CapabilitySet(*merged.values())
-    
+
+
+from rest_framework.permissions import BasePermission
+
+
+class ControllerPermission(BasePermission):
+
+    def has_permission(self, request, view):
+        acciones_rest = {'list':"view_permission",
+                         "retrieve":"view_permission", 
+                         "create":"create_permission",
+                         "update":"update_permission",
+                         "partial_update":"update_permission",
+                         "destroy":"destroy_permission",}
+        permiso_requerido = getattr(view, acciones_rest.get(view.action, ""), None)
+        if permiso_requerido and not permiso_requerido.evaluate(request.user.permisos):
+            raise ExcepcionPermisos("No tiene permisos para esta acción")
+
+        return True   
 class BaseRestController(viewsets.ViewSet):
     label:str
     url:str
@@ -112,6 +130,7 @@ class ModelRestController(BaseRestController):
     create_serializer: Type[serializers.ModelSerializer] = None
     update_serializer: Type[serializers.ModelSerializer] = None
     retrieve_serializer: Type[serializers.ModelSerializer] = None
+    permission_classes = [ControllerPermission]
 
     create_permission: Type[Perm] = None
     update_permission: Type[Perm] = None
