@@ -6,12 +6,16 @@ from apps.auth.models.user import User
 
 class PersonaLinkSerializer(serializers.ModelSerializer):
     controller = serializers.SerializerMethodField()
+    nombre = serializers.SerializerMethodField()
 
     class Meta:
         model = Persona
         fields = ["id", "nombre", "controller"]
 
     def get_controller(self, obj):
+        return "persona"
+    
+    def get_nombre(self, obj):
         return "persona"
 
 
