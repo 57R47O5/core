@@ -30,4 +30,4 @@ class UserRestController(ModelRestController):
         return None
 
     def serialize_list(self, queryset):        
-        return list(queryset.values("id", "username"))
+        return list(queryset.values("id", "username", "is_active", "created_at"))
