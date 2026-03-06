@@ -4,15 +4,17 @@ import { useModelForm } from "../../../hooks/useModelForm";
 import { ColaboradorFields } from "./ColaboradorFields";
 import getAPIBase from "../../../api/BaseAPI";
 import { useRouteMode } from "../../../hooks/useRouteMode";
+import { useInstance } from "../../../context/InstanceContext";
 
 function ColaboradorForm() {
   const { isEdit } = useRouteMode();
-  
+  const { instance } = useInstance();
+
   const dynamicFields = useMemo(() => ({
       ...ColaboradorFields,
       user: {
         ...ColaboradorFields.user,
-        disabled: isEdit,
+        disabled: instance?.user?.id,         
       },
     }), [isEdit]);
 
@@ -25,7 +27,6 @@ function ColaboradorForm() {
 } 
 
 ColaboradorForm.actions = ({ instance, formik, api, navigate }) => ({
-
 
   crear_usuario: {
     label: "Agregar Usuarios",

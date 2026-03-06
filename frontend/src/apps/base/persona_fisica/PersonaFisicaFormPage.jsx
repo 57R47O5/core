@@ -32,8 +32,7 @@ function DocumentosPersona({}) {
       }}
       validationSchema={validationSchema}
     >
-      <O2MInlineList
-        title="Documentos"
+      <O2MInlineList        
         filtros={{persona_id: instance.persona_id }}
       />
     </O2MProvider>
