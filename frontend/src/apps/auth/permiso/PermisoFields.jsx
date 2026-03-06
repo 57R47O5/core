@@ -1,16 +1,15 @@
 import * as Yup from "yup";
-import SelectFormik from "../../../components/forms/SelectFormik";
+import InputFormik from "../../../components/forms/InputFormik";
 
 export const PermisoFields = {
 
-  nombre: {
-    label: "Nombre",
+  descripcion: {
+    label: "Descripcion",
     initial: "",
     form: true, 
     filter: true,
     validation: Yup.string().required("Requerido"),
-    render: (props) => <SelectFormik {...props} 
-      endpoint={"permiso"}/>,
+    render: (props) => <InputFormik {...props} />,
   }
 
 };
