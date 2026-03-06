@@ -10,10 +10,10 @@ from apps.base.serializers.documento_identidad_serializer import (
 from controllers.base.base_rest_controller import ModelRestController
 
 class PermisosDocumentoIdentidad(PermisoGroup):
-    VIEW=Constant("base.documento_identidad.view")
-    CREATE=Constant("base.documento_identidad.create")
-    UPDATE=Constant("base.documento_identidad.update")
-    DESTROY=Constant("base.documento_identidad.destroy")
+    VIEW=Constant("base.documento-identidad.view")
+    CREATE=Constant("base.documento-identidad.create")
+    UPDATE=Constant("base.documento-identidad.update")
+    DESTROY=Constant("base.documento-identidad.destroy")
 class DocumentoIdentidadRestController(ModelRestController):
     label = "Documento Identidad"
     model = DocumentoIdentidad

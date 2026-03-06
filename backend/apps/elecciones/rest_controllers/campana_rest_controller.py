@@ -19,7 +19,7 @@ class PermisosCampana(PermisoGroup):
 
 
 class CampanaRestController(ModelRestController):
-    label = "Campana"
+    label = "Campaña"
     model = Campana
     url = "campana"
     create_serializer = CampanaCreateSerializer

@@ -72,7 +72,7 @@ def require_perm(attr_name: str):
     Declara el atributo del controller que define el permiso requerido.
     """
     def decorator(func):
-        setattr(func, "_required_perm", attr_name)
+        setattr(func, "_get_required_perm", attr_name)
         return func
     return decorator
 
