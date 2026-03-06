@@ -28,7 +28,7 @@ export const SalidaFields = {
 
   fecha: {
     label: "Fecha",
-    initial: null,
+    initial: (new Date()).toISOString().substring(0, 10),
     form: true, 
     filter: true,
     validation: Yup.string().required("Requerido"),

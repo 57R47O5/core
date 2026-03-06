@@ -6,7 +6,7 @@ export default function SalidaFormPage() {
     <BaseFormPage
       controller="salida"
       FormComponent={SalidaForm}
-      titleNew="Nuevo Salida"
+      titleNew="Nueva Salida"
       titleEdit="Editar Salida"
     />
   );

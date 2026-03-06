@@ -50,7 +50,7 @@ export const VisitaFields = {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),
-    endpoint: "resultado",
+    endpoint: "resultado-visita/options",
     render: (props) => <SelectFormik {...props} />,
   },
 
