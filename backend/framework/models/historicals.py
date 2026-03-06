@@ -9,7 +9,7 @@ class ORCHistoricalRecords(HistoricalRecords):
     Sobreescribe HistoricalRecords para los siguientes features adicionales:
         - Permite la herencia de HistoricalRecords sobreescribible entre los modelos.
         - Permite compartir HistoricalRecords en los modelos Proxy.
-        - Define el "hist_" como sufijo por defecto a las tablas de todos los modelos históricos.
+        - Define el "hist_" como prefijo por defecto a las tablas de todos los modelos históricos.
     """
 
     signal_registered = False
@@ -84,12 +84,9 @@ class ORCHistoricalRecords(HistoricalRecords):
         # Si no está definido un nombre para la tabla,
         if self.table_name is None:
             original_table_name = str(model._meta.db_table).lower()
-            if original_table_name.startswith('rrhh_'):
-                # Reemplaza el prefijo 'rrhh_' por 'hist_'
-                meta_fields['db_table'] = 'hist_' + original_table_name[5:]
-            else:
-                # Agrega el prefijo 'hist_'
-                meta_fields['db_table'] = 'hist_' + original_table_name
+            
+        # Agrega el sufixo '_history'
+        meta_fields['db_table'] = 'hist_' + original_table_name 
 
         if model._meta.proxy:
             meta_fields['proxy'] = True
@@ -130,7 +127,6 @@ class ORCHistoricalRecords(HistoricalRecords):
             manager = getattr(instance, self.manager_name)
             manager.using(using).all().delete()
         else:
-            # TODO Tadashi: Parche para fast-delete
             if hasattr(instance, 'history_bulk_delete'):
                 return
             self.create_historical_record(instance, "-", using=using)
