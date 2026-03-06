@@ -54,14 +54,14 @@ class User(models.Model):
             Permiso = apps.get_model("auth", "Permiso")
             return Permiso.objects.values_list("codigo", flat=True)
 
-        roles = None
+        permisos = None
         if self.user_roles.exists():
-            roles = self.user_roles.values_list(
+            permisos = self.user_roles.values_list(
             "rol__permisos__permiso",
             flat=True
         )
 
-        return roles if  roles else None
+        return permisos if permisos else {}
     
     def has_perm(self, permiso:str):
         return permiso in self.permisos
