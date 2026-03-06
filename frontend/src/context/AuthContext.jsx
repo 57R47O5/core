@@ -18,19 +18,16 @@ export const AuthProvider = ({ children }) => {
       try {
         const response = await me();
         setUser(response.user);
+        setIsAuthenticated(!!response.user);
       } catch (error) {
-        // Token inválido / expirado / ausente
         setUser(null);
+        setIsAuthenticated(false);
         console.error("Auth init error:", error);
       } finally {
-        if (!user)
-          setIsAuthenticated(false)
-        else
-          setIsAuthenticated(true);
         setLoading(false);
       }
     };
-    
+
     inicializarAuth();
   }, []);
   
@@ -72,7 +69,6 @@ export const AuthProvider = ({ children }) => {
     getMenu();
 
   },[])
-
 
   return (
     <AuthContext.Provider
