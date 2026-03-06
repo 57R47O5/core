@@ -11,7 +11,7 @@
     <!-- ===================================================== -->
 
     <changeSet id="user-rol-history-001-create-table" author="system">
-        <createTable tableName="user_rol_history">
+        <createTable tableName="hist_user_rol">
 
             <column name="history_id" type="SERIAL">
                 <constraints primaryKey="true" nullable="false"/>
