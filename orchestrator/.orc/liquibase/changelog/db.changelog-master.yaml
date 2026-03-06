@@ -1,6 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: 000-bootstrap.changelog.yaml
-
-  - include:
-      file: core.changelog.yaml
