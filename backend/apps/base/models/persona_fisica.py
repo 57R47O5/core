@@ -54,4 +54,4 @@ class PersonaFisica(BaseModel):
     
     @property
     def usuario_agregable(self):
-        return self.tiene_usuario
+        return not self.tiene_usuario
