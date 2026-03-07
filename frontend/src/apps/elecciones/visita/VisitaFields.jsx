@@ -27,8 +27,8 @@ export const VisitaFields = {
   lugar: {
     label: "Lugar",
     initial: null,
-    form: true, 
-    filter: true,
+    form: false, 
+    filter: false,
     validation: Yup.number().required("Requerido"),
     endpoint: "lugar",
     render: (props) => <SelectFormik {...props} />,

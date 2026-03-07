@@ -6,7 +6,7 @@ export default function VisitaFormPage() {
     <BaseFormPage
       controller="visita"
       FormComponent={VisitaForm}
-      titleNew="Nuevo Visita"
+      titleNew="Nueva Visita"
       titleEdit="Editar Visita"
     />
   );

@@ -6,7 +6,6 @@ export default function VisitaForm() {
   const {FormFields} = useModelForm(VisitaFields
   );  
 
-  return null
   return (
     <FormFields/>     
   );
