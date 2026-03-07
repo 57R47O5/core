@@ -29,6 +29,7 @@ function Colaboradores({}){
         <DataTable
           items = {instance.salida}
           columns = {[
+            {label: "Salida",  field: "salida", tipo:ORCTableColumna.LINK},
             {label: "Fecha",  field: "fecha", tipo:ORCTableColumna.FECHA},
             {label: "Estado",  field: "estado_salida", tipo:ORCTableColumna.CADENA}
           ]}

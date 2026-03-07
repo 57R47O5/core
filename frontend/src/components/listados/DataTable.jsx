@@ -1,4 +1,5 @@
 import { Spinner, Table, Button, Badge } from "react-bootstrap";
+import BaseLink from "../displays/BaseLink";
 
 function formatFecha(value) {
   if (!value) return "--";
@@ -36,7 +37,17 @@ export const ORCTableColumna = {
         estilo: { textAlign: "right" },
     },
     LINK: {
-        render: (x) => x ? <a target="_blank" href={`${x.url}`}>{String(x.label)}</a> : '',
+        render: (x) => {
+            if (!x) return "";
+
+            const url = x.url.startsWith("/") ? x.url : `/${x.url}`;
+
+            return (
+                <BaseLink to={url}>
+                    {x.label}
+                </BaseLink>
+            );
+        },
         estilo: {},
     },
     CADENA: {
