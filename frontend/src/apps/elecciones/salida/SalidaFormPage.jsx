@@ -1,11 +1,10 @@
-import BaseFormPage from "../../../components/forms/BaseFormPage";
+import BaseFormPage, {BaseFormPageContent} from "../../../components/forms/BaseFormPage";
 import SalidaForm from "./SalidaForm";
 import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
 import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
 import VisitaForm from "../visita/VisitaForm";
-import BaseLink from "../../../components/displays/BaseLink";
 
 
 export default function SalidaFormPage() {
@@ -43,11 +42,13 @@ export default function SalidaFormPage() {
         <ContextTile
           title={"Agregar Visita"}
           >
-          <BaseFormPage
+          <BaseFormPageContent
+            id={null}
+            isCreate = {true}
             controller="visita"
             FormComponent={VisitaForm}
             titleNew="Nueva Visita"
-            titleEdit="Editar Visita"
+            titleEdit="Editar Visitas"
           />
         </ContextTile>
       </ContextGrid>
