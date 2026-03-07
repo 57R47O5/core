@@ -11,9 +11,4 @@ function SalidaForm() {
   );
 }
 
-SalidaForm.initialValuesDefault = {
-  fecha: new Date().toISOString().substring(0, 10),
-  estado: 2,
-};
-
 export default SalidaForm

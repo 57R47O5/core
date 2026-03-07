@@ -9,7 +9,6 @@ import { DataTable, ORCTableColumna } from "../../../components/listados/DataTab
 function Colaboradores({}){
   const { instance } = useInstance();
 
-  console.log("instance?.salida: ", instance?.salida)
   return <ContextGrid
         defaultActive={0}
         columns={2}

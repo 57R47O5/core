@@ -4,13 +4,23 @@ import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
 import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
-import VisitaFormPage from "../visita/VisitaFormPage";
-
+import VisitaForm from "../visita/VisitaForm";
+import BaseLink from "../../../components/displays/BaseLink";
 
 
 export default function SalidaFormPage() {
-  const {id } = useRouteMode();
+  const { id } = useRouteMode();
   const controller = "salida";
+
+  SalidaForm.initialValuesDefault = {
+    fecha: new Date().toISOString().substring(0, 10),
+    estado: 2,
+  };
+
+  VisitaForm.initialValuesDefault = {
+    salida: id,
+    resultado: 1,
+  }
   return (
     <InstanceProvider
       controller={controller} 
@@ -29,12 +39,16 @@ export default function SalidaFormPage() {
         titleNew="Nueva Salida"
         titleEdit="Editar Salida"
         />
-        </ContextTile>
+        </ContextTile>        
         <ContextTile
-         title="Agregar visita" 
-        >
-          <VisitaFormPage>            
-          </VisitaFormPage>
+          title={"Agregar Visita"}
+          >
+          <BaseFormPage
+            controller="visita"
+            FormComponent={VisitaForm}
+            titleNew="Nueva Visita"
+            titleEdit="Editar Visita"
+          />
         </ContextTile>
       </ContextGrid>
     </InstanceProvider>
