@@ -66,6 +66,9 @@ databaseChangeLog:
       file: ../../apps/geo/lugar.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/geo/lugar-hist.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/elecciones/campana.xml
       relativeToChangelogFile: true
   - include:
