@@ -6,7 +6,7 @@ const PersonaJuridicaFilter = ({ onSearch, loading }) => {
   
   return (
     <ABMFilter
-      title="Filtrar PersonaJuridica"
+      title="Filtrar Persona Juridica"
       fields={PersonaJuridicaFields}
       controller="persona-juridica"
       onSearch={onSearch}
