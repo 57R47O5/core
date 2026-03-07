@@ -59,3 +59,7 @@
     height: 220px;
   }
 }
+
+.leaflet-container {
+  background: #e5e5e5;
+}
