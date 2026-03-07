@@ -7,6 +7,7 @@ import {
 } from "react-leaflet";
 import { useField, useFormikContext } from "formik";
 import { useState } from "react";
+import FixMapSize from "./FixMapSize";
 import "./map.css";
 
 function ChangeView({ center }) {
@@ -108,6 +109,7 @@ export default function FormikGeoPoint({ name }) {
           center={center}
           zoom={15}
         >
+          <FixMapSize />
           <ChangeView center={center} />
 
           <TileLayer

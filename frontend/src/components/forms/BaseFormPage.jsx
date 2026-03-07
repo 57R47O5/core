@@ -10,14 +10,15 @@ import {
 import getAPIBase from "../../api/BaseAPI";
 import Botonera from "../botonera/botonera";
 
-function BaseFormPageContent({
+export function BaseFormPageContent({
+  id,
+  isCreate,
   controller,
   FormComponent,
   redirectTo,
   titleNew,
   titleEdit,
 }) {
-  const { id, isCreate } = useRouteMode();
   const navigate = useNavigate();
   const { instance, loading } = useInstance();
 
@@ -116,7 +117,7 @@ export default function BaseFormPage({
   titleNew = "Nuevo Registro",
   titleEdit = "Editar Registro",
 }) {
-  const { id, isEdit } = useRouteMode();
+  const { id, isCreate, isEdit } = useRouteMode();
 
   const defaults = FormComponent.initialValuesDefault || {};
 
@@ -127,6 +128,8 @@ export default function BaseFormPage({
       defaults={defaults}
     >
       <BaseFormPageContent
+        id={id}
+        isCreate={isCreate}
         controller={controller}
         FormComponent={FormComponent}
         redirectTo={redirectTo}
