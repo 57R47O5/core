@@ -102,6 +102,9 @@ databaseChangeLog:
       file: ../../apps/elecciones/visita.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/elecciones/visita-hist.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/elecciones/salida.xml
       relativeToChangelogFile: true
   - include:

@@ -19,7 +19,8 @@ export default function SalidaFormPage() {
   VisitaForm.initialValuesDefault = {
     salida: id,
     resultado: 1,
-  }
+  };
+
   return (
     <InstanceProvider
       controller={controller} 
@@ -42,6 +43,11 @@ export default function SalidaFormPage() {
         <ContextTile
           title={"Agregar Visita"}
           >
+            <InstanceProvider
+                controller={"visita"}
+                id={null}
+                defaults={{salida: id}}
+              >
           <BaseFormPageContent
             id={null}
             isCreate = {true}
@@ -49,7 +55,8 @@ export default function SalidaFormPage() {
             FormComponent={VisitaForm}
             titleNew="Nueva Visita"
             titleEdit="Editar Visitas"
-          />
+            />
+          </InstanceProvider>
         </ContextTile>
       </ContextGrid>
     </InstanceProvider>

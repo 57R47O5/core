@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
+import FormikGeoPoint from "../../../components/forms/FormikGeoPoint";
 
 export const VisitaFields = {
 
@@ -27,17 +28,17 @@ export const VisitaFields = {
   lugar: {
     label: "Lugar",
     initial: null,
-    form: false, 
+    form: true, 
     filter: false,
     validation: Yup.number().required("Requerido"),
     endpoint: "lugar",
-    render: (props) => <SelectFormik {...props} />,
+    render: (props) => <FormikGeoPoint {...props} />,
   },
 
   fecha: {
     label: "Fecha",
     initial: "",
-    form: true, 
+    form: false, 
     filter: true,
     validation: Yup.string().required("Requerido"),
     endpoint: "fecha",
