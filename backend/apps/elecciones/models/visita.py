@@ -18,12 +18,16 @@ class Visita(BaseModel):
     salida = models.ForeignKey(
         Salida,
         on_delete=models.CASCADE,
-        related_name="visitas"
+        related_name="visitas",
+        db_column="salida"
     )
-    votante = models.ForeignKey(Votante, on_delete=models.PROTECT, related_name='visitas')
-    lugar = models.ForeignKey(Punto, on_delete=models.PROTECT)
+    votante = models.ForeignKey(Votante, on_delete=models.PROTECT, 
+        related_name='visitas', db_column="votante")
+    lugar = models.ForeignKey(Punto, on_delete=models.PROTECT,
+        db_column="lugar")
     fecha = models.DateTimeField(auto_now_add=True)
-    resultado = models.ForeignKey(ResultadoVisita, on_delete=models.PROTECT)
+    resultado = models.ForeignKey(ResultadoVisita, on_delete=models.PROTECT,
+        db_column="resultado")
     notas = models.TextField(null=True, blank=True)
 
     class Meta:

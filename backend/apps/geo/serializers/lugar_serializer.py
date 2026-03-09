@@ -105,6 +105,10 @@ class LugarRetrieveSerializer(LugarSerializer):
 class PuntoInputSerializer(LugarInputSerializer):
     lat = serializers.FloatField()
     lon = serializers.FloatField()
+    codigo = serializers.CharField(required=False)
+    nombre = serializers.CharField(required=False)
+    tipo = serializers.CharField(required=False)
+    nivel = serializers.CharField(required=False)
 
     @atomic
     def create(self, validated_data):
@@ -113,7 +117,7 @@ class PuntoInputSerializer(LugarInputSerializer):
 
         validated_data.pop("geometry", None)
 
-        nivel_punto = GeoNivel.objects.get(code="PUNTO")
+        nivel_punto = GeoNivel.objects.get(codigo="PUNTO")
         validated_data["nivel"] = nivel_punto
 
         instancia = Punto.objects.create(**validated_data)

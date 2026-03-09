@@ -24,11 +24,6 @@ class Lugar(BaseModel):
         editable=False
     )
 
-    descripcion = models.TextField(
-        blank=True,
-        null=True
-    )
-
     # 🔹 Geometría estructurada (Polygon, MultiPolygon, etc)
     geometry_data = models.JSONField(
         null=True,
@@ -54,19 +49,21 @@ class Lugar(BaseModel):
         "self",
         on_delete=models.PROTECT,
         related_name="hijos",
+        db_column="padre",
         null=True,
         blank=True
     )
-
+    tipo = models.CharField(default="Punto")
     nivel = models.ForeignKey(
         GeoNivel,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        db_column="nivel"
     )
 
     activo = models.BooleanField(default=True)
 
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "lugar"
@@ -131,9 +128,10 @@ class Punto(Lugar):
         verbose_name_plural = "Puntos"
 
     def save(self, *args, **kwargs):
-        self.nivel = GeoNivelManager.PUNTO
+        self.nivel = GeoNivel.objects.PUNTO
 
-        if self.geom and self.geom.geom_type != "Point":
-            raise ExcepcionValidacion(ErrorLugar.GEOMETRIA_PUNTO)
+        if self.geometry:
+            if self.geometry.type != "Point":
+                raise ExcepcionValidacion(ErrorLugar.GEOMETRIA_PUNTO)
 
         super().save(*args, **kwargs)

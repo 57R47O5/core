@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import F, Value, CharField
+from django.db.models.functions import Concat
 from framework.exceptions import ExcepcionValidacion
 from framework.constantes.mensajes_error import MensajesError
 from framework.models.basemodels import BaseModel
@@ -50,3 +52,10 @@ class Salida(BaseModel):
 
     def puede_cancelarse(self):
         return not self.visitas.exists()
+    
+    @classmethod
+    def descripcion_expression(cls):
+        return Concat(F("colaborador__persona__nombres"), 
+            Value(" "), 
+            F("fecha"), output_field=CharField()
+            )
