@@ -46,13 +46,13 @@ class SeccionalLinkSerializer(serializers.ModelSerializer):
 
 class VotanteSerializer(serializers.ModelSerializer):
     persona = PersonaFisicaLinkSerializer()
-    distrito = LugarLinkSerializer()
+    # distrito = LugarLinkSerializer()
     seccional = SeccionalLinkSerializer()
 
     class Meta:
         model = Votante
         fields = [
-            "id", "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "persona", "distrito", "seccional"
+            "id", "id", "is_deleted", "createdby", "updatedby", "createdat", "updatedat", "persona", "seccional"
         ]
 
 

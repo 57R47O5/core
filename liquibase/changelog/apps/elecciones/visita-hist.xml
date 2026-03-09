@@ -16,7 +16,7 @@
         <column name="updatedat" type="timestamp"/>
         <column name="salida" type="int"/>
         <column name="votante" type="int"/>
-        <column name="lugar" type="int"/>
+        <column name="lugar" type="uuid"/>
         <column name="fecha" type="timestamp"/>
         <column name="resultado" type="int"/>
         <column name="notas" type="text"/>

@@ -1,5 +1,6 @@
 
 import BaseListPage from "../../../components/listados/BaseListPage";
+import { ORCTableColumna } from "../../../components/listados/DataTable";
 import VisitaFilter from "./VisitaFilter";
 
 export default function VisitaListPage() {
@@ -11,10 +12,8 @@ export default function VisitaListPage() {
       columns={[
       { label: "Salida", field: "salida" },
       { label: "Votante", field: "votante" },
-      { label: "Lugar", field: "lugar" },
-      { label: "Fecha", field: "fecha" },
+      { label: "Fecha", field: "fecha", tipo:ORCTableColumna.FECHA_HORA },
       { label: "Resultado", field: "resultado" },
-      { label: "Notas", field: "notas" }
       ]}
     />
   );
