@@ -25,13 +25,6 @@ class VotanteRestController(ModelRestController):
     update_serializer = VotanteUpdateSerializer
     retrieve_serializer = VotanteRetrieveSerializer    
     permisos = PermisosVotante
-
-    def serialize_list(self, queryset):
-        return list(queryset.values()
-                    .annotate(
-                        nombres=F("persona__nombres"),
-                        apellidos=F("persona__apellidos"),
-                    ).values())
     
     def _get_filter(self, params):
         filtro = Q()

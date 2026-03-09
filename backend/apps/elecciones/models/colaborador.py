@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F
 from framework.models.basemodels import BaseModel
 from framework.exceptions import  ExcepcionValidacion
 from apps.base.models.persona_fisica import PersonaFisica
@@ -32,6 +33,8 @@ class Colaborador(BaseModel):
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        if self.salidas.exists():
+            raise ExcepcionValidacion("No se puede eliminar colaborador con salidas")
         self.persona.delete()
         super().delete(*args, **kwargs)
     
@@ -48,3 +51,11 @@ class Colaborador(BaseModel):
             "controller": "user"
         }
         return user_serializado
+    
+    @property
+    def salida(self):
+        datos_salida = self.salidas.all().values(
+            ).annotate(estado_salida=F("estado__codigo")).values()
+        for dato in datos_salida:
+            dato["salida"]={"url":f"salida/{self.pk}", "label":self.pk}
+        return datos_salida

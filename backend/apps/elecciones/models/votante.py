@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 from framework.models.basemodels import BaseModel
 from apps.base.models.persona_fisica import PersonaFisica
 from apps.elecciones.models.distrito_electoral import DistritoElectoral
@@ -17,3 +19,10 @@ class Votante(BaseModel):
     class Meta:
         managed = False
         db_table = "votante"
+
+    @classmethod
+    def descripcion_expression(cls):
+        return Concat(F("persona__nombres"), 
+            Value(" "), 
+            F("persona__apellidos")
+            )

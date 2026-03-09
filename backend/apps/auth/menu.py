@@ -7,12 +7,12 @@ MENU = Node(
     icon="FaKey",
     content=[
         Node(
-            label="Registro",
+            label="Nuevo Usuario",
             permiso=P(AuthPermisos.REGISTER),
             to="register/"
         ),
         Node(
-            label="User",
+            label="Usuario",
             permiso=P(AuthPermisos.REGISTER),
             to="user/"
         )

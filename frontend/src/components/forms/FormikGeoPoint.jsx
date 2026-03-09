@@ -1,3 +1,4 @@
+import L from "leaflet";
 import {
   MapContainer,
   TileLayer,
@@ -9,6 +10,14 @@ import { useField, useFormikContext } from "formik";
 import { useState } from "react";
 import FixMapSize from "./FixMapSize";
 import "./map.css";
+
+const customMarkerIcon = L.divIcon({
+  className: "custom-marker", 
+  iconSize: [28, 28],         
+  iconAnchor: [14, 28],       
+  popupAnchor: [0, -28]       
+});
+
 
 function ChangeView({ center }) {
   const map = useMap();
@@ -126,6 +135,7 @@ export default function FormikGeoPoint({ name }) {
                 parseFloat(value.lat),
                 parseFloat(value.lon)
               ]}
+              icon={customMarkerIcon} 
               eventHandlers={{
                 dragend: (e) => {
                   const p = e.target.getLatLng();
