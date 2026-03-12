@@ -42,8 +42,8 @@ function App() {
               ))}
             </Routes>
           </main>
+          </div> 
         </div>
-      </div>
       </AuthProvider>
     </BrowserRouter>
   );

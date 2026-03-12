@@ -20,7 +20,7 @@
         <column name="distrito" type="int">
             <constraints nullable="false"/>
         </column>
-        <column name="lugar" type="int">
+        <column name="lugar" type="uuid">
             <constraints nullable="false"/>
         </column>
     </createTable>

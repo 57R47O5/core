@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-<changeSet id="create-hist_lugar_distrito" author="orco">
-    <createTable tableName="hist_lugar_distrito">
+<changeSet id="create-hist_distrito_electoral" author="orco">
+    <createTable tableName="hist_distrito_electoral">
         <column name="history_id" type="bigint"/>
         <column name="history_date" type="timestamp"/>
         <column name="history_type" type="char(1)"/>
@@ -14,8 +14,11 @@
         <column name="updatedby" type="varchar(255)"/>
         <column name="createdat" type="timestamp"/>
         <column name="updatedat" type="timestamp"/>
-        <column name="distrito" type="int"/>
-        <column name="lugar" type="uuid"/>
+        <column name="nombre" type="varchar(200)"/>
+        <column name="descripcion" type="text"/>
+        <column name="codigo" type="varchar(50)"/>
+        <column name="activo" type="boolean"/>
+
 
     </createTable>
 </changeSet>
