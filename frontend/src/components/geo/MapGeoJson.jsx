@@ -2,18 +2,6 @@ import { GeoJSON } from "react-leaflet";
 
 export default function MapGeoJSON({ geometry }) {
 
-  const geojson = {
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "Feature",
-        properties: {},
-        geometry: geometry
-      }
-    ]
-  };
-
-
   return (
     <GeoJSON
       data={geometry}

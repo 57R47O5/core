@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import getAPIBase from "../../api/BaseAPI";
 import { BaseListLayout } from "./BaseListLayout";
-import { DataTable } from "./DataTable";
+import MapPoints from "../geo/MapPoints";
+import AppMap from "../geo/AppMap";
 
 /**
  * BaseListPage
@@ -15,7 +16,7 @@ import { DataTable } from "./DataTable";
  * - columns: [{ label, field }]  (para renderizar la tabla)
  * - title: título principal
  */
-export default function BaseListPage({
+export default function MapListPage({
   controller,
   FilterComponent,
   columns,
@@ -44,7 +45,7 @@ export default function BaseListPage({
   useEffect(() => {
     handleSearch();
   }, []);
-
+const position = [51.505, -0.09]
   return (
     <BaseListLayout
       title={title}
@@ -52,13 +53,9 @@ export default function BaseListPage({
       onSearch={handleSearch}
       loading={loading}
     >
-      
-      <DataTable
-        items={items}
-        columns={columns}
-        loading={loading}
-        onEdit={(item) => navigate(`/${controller}/${item.id}`)}
-      />
+      <AppMap  center={position} zoom={13}>
+        <MapPoints data={items}/>
+      </AppMap>
     </BaseListLayout>
   );
 }

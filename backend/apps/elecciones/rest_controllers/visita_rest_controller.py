@@ -36,7 +36,7 @@ class VisitaRestController(ModelRestController):
             not hasattr(model, "descripcion"):
             queryset = queryset.annotate(
                 descripcion=model.descripcion_expression()
-            )
+            )           
         salida = list(queryset.values().annotate(
             salida=Concat(F("salida__colaborador__persona__nombres"), 
             Value(" "), 
@@ -47,7 +47,9 @@ class VisitaRestController(ModelRestController):
                 F("votante__persona__nombres"),
                 Value(" "),
                 F("votante__persona__apellidos"),
-            )
+            ),
+            latitud=F("lugar__centroide_lat"),
+            longitud=F("lugar__centroide_lon"),
         ).values())
         return salida
     

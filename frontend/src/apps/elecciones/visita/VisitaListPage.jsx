@@ -1,11 +1,11 @@
 
-import BaseListPage from "../../../components/listados/BaseListPage";
+import MapListPage from "../../../components/listados/MapListPage";
 import { ORCTableColumna } from "../../../components/listados/DataTable";
 import VisitaFilter from "./VisitaFilter";
 
 export default function VisitaListPage() {
   return (
-    <BaseListPage
+    <MapListPage
       controller="visita"
       title="Visita"
       FilterComponent={VisitaFilter}
