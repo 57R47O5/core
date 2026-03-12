@@ -1,13 +1,10 @@
-import L from "leaflet";
-import {
-  useMap,
-  useMapEvents
-} from "react-leaflet";
-import { useField, useFormikContext } from "formik";
 import { useState } from "react";
-import "./map.css";
+import { useMapEvents } from "react-leaflet";
+import { Button } from "react-bootstrap";
+import { useField, useFormikContext } from "formik";
 import MapMarker from "../geo/MapMarker";
 import AppMap from "../geo/AppMap";
+import "./map.css";
 
 function MapClickHandler({ name }) {
   const { setFieldValue } = useFormikContext();
@@ -15,25 +12,19 @@ function MapClickHandler({ name }) {
   useMapEvents({
     click(e) {
       const { lat, lng } = e.latlng;
-
-      setFieldValue(name, {
-        lat,
-        lon: lng
-      });
+      setFieldValue(name, { lat, lon: lng });
     }
   });
 
   return null;
 }
 
-export default function FormikGeoPoint({ name }) {
+export default function FormikGeoPoint({ name, mode = "map" }) {
   const [field] = useField(name);
   const { setFieldValue } = useFormikContext();
 
   const value = field.value;
-
   const defaultCenter = [-25.2637, -57.5759];
-
   const position = value
     ? [parseFloat(value.lat), parseFloat(value.lon)]
     : defaultCenter;
@@ -74,9 +65,26 @@ export default function FormikGeoPoint({ name }) {
     }
   };
 
+  // --- NUEVO: modo "ubicacion" ---
+  if (mode === "ubicacion") {
+    return (
+      <div className="form-map-wrapper">
+        <Button variant="primary" onClick={usarUbicacionActual}>
+          Usar ubicación actual
+        </Button>
+
+        {value && (
+          <div className="form-map-coords">
+            Lat: {value.lat} | Lon: {value.lon}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // --- Modo por defecto: mapa ---
   return (
     <div className="form-map-wrapper">
-
       {/* buscador */}
       <div className="form-map-search">
         <input
@@ -98,29 +106,20 @@ export default function FormikGeoPoint({ name }) {
 
       {/* mapa */}
       <AppMap center={center} zoom={15}>
-
         <MapClickHandler name={name} />
 
         {value && (
           <MapMarker
             draggable
-            position={[
-              parseFloat(value.lat),
-              parseFloat(value.lon)
-            ]}
+            position={[parseFloat(value.lat), parseFloat(value.lon)]}
             eventHandlers={{
               dragend: (e) => {
                 const p = e.target.getLatLng();
-
-                setFieldValue(name, {
-                  lat: p.lat,
-                  lon: p.lng
-                });
+                setFieldValue(name, { lat: p.lat, lon: p.lng });
               }
             }}
           />
         )}
-
       </AppMap>
 
       {/* coordenadas */}
