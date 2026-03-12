@@ -5,10 +5,15 @@ import { getToken, clearToken } from "./tokenService";
 // --- Instancia principal de axios ---
 const request = axios.create({
   baseURL: "http://localhost:8000/",
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  withCredentials: true
+});
+
+request.interceptors.request.use((config) => {
+  const esFormData = (config.data instanceof FormData)
+  if (!esFormData) {
+    config.headers["Content-Type"] = "application/json";
+  }
+  return config;
 });
 
 // --- Interceptor de request (token si existe) ---
