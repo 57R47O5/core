@@ -32,6 +32,7 @@ export const VisitaFields = {
     filter: false,
     validation: Yup.number().required("Requerido"),
     endpoint: "lugar",
+    mode: "ubicacion",
     render: (props) => <FormikGeoPoint {...props} />,
   },
 
