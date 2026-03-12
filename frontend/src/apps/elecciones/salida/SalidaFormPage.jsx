@@ -59,7 +59,7 @@ export default function SalidaFormPage() {
           </InstanceProvider>
         </ContextTile>
         <ContextTile
-          title={"Ver visitas"}
+          title={"Ver Visitas"}
         >
           
         </ContextTile>
