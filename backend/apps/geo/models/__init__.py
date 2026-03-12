@@ -1,7 +1,7 @@
 from .geo_nivel import GeoNivel
-from .lugar import Punto
+from .lugar import Lugar, Punto
 
 __all__ = [
     GeoNivel, 
-    Punto
+    Lugar,
 ]

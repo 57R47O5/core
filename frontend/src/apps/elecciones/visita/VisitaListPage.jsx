@@ -9,12 +9,15 @@ export default function VisitaListPage() {
       controller="visita"
       title="Visita"
       FilterComponent={VisitaFilter}
-      columns={[
-      { label: "Salida", field: "salida" },
-      { label: "Votante", field: "votante" },
-      { label: "Fecha", field: "fecha", tipo:ORCTableColumna.FECHA_HORA },
-      { label: "Resultado", field: "resultado" },
-      ]}
+       colorScale={{
+        field: "resultado_id",
+        domain: [1, 4],
+        colors: [
+          "var(--map-red)",
+          "var(--map-yellow)",
+          "var(--map-green)"
+        ]
+      }}
     />
   );
   }
