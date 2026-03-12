@@ -4,10 +4,7 @@ from django.db.models.functions import Concat
 from framework.models.basemodels import ConstantModel,  ConstantModelManager, Constant
 
 class DistritoElectoralManager(ConstantModelManager):
-    ASUNCION=Constant("Asuncion")
-    SAN_LORENZO=Constant("San Lorenzo")
-    LUQUE=Constant("Luque")
-
+    ...
 class DistritoElectoral(ConstantModel):
     '''
     Representa el donde se realiza una determinada elección

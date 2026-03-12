@@ -10,12 +10,14 @@ class LugarDistrito(BaseModel):
     distrito = models.ForeignKey(
         DistritoElectoral,
         on_delete=models.CASCADE,
-        related_name="fronteras"
+        related_name="fronteras",
+        db_column="distrito"
     )
 
     lugar = models.ForeignKey(
         Punto,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        db_column="lugar"
     )
 
     class Meta:
