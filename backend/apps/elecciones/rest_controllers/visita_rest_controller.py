@@ -50,6 +50,8 @@ class VisitaRestController(ModelRestController):
             ),
             latitud=F("lugar__centroide_lat"),
             longitud=F("lugar__centroide_lon"),
+        ).annotate(
+            descripcion=Concat(F("salida"), Value("-"), F("votante"))
         ).values())
         return salida
     
