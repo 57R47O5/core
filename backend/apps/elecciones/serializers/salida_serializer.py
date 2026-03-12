@@ -66,14 +66,15 @@ class SalidaCreateSerializer(serializers.ModelSerializer):
 
 
 class SalidaUpdateSerializer(serializers.ModelSerializer):
-    estado = EstadoSalidaLinkSerializer()
+    estado = serializers.PrimaryKeyRelatedField(queryset=EstadoSalida.objects.all())
     class Meta:
         model = Salida
         fields = ["fecha", "estado"]
 
     def update(self, instance: Salida, validated_data):
         instance.fecha = validated_data.get("fecha")
-        instance.estado = EstadoSalida.objects.get(codigo=validated_data.get("estado").get("nombre"))
+        instance.estado = validated_data.get("estado")
+        instance.save()
         return instance
 
 

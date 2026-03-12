@@ -40,7 +40,7 @@ export default function SalidaFormPage() {
         titleEdit="Editar Salida"
         />
         </ContextTile>        
-        <ContextTile
+        {id==="nuevo" ? <></> : <ContextTile
           title={"Agregar Visita"}
           >
             <InstanceProvider
@@ -57,12 +57,12 @@ export default function SalidaFormPage() {
             titleEdit="Editar Visitas"
             />
           </InstanceProvider>
-        </ContextTile>
-        <ContextTile
+        </ContextTile>}
+        {id === "nuevo" ? <></> : <ContextTile
           title={"Ver Visitas"}
         >
           
-        </ContextTile>
+        </ContextTile>}
       </ContextGrid>
     </InstanceProvider>
   );
