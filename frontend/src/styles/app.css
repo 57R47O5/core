@@ -30,3 +30,9 @@
   overflow-y: auto;
   background: #f8fafc;
 }
+
+:root {
+  --map-red: #d73027;
+  --map-yellow: #fee08b;
+  --map-green: #1a9850;
+}

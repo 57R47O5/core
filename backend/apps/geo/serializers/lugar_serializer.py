@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.db.transaction import atomic
 from rest_framework import serializers
 
-from apps.geo.models import Punto, GeoNivel
+from apps.geo.models import Lugar, Punto, GeoNivel
 from apps.geo.framework.geometries import Geometry, Point
 
 
@@ -38,10 +38,21 @@ class LugarSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def get_geometry(self, obj: Punto):
-        return obj.geometry_data
+    def get_geometry(self, obj):
+        if not obj.geometry_data:
+            return None
 
-    def get_centroide(self, obj: Punto):
+        return {
+            "type": "Feature",
+            "geometry": obj.geometry_data,
+            "properties": {
+                "id": str(obj.id),
+                "tipo": obj.tipo,
+                "nivel": obj.nivel.codigo
+            }
+        }
+
+    def get_centroide(self, obj: Lugar):
         if obj.centroide_lat is None or obj.centroide_lon is None:
             return None
 

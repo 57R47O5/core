@@ -55,7 +55,7 @@ export default function MapPoints({
             pathOptions={{
               color: pointColor,
               fillColor: pointColor,
-              fillOpacity: 0.7
+              fillOpacity: 0.9
             }}
           >
             {label && <Popup>{label}</Popup>}

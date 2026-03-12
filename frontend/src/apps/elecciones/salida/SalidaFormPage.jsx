@@ -58,6 +58,11 @@ export default function SalidaFormPage() {
             />
           </InstanceProvider>
         </ContextTile>
+        <ContextTile
+          title={"Ver visitas"}
+        >
+          
+        </ContextTile>
       </ContextGrid>
     </InstanceProvider>
   );
