@@ -50,6 +50,7 @@
   transition: all 0.25s ease;
   border-radius: 18px;
   min-height: 140px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   background: white;

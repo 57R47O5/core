@@ -1,29 +1,13 @@
 import L from "leaflet";
 import {
-  MapContainer,
-  TileLayer,
-  Marker,
   useMap,
   useMapEvents
 } from "react-leaflet";
 import { useField, useFormikContext } from "formik";
 import { useState } from "react";
-import FixMapSize from "./FixMapSize";
 import "./map.css";
-
-const customMarkerIcon = L.divIcon({
-  className: "custom-marker", 
-  iconSize: [28, 28],         
-  iconAnchor: [14, 28],       
-  popupAnchor: [0, -28]       
-});
-
-
-function ChangeView({ center }) {
-  const map = useMap();
-  map.setView(center, map.getZoom());
-  return null;
-}
+import MapMarker from "../geo/MapMarker";
+import AppMap from "../geo/AppMap";
 
 function MapClickHandler({ name }) {
   const { setFieldValue } = useFormikContext();
@@ -113,52 +97,31 @@ export default function FormikGeoPoint({ name }) {
       </div>
 
       {/* mapa */}
-      <div className="form-map-container">
-        <MapContainer
-          center={center}
-          zoom={15}
-        >
-          <FixMapSize />
-          <ChangeView center={center} />
+      <AppMap center={center} zoom={15}>
 
-          <TileLayer
-            attribution="© OpenStreetMap"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        <MapClickHandler name={name} />
+
+        {value && (
+          <MapMarker
+            draggable
+            position={[
+              parseFloat(value.lat),
+              parseFloat(value.lon)
+            ]}
+            eventHandlers={{
+              dragend: (e) => {
+                const p = e.target.getLatLng();
+
+                setFieldValue(name, {
+                  lat: p.lat,
+                  lon: p.lng
+                });
+              }
+            }}
           />
+        )}
 
-          <MapClickHandler name={name} />
-
-          {value && (
-            <Marker
-              draggable
-              position={[
-                parseFloat(value.lat),
-                parseFloat(value.lon)
-              ]}
-              icon={customMarkerIcon} 
-              eventHandlers={{
-                dragend: (e) => {
-                  const p = e.target.getLatLng();
-
-                  setFieldValue(name, {
-                    lat: p.lat,
-                    lon: p.lng
-                  });
-                }
-              }}
-            />
-          )}
-        </MapContainer>
-
-        {/* botón GPS flotante */}
-        <button
-          type="button"
-          onClick={usarUbicacionActual}
-          className="form-map-gps-btn"
-        >
-          📍
-        </button>
-      </div>
+      </AppMap>
 
       {/* coordenadas */}
       {value && (
