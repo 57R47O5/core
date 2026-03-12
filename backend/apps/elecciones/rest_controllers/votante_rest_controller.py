@@ -1,4 +1,5 @@
-from django.db.models import Q, F
+from django.db.models import Q, F, Value
+from django.db.models.functions import Concat
 from framework.permisos import PermisoGroup
 from framework.models.basemodels import Constant
 
@@ -32,3 +33,17 @@ class VotanteRestController(ModelRestController):
             if key in  ['nombres', 'apellidos']:
                 filtro &= Q(**{f"persona__{key}__icontains":value})
         return filtro
+
+    def serialize_list(self, queryset):
+        return list(queryset.values()
+                    .annotate(
+                        nombres=F("persona__nombres"),
+                        apellidos=F("persona__apellidos"),
+                        distrito=F("distrito__nombre"),
+                    ).annotate(
+                        descripcion=Concat(
+                        F("nombres"),
+                        Value(" "),
+                        F("apellidos"),
+                        )
+                    ).values())

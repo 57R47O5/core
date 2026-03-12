@@ -11,7 +11,7 @@ export default function VotanteListPage() {
       columns={[
       { label: "Nombres", field: "nombres" },
       { label: "Apellidos", field: "apellidos" },
-      { label: "Seccional", field: "seccional" }
+      { label: "Distrito", field: "distrito" }
       ]}
     />
   );
