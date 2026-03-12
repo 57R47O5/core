@@ -1,3 +1,4 @@
+from datetime import date
 from rest_framework import serializers
 from apps.elecciones.models.salida import Salida
 from apps.elecciones.models.campana import Campana
@@ -65,9 +66,15 @@ class SalidaCreateSerializer(serializers.ModelSerializer):
 
 
 class SalidaUpdateSerializer(serializers.ModelSerializer):
+    estado = EstadoSalidaLinkSerializer()
     class Meta:
         model = Salida
-        fields = "__all__"
+        fields = ["fecha", "estado"]
+
+    def update(self, instance: Salida, validated_data):
+        instance.fecha = validated_data.get("fecha")
+        instance.estado = EstadoSalida.objects.get(codigo=validated_data.get("estado").get("nombre"))
+        return instance
 
 
 class SalidaRetrieveSerializer(SalidaSerializer):
