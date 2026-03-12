@@ -9,26 +9,13 @@ export function FixMapSize() {
       // invalidar tamaño apenas se monta
     requestAnimationFrame(() => {
       map.invalidateSize();
-      console.log("InvalidateSize con RAF");
-      console.log("Container size:", map.getContainer().offsetWidth, map.getContainer().offsetHeight);
-      console.log("Map size:", map.getSize());
     });
-
 
       // observabilidad extra
       const container = map.getContainer();
-      console.log("Container size:", container.offsetWidth, container.offsetHeight);
-      console.log("Map size:", map.getSize()); // devuelve Point con width/height
-      console.log("Center:", map.getCenter());
-      console.log("Zoom:", map.getZoom());
-      console.log("Bounds:", map.getBounds());
-
 
       // también al redimensionar ventana
       const resize = () => map.invalidateSize();
-      console.log("Resize disparado");
-      console.log("Container size:", container.offsetWidth, container.offsetHeight);
-      console.log("Map size:", map.getSize());
       window.addEventListener("resize", resize);
 
       return () => window.removeEventListener("resize", resize);
