@@ -9,6 +9,7 @@ export default function SelectFormik({
   endpoint,
   label,
   disabled = false,
+  autoSelectSingle = false,  
   ...props
 }) {
   const [field, meta, helpers] = useField(name);
@@ -43,15 +44,22 @@ export default function SelectFormik({
     };
   }, [endpoint, disabled]);
 
+  useEffect(() => {
+    if (!loading && autoSelectSingle && opciones.length === 1 && !value) {
+      helpers.setValue(opciones[0].id);
+    }
+  }, [loading, autoSelectSingle, opciones, value, helpers]);
+
   const selectedOption = opciones.find(
-    (op) => String(op.id) === String(value)
+    (op) => String(op.id) === String(value?.id ?? value)
   );
 
-  if (disabled && value) {
+  if (disabled && (value || (autoSelectSingle && opciones.length === 1))) {
+    const optionToShow = selectedOption ?? opciones[0];
     return (
       <EntityLink
-        id={value.id}
-        label={value.label ?? value.descripcion }
+        id={optionToShow.id}
+        label={optionToShow.label ?? optionToShow.descripcion}
         controller={endpoint}
         fieldLabel={label}
       />

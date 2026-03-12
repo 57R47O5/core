@@ -1,5 +1,4 @@
 import * as Yup from "yup";
-import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
 import DatePickerFormik from "../../../components/forms/DatePickerFormik";
 
@@ -12,6 +11,7 @@ export const SalidaFields = {
     filter: false,
     validation: Yup.number().required("Requerido"),
     disabled: false,
+    autoSelectSingle: true,
     render: (props) => <SelectFormik {...props} 
       endpoint={"campana"}/>,
   },

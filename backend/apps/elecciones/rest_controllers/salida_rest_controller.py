@@ -1,4 +1,5 @@
-from django.db.models import Q
+from django.db.models import Q, F, Value, CharField
+from django.db.models.functions import Concat
 from framework.permisos import PermisoGroup
 from framework.models.basemodels import Constant
 
@@ -25,3 +26,20 @@ class SalidaRestController(ModelRestController):
     update_serializer = SalidaUpdateSerializer
     retrieve_serializer = SalidaRetrieveSerializer    
     permisos = PermisosSalida
+
+
+    def serialize_list(self, queryset):
+        """
+        Serialización rápida por defecto usando .values().
+        Puede ser sobrescrita por subclases si requieren algo custom.
+        """
+        model=queryset.model
+        salida = list(queryset.values().annotate(
+            colaborador=F("colaborador__persona__nombres"), 
+            estado=F("estado__codigo"),
+        ).annotate(
+            descripcion=Concat(
+                F("colaborador"), Value(" - "), F("estado"), output_field=CharField()
+            )
+        ).values())
+        return salida
