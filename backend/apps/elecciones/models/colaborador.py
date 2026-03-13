@@ -5,6 +5,7 @@ from framework.exceptions import  ExcepcionValidacion
 from apps.base.models.persona_fisica import PersonaFisica
 from apps.elecciones.models.campana import Campana
 
+
 class Colaborador(BaseModel):
     persona = models.ForeignKey(PersonaFisica, 
         on_delete=models.CASCADE, db_column='persona')
@@ -44,12 +45,14 @@ class Colaborador(BaseModel):
     
     @property
     def user(self):
-        usuario = self.persona.persona.usuarios.first().user
+        usuarios = self.persona.persona.usuarios.all()
+        if usuarios.exists():
+            usuario = usuarios.first().user
         user_serializado = {
             "id": usuario.pk,
             "label": usuario.username,
             "controller": "user"
-        }
+        } if  usuarios.exists() else None
         return user_serializado
     
     @property
