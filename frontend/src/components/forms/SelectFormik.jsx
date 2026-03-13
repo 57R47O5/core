@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useField } from "formik";
 import { Form } from "react-bootstrap";
 import request from "../../api/requests";
-import EntityLink from "../displays/EntityLink";
 
 export default function SelectFormik({
   name,
@@ -50,21 +49,6 @@ export default function SelectFormik({
     }
   }, [loading, autoSelectSingle, opciones, value, helpers]);
 
-  const selectedOption = opciones.find(
-    (op) => String(op.id) === String(value?.id ?? value)
-  );
-
-  if (disabled && (value || (autoSelectSingle && opciones.length === 1))) {
-    const optionToShow = selectedOption ?? opciones[0];
-    return (
-      <EntityLink
-        id={optionToShow.id}
-        label={optionToShow.label ?? optionToShow.descripcion}
-        controller={endpoint}
-        fieldLabel={label}
-      />
-    );
-  }
 
   return (
     <Form.Group className="mb-3">

@@ -7,18 +7,8 @@ import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useInstance } from "../../../context/InstanceContext";
 
 function ColaboradorForm() {
-  const { isEdit } = useRouteMode();
-  const { instance } = useInstance();
-
-  const dynamicFields = useMemo(() => ({
-      ...ColaboradorFields,
-      user: {
-        ...ColaboradorFields.user,
-        disabled: instance?.user?.id,         
-      },
-    }), [isEdit]);
-
-  const {FormFields} = useModelForm(dynamicFields
+  
+  const {FormFields} = useModelForm(ColaboradorFields
   );  
     
   return (
@@ -26,18 +16,5 @@ function ColaboradorForm() {
   );
 } 
 
-ColaboradorForm.actions = ({ instance, formik, api, navigate }) => ({
-
-  crear_usuario: {
-    label: "Agregar Usuarios",
-    variant: "primary",
-    action: async () => {
-      const api = getAPIBase("persona-user");
-      const { crear } = api;
-
-      await crear(formik.values);
-    },
-  },
-});
 
 export default ColaboradorForm;

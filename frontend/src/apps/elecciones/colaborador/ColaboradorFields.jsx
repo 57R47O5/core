@@ -7,15 +7,5 @@ export const ColaboradorFields = {
 
   ...PersonaFisicaFields,
   ...documentoIdentidadFields,
-    user: {
-      label: "Usuario",
-      initial: "",
-      form: true,
-      filter: true, 
-      validation: Yup.string().required("Requerido"),
-      endpoint: "/colaborador/usuarios-disponibles",
-      disabled: false,
-      render: (props) => <SelectFormik {...props} />,
-    },
 
 };

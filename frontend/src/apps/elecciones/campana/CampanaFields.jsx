@@ -13,7 +13,7 @@ candidato: {
   filter: true,
   validation: Yup.number().required("Requerido"),
   endpoint: "persona-fisica",
-  disabled: false,
+  autoSelectSingle:true, 
   render: (props) => <SelectFormik {...props} />,
 },
 
@@ -33,7 +33,7 @@ candidato: {
     filter: true,
     validation: Yup.number().required("Requerido"),
     endpoint: "distrito-electoral",
-    disabled: false,
+    autoSelectSingle:true, 
     render: (props) => <SelectFormik {...props} />,
   },
 
@@ -43,7 +43,7 @@ candidato: {
     form: true, 
     filter: true,
     validation: Yup.number().required("Requerido"),    
-    disabled: false,
+    autoSelectSingle:true, 
     endpoint: "ciclo-electoral/options",
     render: (props) => <SelectFormik {...props}/>,
   },

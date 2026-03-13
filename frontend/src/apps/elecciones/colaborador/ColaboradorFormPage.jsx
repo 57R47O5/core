@@ -6,6 +6,53 @@ import ContextTile from "../../../components/displays/bento/ContextTile";
 import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
 import { DataTable, ORCTableColumna } from "../../../components/listados/DataTable";
 import VisitaList from "../visita/VisitaList";
+import SelectFormik from "../../../components/forms/SelectFormik";
+import { Form, Formik } from "formik";
+import getAPIBase from "../../../api/BaseAPI";
+import { Button } from "react-bootstrap";
+import { SiTiene } from "../../../components/displays/SiTiene";
+import EntityLink from "../../../components/displays/EntityLink";
+
+function User({ instance }){
+
+  const { crear } = getAPIBase("persona-user");
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      await crear(values);
+      alert("Registro creado");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+  if (instance.user==null)
+  return (<Formik
+          initialValues={{persona: instance.persona, user: null}}
+          onSubmit={handleSubmit}>
+            {(formik) => (
+              <Form>
+                <SelectFormik
+                  name="user"
+                  label="Usuario"
+                  endpoint={"/colaborador/usuarios-disponibles"}
+                />
+                {!formik.isSubmitting && (
+                  <SiTiene capacidad={"crear_usuario"}>
+                    <Button type="submit" variant="primary">
+                      Enviar
+                    </Button>
+                  </SiTiene>
+                )}
+              </Form>
+            )}
+          </Formik>)
+  else
+    return (<EntityLink 
+      controller={"user"} 
+      id={instance.user.id} 
+      label={instance.nombres + " " + instance.apellidos}
+      />)
+  }
 
 function Colaboradores({}){
   const { instance } = useInstance();
@@ -42,8 +89,15 @@ function Colaboradores({}){
           </ContextTile>
         </>
       :[]}
+      <ContextTile
+      title={"Usuario"}
+      >
+        <User instance={instance}/>
+      </ContextTile>
       </ContextGrid>
 }
+
+
 
 export default function ColaboradorFormPage() {
   const {id} = useRouteMode();
