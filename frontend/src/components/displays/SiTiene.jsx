@@ -1,9 +1,9 @@
 import { useInstance } from "../../context/InstanceContext";
 
-export function SiPuede({ capability, children, fallback = null }) {
+export function SiTiene({ capacidad, children, fallback = null }) {
   const { instance } = useInstance();
 
-  const allowed = instance?.capabilities?.[capability];
+  const allowed = instance?.capabilities?.[capacidad];
 
   if (!allowed) return fallback;
 

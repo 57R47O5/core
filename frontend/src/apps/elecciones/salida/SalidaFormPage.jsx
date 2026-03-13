@@ -5,7 +5,8 @@ import ContextTile from "../../../components/displays/bento/ContextTile";
 import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
 import VisitaForm from "../visita/VisitaForm";
-import { SiPuede } from "../../../components/displays/SiPuede";
+import { SiTiene } from "../../../components/displays/SiTiene";
+import VisitaList from "../visita/VisitaList";
 
 export function  SalidaFormPageContent({id, controller}) {
   const  {exists} = useInstance();
@@ -25,7 +26,7 @@ export function  SalidaFormPageContent({id, controller}) {
       titleEdit="Editar Salida"
       />
       </ContextTile>        
-        {<SiPuede capability="agregar_visitas" fallback={<></>}> 
+        {<SiTiene capacidad="agregar_visitas" fallback={<></>}> 
           <ContextTile
             title={"Agregar Visita"}
           >
@@ -34,21 +35,22 @@ export function  SalidaFormPageContent({id, controller}) {
               id={null}
               defaults={{salida: id}}
             >
-        <BaseFormPageContent
-          id={null}
-          isCreate = {true}
-          controller="visita"
-          FormComponent={VisitaForm}
-          titleNew="Nueva Visita"
-          titleEdit="Editar Visitas"
-          />
-        </InstanceProvider>
+            <BaseFormPageContent
+              id={null}
+              isCreate = {true}
+              controller="visita"
+              FormComponent={VisitaForm}
+              titleNew="Nueva Visita"
+              titleEdit="Editar Visitas"
+              />
+            </InstanceProvider>
       </ContextTile>
-        </SiPuede>}
+        </SiTiene>}
         {(exists) ?  
         <ContextTile
             title={"Ver Visitas"}
-          >        
+          >  
+          <VisitaList filters={{salida: id}}/>     
       </ContextTile>:<></>}
     </ContextGrid>
   )
