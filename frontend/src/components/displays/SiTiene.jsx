@@ -1,11 +1,9 @@
 import { useInstance } from "../../context/InstanceContext";
 
 export function SiTiene({ capacidad, children, fallback = null }) {
-  const { instance } = useInstance();
+  const { has } = useInstance();
 
-  const allowed = instance?.capabilities?.[capacidad];
-
-  if (!allowed) return fallback;
+  if (!has(capacidad)) return fallback;
 
   return children;
 }

@@ -13,10 +13,12 @@ export function  SalidaFormPageContent({id, controller}) {
 
   return (
     <ContextGrid
-      defaultActive={0}
+      controller={"salida"}
+      defaultActive={"salida"}
       columns={2}
     >
       <ContextTile
+        tileKey="salida"
         title="Salida"
       >
     <BaseFormPage
@@ -26,29 +28,30 @@ export function  SalidaFormPageContent({id, controller}) {
       titleEdit="Editar Salida"
       />
       </ContextTile>        
-        {<SiTiene capacidad="agregar_visitas" fallback={<></>}> 
-          <ContextTile
-            title={"Agregar Visita"}
-          >
-            <InstanceProvider
-              controller={"visita"}
-              id={null}
-              defaults={{salida: id}}
-            >
-            <BaseFormPageContent
-              id={null}
-              isCreate = {true}
-              controller="visita"
-              FormComponent={VisitaForm}
-              titleNew="Nueva Visita"
-              titleEdit="Editar Visitas"
-              />
-            </InstanceProvider>
+      <ContextTile
+        title={"Agregar Visita"}
+        tileKey="agregar"
+        capability={"agregar_visitas"}
+      >
+        <InstanceProvider
+          controller={"visita"}
+          id={null}
+          defaults={{salida: id}}
+        >
+        <BaseFormPageContent
+          id={null}
+          isCreate = {true}
+          controller="visita"
+          FormComponent={VisitaForm}
+          titleNew="Nueva Visita"
+          titleEdit="Editar Visitas"
+          />
+        </InstanceProvider>
       </ContextTile>
-        </SiTiene>}
         {(exists) ?  
         <ContextTile
             title={"Ver Visitas"}
+            tileKey={"ver-visitas"}
           >  
           <VisitaList filters={{salida: id}}/>     
       </ContextTile>:<></>}
