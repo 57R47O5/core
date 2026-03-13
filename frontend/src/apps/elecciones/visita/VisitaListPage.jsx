@@ -1,6 +1,5 @@
 
 import MapListPage from "../../../components/listados/MapListPage";
-import { ORCTableColumna } from "../../../components/listados/DataTable";
 import VisitaFilter from "./VisitaFilter";
 
 export default function VisitaListPage() {
