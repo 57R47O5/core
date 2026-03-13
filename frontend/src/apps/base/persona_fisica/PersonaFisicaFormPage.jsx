@@ -50,6 +50,7 @@ export default function PersonaFisicaFormPage() {
     > 
       <ContextTile
         title="Datos Personales"
+        tileKey="datos-personales"
       >
         <BaseFormPage
           controller={controller}
@@ -60,6 +61,7 @@ export default function PersonaFisicaFormPage() {
       </ContextTile> 
       <ContextTile
         title = "Documentos"
+        tileKey = "documentos"
       >
         <InstanceProvider
           controller={controller}

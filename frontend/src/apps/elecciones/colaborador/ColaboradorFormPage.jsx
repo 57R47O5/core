@@ -9,9 +9,10 @@ import VisitaList from "../visita/VisitaList";
 import SelectFormik from "../../../components/forms/SelectFormik";
 import { Form, Formik } from "formik";
 import getAPIBase from "../../../api/BaseAPI";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import { SiTiene } from "../../../components/displays/SiTiene";
 import EntityLink from "../../../components/displays/EntityLink";
+
 
 function User({ instance }){
 
@@ -57,12 +58,15 @@ function User({ instance }){
 function Colaboradores({}){
   const { instance } = useInstance();
 
+  if (!instance) return <Spinner/>
   return <ContextGrid
-        defaultActive={0}
+        controller={"colaborador"}
+        defaultActive={"datos-colaborador"}
         columns={2}
       >
         <ContextTile
           title="Datos Colaborador"
+          tileKey="datos-colaborador"
         >
           <BaseFormPage
             controller={"colaborador"}
@@ -71,10 +75,11 @@ function Colaboradores({}){
             titleEdit="Editar Colaborador"      
             />
         </ContextTile>        
-        {instance?.salida ? 
-        <>
           <ContextTile
-            title="Salidas"> 
+            title="Salidas"
+            tileKey="salidas"
+            capability={"ver_salidas"}
+            > 
             <DataTable
               items = {instance.salida}
               columns = {[
@@ -84,12 +89,11 @@ function Colaboradores({}){
               ]}
               />         
           </ContextTile>
-          <ContextTile title={"Visitas"}>
+          <ContextTile title={"Visitas"} tileKey={"visitas"} capability={"ver_salidas"}>
               <VisitaList filters={{salida__colaborador: instance.id}}/>
           </ContextTile>
-        </>
-      :[]}
       <ContextTile
+      tileKey={"usuario"}
       title={"Usuario"}
       >
         <User instance={instance}/>

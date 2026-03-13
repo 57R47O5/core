@@ -6,14 +6,16 @@ import ContextTile from "../../../components/displays/bento/ContextTile";
 import { useRouteMode } from "../../../hooks/useRouteMode";
 
 function Campana({}){
-  const { instance } = useInstance();
+  useInstance();
 
   return <ContextGrid
-      defaultActive={0}
+      controller={"campana"}
+      defaultActive={"datos-campana"}
         columns={2}
       >
     <ContextTile
       title={"Datos Campaña"}
+      tileKey={"datos-campana"}
     >
       <BaseFormPage
         controller="campana"

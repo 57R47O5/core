@@ -7,7 +7,6 @@ import { useInstance, InstanceProvider } from "../../../context/InstanceContext"
 import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
 import EntityLink from "../../../components/displays/EntityLink";
-import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useModelForm } from "../../../hooks/useModelForm";
 import { UserRolFields } from "../user_rol/UserRolFields"
 import { PermisoFields } from "../permiso/PermisoFields"
@@ -92,19 +91,15 @@ function PermisosUser({}) {
 }
 
 export default function UserFormPage() {
-  const {id } = useRouteMode();
-  const controller = "user";
   return (
-    <InstanceProvider
-      controller={controller} 
-      id = {id}      
-    >
       <ContextGrid
-        defaultActive={0}
+        controller={"user"}
+        defaultActive={"datos-usuario"}
         columns={2}
         >
         <ContextTile
           title="Datos Usuario"
+          tileKey="datos-usuario"
         >
         <BaseFormPage
           controller="user"
@@ -115,15 +110,16 @@ export default function UserFormPage() {
         </ContextTile>
         <ContextTile
           title={"Persona"}
+          tileKey={"persona"}
           > 
            <Persona/>  
         </ContextTile> 
         <ContextTile
         title={"Roles"}
+        tileKey={"roles"}
         >
           <RolesUser/>
           </ContextTile>
       </ContextGrid>
-    </InstanceProvider>
   );
 }

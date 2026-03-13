@@ -1,35 +1,90 @@
 import { useState, Children, cloneElement } from "react";
+import { Spinner, Alert } from "react-bootstrap";
+import { InstanceProvider, useInstance } from "../../../context/InstanceContext";
+import { useRouteMode } from "../../../hooks/useRouteMode";
 import "./context-grid.css";
 
-export default function ContextGrid({
+function ContextGridInner({
   children,
   defaultActive = null,
   allowCollapse = true,
   columns = 2,
 }) {
-  const [active, setActive] = useState(defaultActive);
+  const { loading, exists, instance } = useInstance();
+  const [activeKey, setActiveKey] = useState(defaultActive);
 
-  const handleToggle = (index) => {
-    if (allowCollapse && active === index) {
-      setActive(null);
+  const handleToggle = (key) => {
+    if (allowCollapse && activeKey === key) {
+      setActiveKey(null);
     } else {
-      setActive(index);
+      setActiveKey(key);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="context-grid-loading text-center p-4">
+        <Spinner animation="border" />
+      </div>
+    );
+  }
+
+  if (!exists) {
+    return (
+      <Alert variant="warning">
+        La instancia solicitada no existe.
+      </Alert>
+    );
+  }
 
   return (
     <div
       className={`context-grid ${
-        active !== null ? "has-active" : ""
+        activeKey !== null ? "has-active" : ""
       } columns-${columns}`}
     >
-      {Children.map(children, (child, index) =>
-        cloneElement(child, {
-          isActive: active === index,
-          onToggle: () => handleToggle(index),
-          gridIndex: index,
-        })
-      )}
+      {Children.map(children, (child) => {
+        const key = child.props.tileKey;
+
+        if (!key) {
+          throw new Error(
+            "Cada ContextTile debe tener una prop 'tileKey' única."
+          );
+        }
+
+        return cloneElement(child, {
+          isActive: key === activeKey,
+          onToggle: () => handleToggle(key),
+          instance, // opcional, por si algún tile lo quiere
+        });
+      })}
     </div>
+  );
+}
+
+export default function ContextGrid({
+  controller,
+  children,
+  defaultActive = null,
+  allowCollapse = true,
+  columns = 2,
+  defaults,
+}) {
+  const { id } = useRouteMode();
+
+  return (
+    <InstanceProvider
+      controller={controller}
+      id={id}
+      defaults={defaults}
+    >
+      <ContextGridInner
+        defaultActive={defaultActive}
+        allowCollapse={allowCollapse}
+        columns={columns}
+      >
+        {children}
+      </ContextGridInner>
+    </InstanceProvider>
   );
 }

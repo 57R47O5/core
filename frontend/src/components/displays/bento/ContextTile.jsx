@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Card, Badge } from "react-bootstrap";
+import { useInstance } from "../../../context/InstanceContext";
 
 export default function ContextTile({
   title,
@@ -12,8 +13,20 @@ export default function ContextTile({
   isActive: controlledActive,
   onToggle,
   disabled = false,
+  capability,
+  anyOf,
+  allOf,
 }) {
-  // Permite modo controlado o no controlado
+  const { has, hasAny, hasAll } = useInstance();
+
+  /* --------- CAPABILITY GUARD --------- */
+
+  if (capability && !has(capability)) return null;
+  if (anyOf && !hasAny(anyOf)) return null;
+  if (allOf && !hasAll(allOf)) return null;
+
+  /* --------- STATE CONTROL --------- */
+
   const [internalActive, setInternalActive] = useState(defaultExpanded);
 
   const isControlled = controlledActive !== undefined;
@@ -28,6 +41,8 @@ export default function ContextTile({
       setInternalActive((prev) => !prev);
     }
   };
+
+  /* --------- RENDER --------- */
 
   return (
     <Card
@@ -55,7 +70,7 @@ export default function ContextTile({
           )}
         </div>
 
-        {/* SUMMARY (visible when collapsed) */}
+        {/* SUMMARY */}
         {!isActive && summary && (
           <div className="context-summary mt-2 text-muted small">
             {summary}
@@ -66,7 +81,7 @@ export default function ContextTile({
         {isActive && canExpand && (
           <div
             className="context-content mt-3"
-            onClick={(e) => e.stopPropagation()} // evita colapsar al interactuar
+            onClick={(e) => e.stopPropagation()}
           >
             {children}
           </div>
