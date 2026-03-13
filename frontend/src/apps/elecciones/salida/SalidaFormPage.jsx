@@ -5,7 +5,54 @@ import ContextTile from "../../../components/displays/bento/ContextTile";
 import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
 import VisitaForm from "../visita/VisitaForm";
+import { SiPuede } from "../../../components/displays/SiPuede";
 
+export function  SalidaFormPageContent({id, controller}) {
+  const  {exists} = useInstance();
+
+  return (
+    <ContextGrid
+      defaultActive={0}
+      columns={2}
+    >
+      <ContextTile
+        title="Salida"
+      >
+    <BaseFormPage
+      controller={controller}
+      FormComponent={SalidaForm}
+      titleNew="Nueva Salida"
+      titleEdit="Editar Salida"
+      />
+      </ContextTile>        
+        {<SiPuede capability="agregar_visitas" fallback={<></>}> 
+          <ContextTile
+            title={"Agregar Visita"}
+          >
+            <InstanceProvider
+              controller={"visita"}
+              id={null}
+              defaults={{salida: id}}
+            >
+        <BaseFormPageContent
+          id={null}
+          isCreate = {true}
+          controller="visita"
+          FormComponent={VisitaForm}
+          titleNew="Nueva Visita"
+          titleEdit="Editar Visitas"
+          />
+        </InstanceProvider>
+      </ContextTile>
+        </SiPuede>}
+        {(exists) ?  
+        <ContextTile
+            title={"Ver Visitas"}
+          >        
+      </ContextTile>:<></>}
+    </ContextGrid>
+  )
+}
 
 export default function SalidaFormPage() {
   const { id } = useRouteMode();
@@ -25,45 +72,7 @@ export default function SalidaFormPage() {
     <InstanceProvider
       controller={controller} 
       id = {id}      
-    >
-      <ContextGrid
-        defaultActive={0}
-        columns={2}
-      >
-        <ContextTile
-          title="Salida"
-        >
-      <BaseFormPage
-        controller={controller}
-        FormComponent={SalidaForm}
-        titleNew="Nueva Salida"
-        titleEdit="Editar Salida"
-        />
-        </ContextTile>        
-        {id==="nuevo" ? <></> : <ContextTile
-          title={"Agregar Visita"}
-          >
-            <InstanceProvider
-                controller={"visita"}
-                id={null}
-                defaults={{salida: id}}
-              >
-          <BaseFormPageContent
-            id={null}
-            isCreate = {true}
-            controller="visita"
-            FormComponent={VisitaForm}
-            titleNew="Nueva Visita"
-            titleEdit="Editar Visitas"
-            />
-          </InstanceProvider>
-        </ContextTile>}
-        {id === "nuevo" ? <></> : <ContextTile
-          title={"Ver Visitas"}
-        >
-          
-        </ContextTile>}
-      </ContextGrid>
+    ><SalidaFormPageContent id={id} controller={controller}/>
     </InstanceProvider>
   );
 }

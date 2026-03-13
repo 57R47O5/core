@@ -9,8 +9,7 @@ from apps.elecciones.serializers.salida_serializer import (
     SalidaCreateSerializer,
     SalidaUpdateSerializer,
     SalidaRetrieveSerializer)
-from controllers.base.base_rest_controller import ModelRestController
-
+from controllers.base.base_rest_controller import ModelRestController, Capability, CapabilitySet
 class PermisosSalida(PermisoGroup):
     VIEW=Constant("elecciones.salida.view")
     CREATE=Constant("elecciones.salida.create")
@@ -27,6 +26,12 @@ class SalidaRestController(ModelRestController):
     retrieve_serializer = SalidaRetrieveSerializer    
     permisos = PermisosSalida
 
+    capabilities = CapabilitySet(
+        Capability(
+            name="agregar_visitas",
+            business_rule=lambda instancia: instancia.puede_agregar_visitas
+        )
+    )
 
     def serialize_list(self, queryset):
         """

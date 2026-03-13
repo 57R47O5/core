@@ -10,6 +10,7 @@ from apps.elecciones.models.estado_salida import EstadoSalida, EstadoSalidaManag
 
 class ErrorSalida(MensajesError):
     NO_CANCELABLE="No se puede cancelar una salida que ya tiene visitas"
+    SALIDA_EN_CURSO="El colaborador ya tiene otra salida en curso"
 
 class Salida(BaseModel):
     campana = models.ForeignKey(
@@ -33,23 +34,30 @@ class Salida(BaseModel):
     class Meta:
         managed = False
         db_table = "salida"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["colaborador", "fecha"],
-                name="uq_salida_colaborador_fecha"
-            )
-        ]
+       
 
     def clean(self, *args, **kwargs):
-        if self.estado == EstadoSalidaManager.CANCELADA:
-            if not self.puede_cancelarse():
+        if self.estado == EstadoSalida.objects.EN_CURSO:
+            if Salida.objects.filter(
+                colaborador=self.colaborador,
+                estado = EstadoSalida.objects.EN_CURSO
+            ).exclude(pk=self.pk).exists():
+                raise ExcepcionValidacion(ErrorSalida.SALIDA_EN_CURSO)
+        if self.estado == EstadoSalida.objects.CANCELADA:
+            if not self.puede_cancelarse:
                 raise ExcepcionValidacion(
                     ErrorSalida.NO_CANCELABLE
                 )
+            
+    def save(self, *args, **kwargs):
+        self.clean()
+        return super().save(*args, **kwargs)
 
+    @property
     def puede_agregar_visitas(self):
-        return self.estado.code == EstadoSalidaManager.EN_CURSO
+        return self.estado == EstadoSalida.objects.EN_CURSO
 
+    @property
     def puede_cancelarse(self):
         return not self.visitas.exists()
     
