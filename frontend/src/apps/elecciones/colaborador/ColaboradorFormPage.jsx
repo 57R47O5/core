@@ -5,6 +5,7 @@ import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
 import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
 import { DataTable, ORCTableColumna } from "../../../components/listados/DataTable";
+import VisitaList from "../visita/VisitaList";
 
 function Colaboradores({}){
   const { instance } = useInstance();
@@ -23,17 +24,24 @@ function Colaboradores({}){
             titleEdit="Editar Colaborador"      
             />
         </ContextTile>        
-        {instance?.salida ? <ContextTile
-        title="Salidas"> 
-        <DataTable
-          items = {instance.salida}
-          columns = {[
-            {label: "Salida", controller: "salida", field: "id", tipo:ORCTableColumna.LINK_CONTROLADO},
-            {label: "Fecha",  field: "fecha", tipo:ORCTableColumna.FECHA},
-            {label: "Estado",  field: "estado_salida", tipo:ORCTableColumna.CADENA}
-          ]}
-        />         
-      </ContextTile>:[]}
+        {instance?.salida ? 
+        <>
+          <ContextTile
+            title="Salidas"> 
+            <DataTable
+              items = {instance.salida}
+              columns = {[
+                {label: "Salida", controller: "salida", field: "id", tipo:ORCTableColumna.LINK_CONTROLADO},
+                {label: "Fecha",  field: "fecha", tipo:ORCTableColumna.FECHA},
+                {label: "Estado",  field: "estado_salida", tipo:ORCTableColumna.CADENA}
+              ]}
+              />         
+          </ContextTile>
+          <ContextTile title={"Visitas"}>
+              <VisitaList filters={{salida__colaborador: instance.id}}/>
+          </ContextTile>
+        </>
+      :[]}
       </ContextGrid>
 }
 
