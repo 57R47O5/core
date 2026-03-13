@@ -50,6 +50,21 @@ export const ORCTableColumna = {
         },
         estilo: {},
     },
+    LINK_CONTROLADO: {
+      render: (x, item, field, col) => {
+        if (!x) return "";
+
+        const controller = col.controller || "";
+        const url = `/${controller}/${x}/`;
+
+        return (
+          <BaseLink to={url}>
+            {x}
+          </BaseLink>
+        );
+      },
+      estilo: {},
+    },
     CADENA: {
         render: (x) => (x == null ? "" : String(x)),
         estilo: {},
@@ -131,10 +146,10 @@ export function DataTable({
     const valor = item[col.field];
 
     if (col.render) {
-      return col.render(valor, item);
+      return col.render(valor, item, col);
     }
 
-    return tipo.render(valor, item, col.field);
+    return tipo.render(valor, item, col.field, col);
   };
 
   const getStyle = (col) => {
