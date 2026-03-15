@@ -60,7 +60,7 @@ export const VisitaFields = {
     label: "Notas",
     initial: "",
     form: true, 
-    filter: true,
+    filter: false,
     validation: Yup.string().nullable(),
     endpoint: "notas",
     render: (props) => <InputFormik {...props} />,

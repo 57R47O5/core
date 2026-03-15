@@ -48,13 +48,20 @@ export function  SalidaFormPageContent({id, controller}) {
           />
         </InstanceProvider>
       </ContextTile>
-        {(exists) ?  
-        <ContextTile
+      <ContextTile
             title={"Ver Visitas"}
             tileKey={"ver-visitas"}
+            capability={"ver_visitas"}
           >  
           <VisitaList filters={{salida: id}}/>     
-      </ContextTile>:<></>}
+      </ContextTile>
+      <ContextTile
+        title={"Listar Visitas"}
+        tileKey={"listar-visitas"}
+        capability={"ver_visitas"}
+      >
+        <VisitaList filters={{salida: id}} mode={"lista"}/>
+      </ContextTile>
     </ContextGrid>
   )
 }

@@ -43,3 +43,4 @@ class Visita(BaseModel):
                 raise ExcepcionValidacion(
                     ErrorVisita.NO_REGISTRABLE
                 )
+                
