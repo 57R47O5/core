@@ -1,6 +1,6 @@
 from django.db.models import Q, F, Value, CharField
 from django.db.models.functions import Concat
-from framework.permisos import PermisoGroup
+from framework.permisos import PermisoGroup, P
 from framework.models.basemodels import Constant
 
 from framework.api.options import BaseOptionsAPIView
@@ -10,6 +10,7 @@ from apps.elecciones.serializers.salida_serializer import (
     SalidaUpdateSerializer,
     SalidaRetrieveSerializer)
 from controllers.base.base_rest_controller import ModelRestController, Capability, CapabilitySet
+from .visita_rest_controller import PermisosVisita
 class PermisosSalida(PermisoGroup):
     VIEW=Constant("elecciones.salida.view")
     CREATE=Constant("elecciones.salida.create")
@@ -29,8 +30,14 @@ class SalidaRestController(ModelRestController):
     capabilities = CapabilitySet(
         Capability(
             name="agregar_visitas",
+            permission=P(PermisosVisita.CREATE),
             business_rule=lambda instancia: instancia.puede_agregar_visitas
-        )
+        ),
+        Capability(
+            name="ver_visitas",
+            permission=P(PermisosVisita.VIEW),
+            business_rule=lambda instancia: instancia.visitas.exists()
+        ),
     )
 
     def serialize_list(self, queryset):

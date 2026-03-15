@@ -9,6 +9,7 @@ from apps.elecciones.urls.salida_urls import urlpatterns as salida_urls
 from apps.elecciones.urls.seccional_urls import urlpatterns as seccional_urls
 from apps.elecciones.urls.visita_urls import urlpatterns as visita_urls
 from apps.elecciones.urls.votante_urls import urlpatterns as votante_urls
+from apps.elecciones.urls.analitica_urls import urlpatterns as analitica_urls
 
 app_name = "elecciones"
 
@@ -19,6 +20,7 @@ urlpatterns = (
     + distrito_electoral_urls
     + estado_salida_urls
     + lugar_distrito_urls
+    + analitica_urls
     + resultado_visita_urls
     + salida_urls
     + seccional_urls

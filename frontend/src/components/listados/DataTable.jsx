@@ -56,10 +56,11 @@ export const ORCTableColumna = {
 
         const controller = col.controller || "";
         const url = `/${controller}/${x}/`;
+        const display = col.fieldDisplay ? item[col.fieldDisplay] : x;
 
         return (
           <BaseLink to={url}>
-            {x}
+            {display}
           </BaseLink>
         );
       },

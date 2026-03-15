@@ -36,6 +36,11 @@ class ColaboradorRestController(ModelRestController):
             name="crear_usuario",
             permission=P(PermisosPersonaUser.CREATE),
             business_rule=lambda instancia: instancia.usuario_agregable
+        ),
+        Capability(
+            name="ver_salidas",
+            permission=P(PermisosColaborador.VIEW),
+            business_rule=lambda instancia: instancia.salidas.exists()
         )
     )
 

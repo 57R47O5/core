@@ -62,4 +62,3 @@ class Colaborador(BaseModel):
         for dato in datos_salida:
             dato["salida"]={"url":f"salida/{self.pk}", "label":self.pk}
         return datos_salida
-
