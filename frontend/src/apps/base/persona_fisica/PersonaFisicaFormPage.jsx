@@ -1,6 +1,6 @@
 import { Spinner } from "react-bootstrap";
 import BaseFormPage from "../../../components/forms/BaseFormPage";
-import PersonaFisicaForm from "./PersonaFisicaForm";
+import PersonaFisicaForm, {PersonaFisicaInitialValues, PersonaFisicaValidationSchema} from "./PersonaFisicaForm";
 import O2MInlineList from "../../../components/o2m/O2MInlineList";
 import O2MProvider from "../../../components/o2m/O2MProvider";
 import { useModelForm } from "../../../hooks/useModelForm";
@@ -46,14 +46,14 @@ export default function PersonaFisicaFormPage() {
 
   return (
     <ContextGrid
-      defaultActive={0}
+      defaultActive={"datos-personales"}
+      controller={"persona-fisica"}
     > 
       <ContextTile
         title="Datos Personales"
         tileKey="datos-personales"
       >
         <BaseFormPage
-          controller={controller}
           FormComponent={PersonaFisicaForm}
           titleNew="Nueva Persona Física"
           titleEdit="Editar Persona Física"
@@ -63,11 +63,7 @@ export default function PersonaFisicaFormPage() {
         title = "Documentos"
         tileKey = "documentos"
       >
-        <InstanceProvider
-          controller={controller}
-          id = {id}>
-          {isEdit && (<DocumentosPersona/>)}
-        </InstanceProvider>
+      {isEdit && (<DocumentosPersona/>)}
       </ContextTile>  
     </ContextGrid>
   );
