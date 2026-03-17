@@ -4,11 +4,7 @@ import { CampanaFields } from "./CampanaFields";
 
 export default function CampanaForm() {
 
-  const {FormFields} = useModelForm(CampanaFields);
+  const CampanaForm = useModelForm(CampanaFields);
 
-  return (
-  <>
-    <FormFields/>
-  </>
-  );
+  return CampanaForm;
 } 

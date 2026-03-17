@@ -6,15 +6,10 @@ import getAPIBase from "../../../api/BaseAPI";
 import { useRouteMode } from "../../../hooks/useRouteMode";
 import { useInstance } from "../../../context/InstanceContext";
 
-function ColaboradorForm() {
+export default function ColaboradorForm() {
   
-  const {FormFields} = useModelForm(ColaboradorFields
+  const ColaboradorForm = useModelForm(ColaboradorFields
   );  
     
-  return (
-    <FormFields/>     
-  );
+  return ColaboradorForm;
 } 
-
-
-export default ColaboradorForm;

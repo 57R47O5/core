@@ -1,15 +1,13 @@
-import BaseFormPage, {BaseFormPageContent} from "../../../components/forms/BaseFormPage";
+import BaseFormPage from "../../../components/forms/BaseFormPage";
 import SalidaForm from "./SalidaForm";
 import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
 import { useRouteMode } from "../../../hooks/useRouteMode";
-import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
+import { InstanceProvider } from "../../../context/InstanceContext";
 import VisitaForm from "../visita/VisitaForm";
-import { SiTiene } from "../../../components/displays/SiTiene";
 import VisitaList from "../visita/VisitaList";
 
 export function  SalidaFormPageContent({id, controller}) {
-  const  {exists} = useInstance();
 
   return (
     <ContextGrid
@@ -38,7 +36,7 @@ export function  SalidaFormPageContent({id, controller}) {
           id={null}
           defaults={{salida: id}}
         >
-        <BaseFormPageContent
+        <BaseFormPage
           id={null}
           isCreate = {true}
           controller="visita"

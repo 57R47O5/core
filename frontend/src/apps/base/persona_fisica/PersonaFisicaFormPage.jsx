@@ -1,12 +1,12 @@
 import { Spinner } from "react-bootstrap";
 import BaseFormPage from "../../../components/forms/BaseFormPage";
-import PersonaFisicaForm, {PersonaFisicaInitialValues, PersonaFisicaValidationSchema} from "./PersonaFisicaForm";
+import PersonaFisicaForm from "./PersonaFisicaForm";
 import O2MInlineList from "../../../components/o2m/O2MInlineList";
 import O2MProvider from "../../../components/o2m/O2MProvider";
 import { useModelForm } from "../../../hooks/useModelForm";
 import { documentoIdentidadFields } from "../documento_identidad/DocumentoIdentidadFields";
 import { useRouteMode } from "../../../hooks/useRouteMode";
-import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
+import { useInstance } from "../../../context/InstanceContext";
 import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
 
@@ -41,8 +41,7 @@ function DocumentosPersona({}) {
 
 
 export default function PersonaFisicaFormPage() {
-  const {id, isEdit } = useRouteMode();
-  const controller = "persona-fisica";
+  const { isEdit } = useRouteMode();
 
   return (
     <ContextGrid

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ReactSpeedometer from "react-d3-speedometer";
 import {  WordCloud } from "@isoterik/react-word-cloud";
+import "./dashboard.css"
 
 import {
   LineChart,
@@ -22,7 +23,7 @@ function EvolucionTemporal({visitasTiempo}){
             <Card.Body>
 
               <h6 className="text-muted mb-3">
-                Visitas acumuladas en el tiempo
+                Visitas acumuladas
               </h6>
 
               <ResponsiveContainer width="100%" height={300}>
@@ -60,7 +61,7 @@ function TotalVisitas({data}){
           <Card className="shadow-sm dashboard-card">
             <Card.Body>
               <h6 className="text-muted">Total de visitas</h6>
-              <h1>{data.total_visitas}</h1>
+              <h1 style={{ textAlign: "center" }}>{data.total_visitas}</h1>
             </Card.Body>
           </Card>
         </Col>
@@ -68,27 +69,69 @@ function TotalVisitas({data}){
   )
 };
 
+const RESULTADO_LABELS = [
+  "Rechazo",
+  "Regular",
+  "Interés",
+  "Promesa de Voto"
+];
+
 function ResultadoPromedio({data}){
+
+  const labelActual =
+  RESULTADO_LABELS[Math.round(data.resultado_promedio) - 1] ?? "";
   return (<Col md={9}>
-          <Card className="shadow-sm dashboard-card">
+          <Card className="dashboard-card">
             <Card.Body>
 
               <h6 className="text-muted mb-3">
-                Resultado promedio de visitas
+                Resultado de visitas
               </h6>
 
               <div className="d-flex justify-content-center">
 
-                <ReactSpeedometer
-                  value={data.resultado_promedio}
-                  minValue={1}
-                  maxValue={4}
-                  segments={4}
-                  needleColor="black"
-                  startColor="#d73027"
-                  endColor="#1a9850"
-                  height={200}
-                />
+              <ReactSpeedometer
+                value={data.resultado_promedio}
+                minValue={1}
+                maxValue={4}
+                segments={4}
+
+                needleColor="black"
+
+                startColor="#d73027"
+                endColor="#1a9850"
+
+                height={220}
+
+                currentValueText={`Resultado: ${labelActual}`}
+
+                customSegmentLabels={[
+                  {
+                    text: "Rechazo",
+                    position: "INSIDE",
+                    color: "#fff",
+                    fontSize: "12px",
+                  },
+                  {
+                    text: "Regular",
+                    position: "INSIDE",
+                    color: "#fff",
+                    fontSize: "12px",
+                  },
+                  {
+                    text: "Interés",
+                    position: "INSIDE",
+                    color: "#fff",
+                    fontSize: "12px",
+                  },
+                  {
+                    text: "Promesa de voto",
+                    position: "INSIDE",
+                    color: "#fff",
+                    fontSize: "12px",
+                  },
+                ]}
+              />
 
               </div>
             </Card.Body>
@@ -109,7 +152,7 @@ function ElWordCloud({data}){
             <Card.Body>
 
               <h6 className="text-muted mb-3">
-                Temas mencionados en visitas
+                Preocupaciones ciudadanas
               </h6>
               {Array.isArray(data.wordcloud) && data.wordcloud.length > 0 ? (
 

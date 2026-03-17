@@ -2,13 +2,10 @@
 import { useModelForm } from "../../../hooks/useModelForm";
 import { SalidaFields } from "./SalidaFields";
 
-function SalidaForm() {
-  const { FormFields} = useModelForm(SalidaFields
+export default function SalidaForm() {
+  const SalidaForm = useModelForm(SalidaFields
   );  
 
-  return (
-    <FormFields/>     
-  );
+  return SalidaForm
 }
 
-export default SalidaForm

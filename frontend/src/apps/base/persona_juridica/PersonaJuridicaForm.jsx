@@ -3,10 +3,8 @@ import { useModelForm } from "../../../hooks/useModelForm";
 import { PersonaJuridicaFields } from "./PersonaJuridicaFields";
 
 export default function PersonaJuridicaForm() {
-  const {FormFields} = useModelForm(PersonaJuridicaFields
+  const personaJuridicaModel = useModelForm(PersonaJuridicaFields
   );  
 
-  return (
-    <FormFields/>     
-  );
+  return personaJuridicaModel
 } 

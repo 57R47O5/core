@@ -102,7 +102,6 @@ export default function UserFormPage() {
           tileKey="datos-usuario"
         >
         <BaseFormPage
-          controller="user"
           FormComponent={UserForm}
           titleNew="Usuario"
           titleEdit="Usuario"

@@ -16,7 +16,7 @@ export const PersonaJuridicaFields = {
     initial: "",
     form: true,
     filter: true, 
-    validation: Yup.string().required("Requerido"),
+    validation: Yup.string().required("La razón social es requerida"),
     render: (props) => <InputFormik {...props} />,
   },  
 
@@ -25,7 +25,7 @@ export const PersonaJuridicaFields = {
     initial: "",
     form: true,
     filter: true, 
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
     render: (props) => <InputFormik {...props} />,
   }
 };

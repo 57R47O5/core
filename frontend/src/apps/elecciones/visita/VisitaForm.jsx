@@ -3,10 +3,8 @@ import { useModelForm } from "../../../hooks/useModelForm";
 import { VisitaFields } from "./VisitaFields";
 
 export default function VisitaForm() {
-  const {FormFields} = useModelForm(VisitaFields
+  const VisitaForm = useModelForm(VisitaFields
   );  
 
-  return (
-    <FormFields/>     
-  );
+  return VisitaForm
 } 
