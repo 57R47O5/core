@@ -39,6 +39,8 @@ export function useModelInstance({ controller, id, defaults }) {
 
   return {
     instance,
+    id,
+    controller,
     exists,
     loading,
     reload: () => obtener(controller, id).then(setInstance),

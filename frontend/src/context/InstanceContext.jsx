@@ -21,10 +21,11 @@ export function InstanceProvider({ controller, id, defaults, children }) {
   const capabilities = instance?.capabilities || {};
 
   const value = useMemo(() => ({
+    id,
+    controller,
     instance,
     loading,
     exists,
-
     capabilities,
 
     has: (cap) => Boolean(capabilities?.[cap]),

@@ -3,10 +3,8 @@ import { useModelForm } from "../../../hooks/useModelForm";
 import { VotanteFields } from "./VotanteFields";
 
 export default function VotanteForm() {
-  const {FormFields} = useModelForm(VotanteFields
+  const VotanteForm = useModelForm(VotanteFields
   );  
 
-  return (
-    <FormFields/>     
-  );
+  return VotanteForm
 } 

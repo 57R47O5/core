@@ -1,16 +1,27 @@
-import React from "react";
 import { Button, Spinner } from "react-bootstrap";
 import { useFormikContext } from "formik";
+import { Alertar, Tipo } from "../../utils/alertas";
 
 export default function Botonera({
-  showSubmit,
   onDelete,
   onCancel,
   showDelete = true,
   submitLabel = "Guardar",
   extraButtons,
 }) {
-  const { submitForm, isSubmitting } = useFormikContext();
+  const { validateForm, submitForm, isSubmitting, validationSchema } = useFormikContext();
+
+    const handleSafeSubmit = async () => {
+    const errors = await validateForm();
+
+    if (Object.keys(errors).length > 0) {
+      const firstError = Object.values(errors)[0];
+      Alertar(firstError, Tipo.ERROR, "Error");
+      return;
+    }
+
+    submitForm();
+  };
 
   return (
     <div className="d-flex gap-2">
@@ -18,7 +29,7 @@ export default function Botonera({
       {/* GUARDAR */}
       {showDelete && <Button
         variant="primary"
-        onClick={submitForm}
+        onClick={handleSafeSubmit}
         disabled={isSubmitting}
       >
         {isSubmitting ? (

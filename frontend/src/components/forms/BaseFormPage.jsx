@@ -1,29 +1,19 @@
-import { useNavigate } from "react-router-dom";
 import { Spinner, Card, Form } from "react-bootstrap";
 import { Formik } from "formik";
 import CenteredCard from "../displays/CenteredCard";
 import { useRouteMode } from "../../hooks/useRouteMode";
-import {
-  InstanceProvider,
-  useInstance,
-} from "../../context/InstanceContext";
-import getAPIBase from "../../api/BaseAPI";
+import { useInstance } from "../../context/InstanceContext";
 import Botonera from "../botonera/botonera";
+import { useFormSubmit } from "../../hooks/useFormSubmit";
+import { useFormDelete } from "../../hooks/useFormDelete";
+import { useBotoneraConfig } from "../../hooks/useBotoneraConfig";
+import { resolveInitialValues } from "../../hooks/InitialValues";
+import { resolveValidationSchema } from "../../hooks/ValidationSchema";
 
-export function BaseFormPageContent({
-  id,
-  isCreate,
-  controller,
-  FormComponent,
-  redirectTo,
-  titleNew,
-  titleEdit,
-}) {
-  const navigate = useNavigate();
-  const { instance, loading } = useInstance();
-
-  const api = getAPIBase(controller);
-  const { crear, editar, eliminar } = api;
+export default function BaseFormPage({FormComponent}) {
+  const formModel = FormComponent();
+  const { instance, loading, controller } = useInstance();
+  const  { isCreate} = useRouteMode();
 
   if (loading) {
     return (
@@ -33,109 +23,54 @@ export function BaseFormPageContent({
     );
   }
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      if (isCreate) {
-        await crear(values);
-        alert("Registro creado");
-      } else {
-        await editar(id, values);
-        alert("Registro actualizado");
-      }
-      navigate(redirectTo);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const handleSubmit = useFormSubmit({controller});
+  const handleDelete = useFormDelete({controller});
+  const botoneraConfig = useBotoneraConfig({
+    onDelete: handleDelete,
+  });
+  const context = instance?._context || {};
 
-  const handleDelete = async () => {
-    await eliminar(id);
-    alert("Registro eliminado");
-    navigate(redirectTo);
-  };
+  const initialValues = resolveInitialValues({
+    formModel,
+    context,
+    FormComponent,
+  });
+
+  const validationSchema = resolveValidationSchema({
+    formModel,
+    FormComponent,
+    context,
+  });
 
   return (
     <CenteredCard>
       <Card.Body>
         <h3 className="mb-4 text-center">
-          {isCreate ? titleNew : titleEdit}
+          {isCreate ? "Nuevo Registro" : "Editar Registro"}
         </h3>
 
         <Formik
           enableReinitialize
-          initialValues={instance}
-          validationSchema={FormComponent.validationSchema}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
           {(formik) => {
-            // Acciones declaradas por el formulario
-            const declaredActions =
-              FormComponent.actions?.({
-                instance,
-                formik,
-                api,
-                navigate,
-                isCreate,
-              }) || {};
-
-            const dynamicButtons = Object.entries(declaredActions)
-              .filter(([key]) => instance?.capabilities?.[key])
-              .map(([key, config]) => ({
-                label: config.label,
-                variant: config.variant,
-                onClick: config.action,
-              }));
 
             return (
               <Form>
-                <FormComponent formik={formik} instance={instance} />
-
+                 <formModel.FormFields formik={formik} instance={instance} />
                 <div className="d-flex justify-content-between mt-3">
-                  <Botonera
-                    showSubmit={isCreate || instance?.capabilities?.editar}
-                    submitLabel={isCreate ? "Crear" : "Actualizar"}
-                    showDelete={instance?.capabilities?.eliminar}
-                    onDelete={handleDelete}
-                    onCancel={() => navigate(redirectTo)}
-                    isSubmitting={formik.isSubmitting}
-                    extraButtons={dynamicButtons}
-                  />
-                </div>
+                <Botonera
+                  {...botoneraConfig}
+                  isSubmitting={formik.isSubmitting}
+                />
+              </div>
               </Form>
             );
           }}
         </Formik>
       </Card.Body>
     </CenteredCard>
-  );
-}
-
-export default function BaseFormPage({
-  controller,
-  FormComponent,
-  redirectTo = `/${controller}`,
-  titleNew = "Nuevo Registro",
-  titleEdit = "Editar Registro",
-}) {
-  const { id, isCreate, isEdit } = useRouteMode();
-
-  const defaults = FormComponent.initialValuesDefault || {};
-
-  return (
-    <InstanceProvider
-      controller={controller}
-      id={isEdit && id}
-      defaults={defaults}
-    >
-      <BaseFormPageContent
-        id={id}
-        isCreate={isCreate}
-        controller={controller}
-        FormComponent={FormComponent}
-        redirectTo={redirectTo}
-        titleNew={titleNew}
-        titleEdit={titleEdit}
-      />
-    </InstanceProvider>
   );
 }

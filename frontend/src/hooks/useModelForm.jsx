@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { Field, Form as RBForm } from "formik";
 import * as Yup from "yup";
 
 export function useModelForm(fields, order = null) {
@@ -10,7 +9,7 @@ export function useModelForm(fields, order = null) {
     : Object.entries(fields);
   }, [fields, order]);
   
-  const initialValues = useMemo(() => {
+  const baseInitialValues = useMemo(() => {
     return Object.fromEntries(
       entries.filter(([_, def]) => def.form === true)
       .map(([name, def]) => [
@@ -30,7 +29,7 @@ export function useModelForm(fields, order = null) {
     );
   }, [entries]);
 
-  const validationSchema = useMemo(() => {
+  const baseValidationSchema = useMemo(() => {
     return Yup.object(
       Object.fromEntries(
         entries.filter(([_, def]) => def.form === true)
@@ -95,9 +94,9 @@ const FilterFields = useMemo(() => {
   return {
     fields,
     entries,
-    initialValues,
+    baseInitialValues,
     initialValuesFilter,
-    validationSchema,
+    baseValidationSchema,
     columns,
     FormFields,
     FilterFields

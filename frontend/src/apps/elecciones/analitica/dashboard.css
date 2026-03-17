@@ -1,0 +1,84 @@
+.dashboard {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #f4f7fb,
+    #e7f0f7
+  );
+}
+
+/* cards modernas */
+
+.dashboard-card {
+  border: none;
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.55);
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 8px 30px rgba(36, 64, 86, 0.12);
+
+  transition: all 0.25s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 14px 40px rgba(36, 64, 86, 0.18);
+}
+
+/* títulos */
+
+.dashboard-title {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+
+  color: #244056;
+
+  margin-bottom: 20px;
+}
+
+/* KPI grande */
+
+.dashboard-kpi {
+  text-align: center;
+
+  font-size: 3rem;
+  font-weight: 700;
+
+  color: #34719e;
+}
+
+/* badges de temas */
+
+.tema-badge {
+  background: #67a3c9;
+  color: white;
+
+  font-size: 0.85rem;
+
+  border-radius: 20px;
+  padding: 6px 10px;
+
+  margin: 4px;
+  display: inline-block;
+}
+
+.dashboard h6.text-muted {
+  text-align: center;
+
+  font-size: 1.15rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.04em;
+
+  color: #29577b !important;
+
+  margin-bottom: 22px;
+
+  text-transform: uppercase;
+}

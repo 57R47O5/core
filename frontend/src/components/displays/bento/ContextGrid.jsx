@@ -10,7 +10,7 @@ function ContextGridInner({
   allowCollapse = true,
   columns = 2,
 }) {
-  const { loading, exists, instance } = useInstance();
+  const { id, loading, exists, instance } = useInstance();
   const [activeKey, setActiveKey] = useState(defaultActive);
 
   const handleToggle = (key) => {
@@ -26,14 +26,6 @@ function ContextGridInner({
       <div className="context-grid-loading text-center p-4">
         <Spinner animation="border" />
       </div>
-    );
-  }
-
-  if (!exists) {
-    return (
-      <Alert variant="warning">
-        La instancia solicitada no existe.
-      </Alert>
     );
   }
 

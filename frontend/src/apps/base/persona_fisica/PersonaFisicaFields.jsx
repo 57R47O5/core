@@ -8,7 +8,7 @@ export const PersonaFisicaFields = {
     initial: "",
     form: false,
     filter: true, 
-    validation: Yup.string().required("Requerido"),
+    validation: Yup.string(),
     render: (props) => <InputFormik {...props} />,
   },
   
@@ -17,16 +17,16 @@ export const PersonaFisicaFields = {
     initial: "",
     form: true,
     filter: true, 
-    validation: Yup.string().required("Requerido"),
+    validation: Yup.string().required("El nombre es requerido"),
     render: (props) => <InputFormik {...props} />,
   },
   
   apellidos: {
     label: "Apellidos",
-    initial: "",
+    initial: "Perez",
     form: true,
     filter: true, 
-    validation: Yup.string().required("Requerido"),
+    validation: Yup.string().required("El apellido es requerido"),
     render: (props) => <InputFormik {...props} />,
   },
   
