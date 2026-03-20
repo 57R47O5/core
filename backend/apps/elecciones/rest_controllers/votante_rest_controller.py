@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from framework.api.options import BaseOptionsAPIView
 from framework.constantes.mensajes_error import MensajesError
 from framework.permisos import PermisoGroup, P
 from framework.models.basemodels import Constant
@@ -142,3 +143,10 @@ class Formateador:
     def formatear_dataframe(cls, df: DataFrame) -> list[Dict[str, str]]:
         df = cls.limpiar_dataframe(df)
         return [cls.formatear_fila(row) for _, row in df.iterrows()]
+
+class VotantesOptionsAPIView(BaseOptionsAPIView):
+    model = Votante
+    url = "votantes"
+    search_fields = ["persona__nombres", "persona__apellidos"]
+    desc_field = "descripcion_expression"
+    permisos = PermisosVotante.VIEW

@@ -19,6 +19,7 @@ class BaseOptionsAPIView(APIView):
     filtro = None
     url = ""
     view_permission = []
+    search_fields = []
 
     def _get_fields(self):
         """Normaliza: devuelve una lista siempre."""
@@ -31,6 +32,9 @@ class BaseOptionsAPIView(APIView):
     def _get_model_field(self, name):
         """Devuelve el campo Django del modelo."""
         return self.model._meta.get_field(name)
+    
+    def _get_search_fields(self):
+        return self.search_fields or self._get_fields()
 
     @require_perm(view_permission)
     def get_queryset(self):
@@ -39,6 +43,11 @@ class BaseOptionsAPIView(APIView):
         )
 
         qs = self.model.objects.all()
+
+        if hasattr(self.model, "descripcion_expression"):
+            qs = qs.annotate(**{
+                "descripcion_expression": self.model.descripcion_expression()
+            })
 
         # Filtros predefinidos
         if self.filtro and isinstance(self.filtro, dict):
@@ -51,20 +60,15 @@ class BaseOptionsAPIView(APIView):
 
         # Buscar mientras se escribe (?q=)
         q = self.request.query_params.get("q", "").strip()
-        fields = self._get_fields()
+        search_fields = self._get_search_fields()
 
-        if q and fields:
+        if q and search_fields:
             # Armar OR dinámico entre los fields que NO tienen choices
             q_obj = Q()
 
-            for f in fields:
-                model_field = self._get_model_field(f)
+            for f in search_fields:
+                    q_obj |= Q(**{f"{f}__icontains": q})
 
-                # si tiene choices → no se usa para búsqueda
-                if model_field.choices:
-                    continue
-
-                q_obj |= Q(**{f"{f}__icontains": q})
 
             qs = qs.filter(q_obj) if q_obj else qs.none()
 

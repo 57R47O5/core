@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 import { PersonaFisicaFields } from "../../base/persona_fisica/PersonaFisicaFields";
-import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
 
 
