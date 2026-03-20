@@ -12,13 +12,15 @@ export function useFormSubmit({controller}) {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       if (isCreate) {
-        await crear(values);
+        const response = await crear(values);
+        const newId = response?.id;
         alert("Registro creado");
+        navigate(`/${controller}/${newId}/`);
       } else {
         await editar(id, values);
         alert("Registro actualizado");
+        navigate(`/${controller}/${id}/`);
       }
-      navigate(redirectTo);
     } finally {
       setSubmitting(false);
     }
