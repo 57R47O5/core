@@ -2,6 +2,7 @@ import * as Yup from "yup";
 import InputFormik from "../../../components/forms/InputFormik";
 import SelectFormik from "../../../components/forms/SelectFormik";
 import FormikGeoPoint from "../../../components/forms/FormikGeoPoint";
+import FormikAutocompleteRemote from "../../../components/forms/FormikAutocompleteRemote";
 
 export const VisitaFields = {
 
@@ -21,8 +22,8 @@ export const VisitaFields = {
     form: true, 
     filter: true,
     validation: Yup.number().required("Debe seleccionar un votante"),
-    endpoint: "votante",
-    render: (props) => <SelectFormik {...props} />,
+    endpoint: "votantes",
+    render: (props) => <FormikAutocompleteRemote {...props} />,
   },
 
   lugar: {
@@ -30,7 +31,17 @@ export const VisitaFields = {
     initial: null,
     form: true, 
     filter: false,
-    validation: Yup.number().required("Favor marcar la ubicación"),
+    validation: Yup.object({
+      lat: Yup.number().nullable(),
+      lon: Yup.number().nullable(),
+    })
+    .test(
+      "valid-coordinates",
+      "Favor marcar la ubicación",
+      (value) => {
+        return value?.lat != null && value?.lon != null;
+      }
+    ),
     endpoint: "lugar",
     mode: "ubicacion",
     render: (props) => <FormikGeoPoint {...props} />,
