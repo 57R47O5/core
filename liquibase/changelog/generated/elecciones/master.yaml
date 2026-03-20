@@ -60,6 +60,15 @@ databaseChangeLog:
       file: ../../apps/base/documento_identidad-hist.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/base/tipo_contacto.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/contacto.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/base/contacto-hist.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/geo/geo_nivel.xml
       relativeToChangelogFile: true
   - include:
@@ -102,12 +111,6 @@ databaseChangeLog:
       file: ../../apps/elecciones/resultado_visita.xml
       relativeToChangelogFile: true
   - include:
-      file: ../../apps/elecciones/visita.xml
-      relativeToChangelogFile: true
-  - include:
-      file: ../../apps/elecciones/visita-hist.xml
-      relativeToChangelogFile: true
-  - include:
       file: ../../apps/elecciones/salida.xml
       relativeToChangelogFile: true
   - include:
@@ -118,6 +121,12 @@ databaseChangeLog:
       relativeToChangelogFile: true
   - include:
       file: ../../apps/elecciones/seccional-hist.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/visita.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/visita-hist.xml
       relativeToChangelogFile: true
   - include:
       file: ../../apps/elecciones/votante.xml
@@ -150,6 +159,9 @@ databaseChangeLog:
       file: ../../apps/base/rol_permiso-data.xml
       relativeToChangelogFile: true
   - include:
+      file: ../../apps/base/tipo_contacto-data.xml
+      relativeToChangelogFile: true
+  - include:
       file: ../../apps/base/tipo_documento_identidad-data.xml
       relativeToChangelogFile: true
   - include:
@@ -160,6 +172,9 @@ databaseChangeLog:
       relativeToChangelogFile: true
   - include:
       file: ../../apps/elecciones/ciclo_electoral-data.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/distrito_electoral-data.xml
       relativeToChangelogFile: true
   - include:
       file: ../../apps/elecciones/estado_salida-data.xml

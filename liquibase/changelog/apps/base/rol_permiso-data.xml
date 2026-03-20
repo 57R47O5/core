@@ -1,34 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="rol_permiso-base.base_viewer-base.persona-juridica.view" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_VIEWER')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.view')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_VIEWER')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.view')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
     <changeSet id="rol_permiso-base.base_viewer-base.persona-fisica.view" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
@@ -57,15 +29,15 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-base.base_admin-base.persona-user.view" author="orco">
+    <changeSet id="rol_permiso-base.base_viewer-base.persona-juridica.view" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
             <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_VIEWER')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-user.view')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.view')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -77,23 +49,23 @@
         <rollback>
             <delete tableName="rol_permiso">
                 <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_VIEWER')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-user.view')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.view')
                 </where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-base.base_admin-base.persona-juridica.update" author="orco">
+    <changeSet id="rol_permiso-base.base_viewer-base.contacto.view" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
             <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_VIEWER')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.update')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.contacto.view')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -105,15 +77,15 @@
         <rollback>
             <delete tableName="rol_permiso">
                 <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_VIEWER')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.update')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.contacto.view')
                 </where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-base.base_admin-base.persona-user.update" author="orco">
+    <changeSet id="rol_permiso-base.base_admin-base.contacto.update" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
@@ -121,7 +93,7 @@
                 valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-user.update')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.contacto.update')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -135,35 +107,7 @@
                 <where>
                     rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-user.update')
-                </where>
-            </delete>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="rol_permiso-base.base_admin-base.persona-user.create" author="orco">
-        <insert tableName="rol_permiso">
-            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
-
-            <column name="rol_code"
-                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
-
-            <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-user.create')"/>
-
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="createdat" valueDate="NOW()"/>
-            <column name="updatedat" valueDate="NOW()"/>
-            <column name="createdby" valueNumeric="null"/>
-            <column name="updatedby" valueNumeric="null"/>
-        </insert>
-
-        <rollback>
-            <delete tableName="rol_permiso">
-                <where>
-                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
-                    AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-user.create')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.contacto.update')
                 </where>
             </delete>
         </rollback>
@@ -197,7 +141,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="rol_permiso-base.base_admin-base.persona-juridica.view" author="orco">
+    <changeSet id="rol_permiso-base.base_admin-base.persona-juridica.update" author="orco">
         <insert tableName="rol_permiso">
             <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
 
@@ -205,7 +149,7 @@
                 valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
 
             <column name="permiso_code"
-                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.view')"/>
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.update')"/>
 
             <column name="is_deleted" valueBoolean="false"/>
             <column name="createdat" valueDate="NOW()"/>
@@ -219,7 +163,91 @@
                 <where>
                     rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
                     AND
-                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.view')
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.update')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-base.base_admin-base.contacto.destroy" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.contacto.destroy')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.contacto.destroy')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-base.base_admin-base.contacto.create" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.contacto.create')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.contacto.create')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-base.base_admin-base.persona-user.create" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-user.create')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-user.create')
                 </where>
             </delete>
         </rollback>
@@ -248,6 +276,118 @@
                     rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
                     AND
                     permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-user.destroy')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-base.base_admin-base.persona-user.update" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-user.update')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-user.update')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-base.base_admin-base.contacto.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.contacto.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.contacto.view')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-base.base_admin-base.persona-user.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-user.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-user.view')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-base.base_admin-base.persona-juridica.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'base.BASE_ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'base.persona-juridica.view')
                 </where>
             </delete>
         </rollback>

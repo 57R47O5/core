@@ -15,15 +15,27 @@ def generate_form_page(definition:DomainModelDefinition):
     output_path = FRONTEND_DIR / "src" / "apps" / app_name / model_name / f"{pascal}FormPage.jsx"
     content = f'''import BaseFormPage from "../../../components/forms/BaseFormPage";
 import {form_component} from "./{form_component}";
+import ContextGrid from "../../../components/displays/bento/ContextGrid";
+import ContextTile from "../../../components/displays/bento/ContextTile";
+
 
 export default function {pascal}FormPage() {{
   return (
-    <BaseFormPage
+      <ContextGrid
+      defaultActive={{"base"}}
       controller="{kebab}"
-      FormComponent={{{form_component}}}
-      titleNew="Nuevo {pascal}"
-      titleEdit="Editar {pascal}"
-    />
+    >
+      <ContextTile
+          title="Base"
+          tileKey="base"
+        >
+        <BaseFormPage
+          FormComponent={{{form_component}}}
+          titleNew="Nuevo {pascal}"
+          titleEdit="Editar {pascal}"
+        />
+      </ContextTile>
+    </ContextGrid>
   );
 }}
 '''

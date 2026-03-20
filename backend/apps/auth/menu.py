@@ -1,6 +1,6 @@
 from framework.menu.menu import Node
 from framework.permisos import P
-from apps.auth.permisos import AuthPermisos
+from apps.auth.permisos import UserPermisos
 
 MENU = Node(
     "Autenticacion",
@@ -8,12 +8,12 @@ MENU = Node(
     content=[
         Node(
             label="Nuevo Usuario",
-            permiso=P(AuthPermisos.REGISTER),
+            permiso=P(UserPermisos.CREATE),
             to="register/"
         ),
         Node(
             label="Usuario",
-            permiso=P(AuthPermisos.REGISTER),
+            permiso=P(UserPermisos.CREATE),
             to="user/"
         )
     ]

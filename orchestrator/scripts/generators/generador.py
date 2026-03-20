@@ -28,21 +28,21 @@ def main():
 
     definition = load_domain_model_definition(app_name, model_name)
     generate_changelogs(definition)
-    # generate_rest_controller(definition)
-    # generate_serializer(definition)
-    # generate_urls(definition)
+    generate_rest_controller(definition)
+    generate_serializer(definition)
+    generate_urls(definition)
     # #TODO:Ver como modificamos esto
     # generate_rest_urls(app_name)
-    # generate_model_tests(definition)
+    generate_model_tests(definition)
 
     # Frontend
 
-    # generate_form_page(definition)
-    # generate_frontend_form(definition)
-    # generate_frontend_filter(definition)
-    # generate_frontend_fields(definition)
-    # generate_frontend_list_page(definition)
-    # generate_model_route(definition)
+    generate_form_page(definition)
+    generate_frontend_form(definition)
+    generate_frontend_filter(definition)
+    generate_frontend_fields(definition)
+    generate_frontend_list_page(definition)
+    generate_model_route(definition)
 
     print("[GEN] done")
 

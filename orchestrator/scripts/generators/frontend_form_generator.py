@@ -16,12 +16,10 @@ import {{ useModelForm }} from "../../../hooks/useModelForm";
 import {{ {definition.ModelName}Fields }} from "./{definition.ModelName}Fields";
 
 export default function {definition.ModelName}Form() {{
-  const {{FormFields}} = useModelForm({definition.ModelName}Fields
+  const {definition.ModelName}Model = useModelForm({definition.ModelName}Fields
   );  
 
-  return (
-    <FormFields/>     
-  );
+  return {definition.ModelName}Model
 }} 
 """
 

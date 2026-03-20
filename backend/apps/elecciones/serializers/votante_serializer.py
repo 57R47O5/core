@@ -68,13 +68,13 @@ class VotanteCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         persona_fisica = PersonaFisicaInputSerializer().create(validated_data)
         distrito=Campana.objects.last().distrito
-        colaborador = Votante.objects.create(
+        votante = Votante.objects.create(
             persona=persona_fisica,
             distrito=distrito,
 
         )
 
-        return colaborador
+        return votante
 
 
 class VotanteUpdateSerializer(serializers.ModelSerializer):

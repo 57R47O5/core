@@ -30,7 +30,7 @@ def generate_liquibase_initial_data(
 
     for constant in definition.constants:
         nombre = constant["name"].replace("_", " ").title()
-        descripcion = f"{definition.ModelName} {nombre}"
+        descripcion = f"{nombre}"
 
         xml.append(f"""
     <changeSet id="{definition.db_table}-{constant['value'].lower()}" author="orco">

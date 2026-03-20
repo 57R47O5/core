@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="rol_permiso-auth.admin-auth.user_rol.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'auth.ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'auth.user_rol.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'auth.ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'auth.user_rol.view')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-auth.admin-auth.rol_permiso.destroy" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'auth.ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'auth.rol_permiso.destroy')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'auth.ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'auth.rol_permiso.destroy')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-auth.admin-auth.user_rol.update" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'auth.ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'auth.user_rol.update')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'auth.ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'auth.user_rol.update')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-auth.admin-auth.rol_permiso.create" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'auth.ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'auth.rol_permiso.create')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'auth.ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'auth.rol_permiso.create')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-auth.admin-auth.user_rol.destroy" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'auth.ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'auth.user_rol.destroy')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'auth.ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'auth.user_rol.destroy')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-auth.admin-auth.user.create" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'auth.ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'auth.user.create')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'auth.ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'auth.user.create')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-auth.admin-auth.rol_permiso.view" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'auth.ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'auth.rol_permiso.view')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'auth.ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'auth.rol_permiso.view')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-auth.admin-auth.user_rol.create" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'auth.ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'auth.user_rol.create')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'auth.ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'auth.user_rol.create')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="rol_permiso-auth.admin-auth.rol_permiso.update" author="orco">
+        <insert tableName="rol_permiso">
+            <column name="id" valueComputed="nextval('rol_permiso_id_seq')"/>
+
+            <column name="rol_code"
+                valueComputed="(SELECT id FROM rol WHERE codigo = 'auth.ADMIN')"/>
+
+            <column name="permiso_code"
+                valueComputed="(SELECT id FROM permiso WHERE codigo = 'auth.rol_permiso.update')"/>
+
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="createdat" valueDate="NOW()"/>
+            <column name="updatedat" valueDate="NOW()"/>
+            <column name="createdby" valueNumeric="null"/>
+            <column name="updatedby" valueNumeric="null"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="rol_permiso">
+                <where>
+                    rol_code = (SELECT id FROM rol WHERE codigo = 'auth.ADMIN')
+                    AND
+                    permiso_code = (SELECT id FROM permiso WHERE codigo = 'auth.rol_permiso.update')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

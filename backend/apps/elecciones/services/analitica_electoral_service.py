@@ -51,9 +51,21 @@ class AnaliticaElectoralService():
 
         conteo = Counter(palabras)
 
+        top = conteo.most_common(50)
+
+        total = sum(count for _, count in top)
+
+        if total == 0:
+            return []
+
+        factor = 2000 / total
+
         return [
-            {"text": palabra, "value": count}
-            for palabra, count in conteo.most_common(50)
+            {
+                "text": palabra,
+                "value": int(count * factor)
+            }
+            for palabra, count in top
         ]
 
     @classmethod
