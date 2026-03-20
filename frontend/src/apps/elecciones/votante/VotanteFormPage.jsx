@@ -1,64 +1,13 @@
+import { useRouteMode } from "../../../hooks/useRouteMode";
 import BaseFormPage from "../../../components/forms/BaseFormPage";
 import VotanteForm from "./VotanteForm";
 import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
-import FormikFileInput from "../../../components/forms/FormikFileInput";
-import getAPIBase from "../../../api/BaseAPI";
-import { Formik, Form } from "formik";
-import { Button, Spinner } from "react-bootstrap";
-
-
-function CargaMasiva() {
-  const { crear } = getAPIBase("votante/carga-masiva");
-
-  const handleSubmit = async (values, { setSubmitting }) => {
-    const formData = new FormData();
-    formData.append("documento", values.documento);
-
-    try {
-      await crear(formData);
-      alert("Carga Masiva exitosa");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <Formik
-      initialValues={{ documento: null }}
-      onSubmit={handleSubmit}
-    >
-      {({ isSubmitting }) => (
-        <Form>
-          <FormikFileInput
-            name="documento"
-            label="Documento"
-            accept=".csv, .xls, .xlsx"
-          />
-          <Button type="submit" variant="primary" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />{" "}
-                Guardando...
-              </>
-            ) : (
-              "Guardar"
-            )}
-          </Button>
-        </Form>
-      )}
-    </Formik>
-  );
-}
-
+import { DocumentosPersona } from "../../base/documento_identidad/DocumentoIdentidadForm";
+import { ContactoPersona } from "../../base/contacto/ContactoForm";
 
 export default function VotanteFormPage() {
+  const { isEdit } = useRouteMode();
   return (
       <ContextGrid
       defaultActive={"base"}
@@ -78,8 +27,20 @@ export default function VotanteFormPage() {
           title="Carga Masiva"
           tileKey="carga-masiva"
           capability={"crear"}> 
-          <CargaMasiva />
+          <CargaMasivaVotantes />
       </ContextTile>
+        <ContextTile
+          title = "Documentos"
+          tileKey = "documentos"
+        >
+        {isEdit && (<DocumentosPersona/>)}
+        </ContextTile> 
+        <ContextTile
+          title = "Informacion de Contacto"
+          tileKey = "contactos"
+        >
+        {isEdit && (<ContactoPersona/>)}
+        </ContextTile>
     </ContextGrid>
   );
 }

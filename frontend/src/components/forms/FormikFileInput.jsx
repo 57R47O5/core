@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { useField } from "formik";
+import "./field-file.css"
+import * as Icons from "react-icons/fa";
 
 export default function FormikFileInput({
   name,
@@ -31,10 +33,14 @@ export default function FormikFileInput({
     }
   };
 
-  return (
-    <div className="form-field">
-      {label && <label htmlFor={name}>{label}</label>}
+return (
+  <div className="form-field file-field">
+    {label && <label className="file-label" htmlFor={name}>{label}</label>}
 
+    <div
+      className={`file-input-wrapper ${field.value ? "has-file" : ""}`}
+      onClick={() => inputRef.current.click()}
+    >
       <input
         ref={inputRef}
         id={name}
@@ -43,25 +49,39 @@ export default function FormikFileInput({
         accept={accept}
         multiple={multiple}
         onChange={handleChange}
+        className="file-input-hidden"
       />
 
-      {meta.touched && meta.error && (
-        <div className="form-error">{meta.error}</div>
-      )}
-
-      {field.value && !multiple && (
-        <div className="file-preview">
-          {field.value.name}
+      <div className="file-input-content">
+        <Icons.FaFileAlt size={30} color="#243f56"/>
+        <div className="file-text">
+          <span className="file-primary">
+            {multiple ? "Seleccionar archivos" : "Seleccionar archivo"}
+          </span>
+          <span className="file-secondary">
+            o arrastrar y soltar
+          </span>
         </div>
-      )}
-
-      {multiple && Array.isArray(field.value) && (
-        <ul>
-          {field.value.map((file, i) => (
-            <li key={i}>{file.name}</li>
-          ))}
-        </ul>
-      )}
+      </div>
     </div>
-  );
+
+    {meta.touched && meta.error && (
+      <div className="form-error">{meta.error}</div>
+    )}
+
+    {field.value && !multiple && (
+      <div className="file-preview">
+        {field.value.name}
+      </div>
+    )}
+
+    {multiple && Array.isArray(field.value) && (
+      <ul className="file-list">
+        {field.value.map((file, i) => (
+          <li key={i}>{file.name}</li>
+        ))}
+      </ul>
+    )}
+  </div>
+);
 }
