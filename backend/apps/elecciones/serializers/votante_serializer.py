@@ -87,6 +87,7 @@ class VotanteRetrieveSerializer(VotanteSerializer):
     nombres = serializers.CharField(source="persona.nombres")
     apellidos = serializers.CharField(source="persona.apellidos")
     fecha_nacimiento = serializers.DateField(source="persona.fecha_nacimiento")
+    persona_id=serializers.IntegerField(source="persona.id")
 
     class Meta:
         model = Votante

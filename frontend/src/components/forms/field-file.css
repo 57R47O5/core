@@ -1,0 +1,99 @@
+.file-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.file-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #243f56; /* allports 900 */
+}
+
+/* Oculta el input real */
+.file-input-hidden {
+  display: none;
+}
+
+/* Contenedor principal */
+.file-input-wrapper {
+  border: 2px dashed #cadeed; /* allports 200 */
+  background: #f4f8fb; /* allports 50 */
+  border-radius: 10px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.file-input-wrapper:hover {
+  border-color: #4387b4; /* allports 500 */
+  background: #e7eff7; /* allports 100 */
+}
+
+/* Estado activo  */
+.file-input-wrapper:active {
+  border-color: #34719e; /* allports 600 */
+}
+
+/* Contenido interno */
+.file-input-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-icon {
+  font-size: 1.5rem;
+}
+
+.file-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-primary {
+  font-weight: 600;
+  color: #29577b; /* allports 700 */
+}
+
+.file-secondary {
+  font-size: 0.8rem;
+  color: #67a3c9; /* allports 400 */
+}
+
+/* Preview */
+.file-preview {
+  background: #e7eff7; /* allports 100 */
+  border: 1px solid #cadeed;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #243f56;
+}
+
+/* Lista múltiple */
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.file-list li {
+  background: #e7eff7;
+  border: 1px solid #cadeed;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+/* Error */
+.form-error {
+  color: #d14343;
+  font-size: 0.8rem;
+}
+
+.file-input-wrapper.has-file {
+  border-color: #4387b4;
+  background: #e7eff7;
+}

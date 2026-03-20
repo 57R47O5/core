@@ -4,7 +4,7 @@ from apps.elecciones.rest_controllers.campana_rest_controller import CampanaRest
 from apps.elecciones.rest_controllers.salida_rest_controller import SalidaRestController
 from apps.elecciones.rest_controllers.seccional_rest_controller import SeccionalRestController
 from apps.elecciones.rest_controllers.visita_rest_controller import VisitaRestController
-from apps.elecciones.rest_controllers.votante_rest_controller import VotanteRestController
+from apps.elecciones.rest_controllers.votante_rest_controller import VotanteRestController, PermisosVotante
 
 MENU = Node(
     "Elecciones",
@@ -16,5 +16,11 @@ MENU = Node(
         SeccionalRestController.to_node(),
         VisitaRestController.to_node(),
         VotanteRestController.to_node(),
+        Node(
+            label="Carga Masiva de Votantes",
+            icon="FaFileUpload",
+            permiso=PermisosVotante.CREATE,
+            to="carga-masiva-votantes"
+        )
     ]
 )

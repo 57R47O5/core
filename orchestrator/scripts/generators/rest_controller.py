@@ -37,7 +37,7 @@ from apps.{app_name}.models.{model_name} import {ModelName}
 class {ModelName}OptionsView(BaseOptionsAPIView):
     model = {ModelName}
     url='{model_name_kebab}'
-    desc_field='Descripcion'
+    desc_field='descripcion'
     permisos=[]
 
 '''

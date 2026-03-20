@@ -1,4 +1,5 @@
 import campanaRoute from "./routes/campanaRoute";
+import cargaMasivaVotantesRoute from "./routes/cargaMasivaVotantesRoute";
 import ciclo_electoralRoutes from "./routes/ciclo_electoralRoute";
 import colaboradorRoute from "./routes/colaboradorRoute";
 import distrito_electoralRoute from "./routes/distrito_electoralRoute";
@@ -18,6 +19,7 @@ const eleccionesRoutes = [
     ...seccionalRoute,
     ...visitaRoute,
     ...votanteRoute,
+    ...cargaMasivaVotantesRoute,
 ];
 
 export default eleccionesRoutes;

@@ -23,7 +23,7 @@ export const PersonaFisicaFields = {
   
   apellidos: {
     label: "Apellidos",
-    initial: "Perez",
+    initial: "",
     form: true,
     filter: true, 
     validation: Yup.string().required("El apellido es requerido"),
