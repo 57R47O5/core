@@ -5,6 +5,8 @@ from .persona_juridica import PersonaJuridica
 from .persona_user import PersonaUser
 from .tipo_documento_identidad import TipoDocumentoIdentidad
 from .documento_identidad import DocumentoIdentidad
+from .contacto import Contacto
+from .tipo_contacto import TipoContacto
 
 __all__ = [
     Moneda,
@@ -13,5 +15,7 @@ __all__ = [
     PersonaJuridica,
     PersonaUser,
     TipoDocumentoIdentidad,
-    DocumentoIdentidad
+    DocumentoIdentidad,
+    Contacto,
+    TipoContacto
 ]

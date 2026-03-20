@@ -33,7 +33,7 @@ export default function DistritoElectoralForm() {
         <FormikFileInput
           name="documento"
           label="Documento"
-          accept=".pdf,.jpg,.png, .json"
+          accept=".json"
         />
 
         <button type="submit">

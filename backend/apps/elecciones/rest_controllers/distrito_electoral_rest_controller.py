@@ -30,4 +30,4 @@ class DistritoElectoralRestController(ModelRestController):
         datos=request.data.copy()
         service = DistritoGeoImportService
         instancia = service.crear_distrito(datos.get("documento"))
-        return Response({}, status=status.HTTP_201_CREATED)
+        return Response({"Creación exitosa"}, status=status.HTTP_201_CREATED)

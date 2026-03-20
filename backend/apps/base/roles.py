@@ -3,7 +3,8 @@ from auth.models.rol import RolManager
 from base.permisos import (
     PermisosPersonaFisica,
     PermisosPersonaJuridica,
-    PermisosPersonaUser
+    PermisosPersonaUser,
+    PermisosContacto
 )
 
 class BaseRoles(RolManager):    
@@ -12,6 +13,7 @@ class BaseRoles(RolManager):
         permisos=[
             PermisosPersonaFisica.VIEW,
             PermisosPersonaJuridica.VIEW,
+            PermisosContacto.VIEW
         ]
     )
 
@@ -21,6 +23,7 @@ class BaseRoles(RolManager):
             PermisosPersonaFisica.VIEW,
             PermisosPersonaJuridica.VIEW,
             PermisosPersonaJuridica.UPDATE,
-            PermisosPersonaUser.all()
+            PermisosPersonaUser.all(),
+            PermisosContacto.all()
         ]
     )

@@ -4,6 +4,7 @@ from django.db.models import Q, CharField, TextField, DateField, DateTimeField
 
 from rest_framework import status, viewsets, serializers
 from rest_framework.response import Response
+from rest_framework.permissions import BasePermission
 
 from framework.menu.menu import Node
 from framework.exceptions import excepcion, ExcepcionValidacion, ExcepcionPermisos
@@ -41,6 +42,7 @@ class Capability:
                     allowed &= rule()
 
         return allowed
+
     
 class CapabilitySet:
     """
@@ -72,23 +74,28 @@ class CapabilitySet:
         return CapabilitySet(*merged.values())
 
 
-from rest_framework.permissions import BasePermission
-
-
 class ControllerPermission(BasePermission):
 
     def has_permission(self, request, view):
-        acciones_rest = {'list':"view_permission",
-                         "retrieve":"view_permission", 
-                         "create":"create_permission",
-                         "update":"update_permission",
-                         "partial_update":"update_permission",
-                         "destroy":"destroy_permission",}
-        permiso_requerido = getattr(view, acciones_rest.get(view.action, ""), None)
-        if permiso_requerido and not permiso_requerido.evaluate(request.user.permisos):
+        permiso_key = view.permission_map.get(view.action)
+
+        if not permiso_key:
+            return True  
+
+        permiso = getattr(view, permiso_key, None)
+
+        if permiso and not permiso.evaluate(request.user.permisos):
             raise ExcepcionPermisos("No tiene permisos para esta acción")
 
-        return True   
+        return True
+    
+def require_permission(permission_name):
+    def decorator(func):
+        setattr(func, "required_permission", permission_name)
+        return func
+    return decorator
+
+
 class BaseRestController(viewsets.ViewSet):
     label:str
     url:str
@@ -124,6 +131,15 @@ class BaseRestController(viewsets.ViewSet):
             to=f'/{cls.url}'
             )
         return nodo_controller
+
+    permission_map = {
+        "list": "view_permission",
+        "retrieve": "view_permission",
+        "create": "create_permission",
+        "update": "update_permission",
+        "partial_update": "update_permission",
+        "destroy": "destroy_permission",
+    }
 
 class ModelRestController(BaseRestController):
     model: Type[models.Model] = None

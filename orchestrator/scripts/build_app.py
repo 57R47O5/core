@@ -296,6 +296,7 @@ def build_roles(
 
     for const in role_constants:
         role_name = const["name"]
+        #Aqui el rol es "Admin"
 
         permission_grants: set[PermissionGrant] = set()
 
@@ -304,9 +305,10 @@ def build_roles(
             # Inferir recurso desde el nombre del grupo
             # PermisosVisita -> visita
             group_name = permiso_ref["group"]
-            resource = infer_resource_from_group(group_name)
+            resource, alternative_resourece = infer_resource_from_group(group_name)
 
-            if resource not in resources:
+            if resource not in resources and alternative_resourece not in resources:
+                print(resources)
                 raise ValueError(
                     f"Unknown resource '{resource}' in role '{role_name}'"
                 )
@@ -580,7 +582,7 @@ def infer_resource_from_group(group_name: str) -> str:
         PermisosEstadoSalida -> estado_salida
     """
 
-    if not group_name.startswith("Permisos"):
+    if not ("Permisos") in group_name:
         raise ValueError(f"Invalid group name '{group_name}'")
 
     base = group_name.replace("Permisos", "", 1)
@@ -589,7 +591,7 @@ def infer_resource_from_group(group_name: str) -> str:
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', base)
     snake = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
-    return snake
+    return snake,  snake.replace("_", "-")
 
 
 if __name__ == "__main__":

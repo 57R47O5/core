@@ -3,13 +3,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from framework.permisos import P, require_perm
-from apps.auth.permisos import AuthPermisos
+from apps.auth.permisos import UserPermisos
 from apps.auth.services.user_service import User, UserService
 from framework.exceptions import excepcion
 
 class RegisterView(APIView):
 
-    @require_perm(P(AuthPermisos.REGISTER))
+    @require_perm(P(UserPermisos.CREATE))
     def post(self, request):
         data = request.data or {}
 

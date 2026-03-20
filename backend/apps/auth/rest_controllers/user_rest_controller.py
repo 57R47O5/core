@@ -12,7 +12,8 @@ from apps.auth.serializers.user_serializer import (
 from controllers.base.base_rest_controller import ModelRestController, Capability, CapabilitySet
 from apps.base.rest_controllers.persona_user_rest_controller import PermisosPersonaUser
 
-
+class UserPermisos(PermisoGroup):
+    CREATE=Constant("auth.user.create")
 class UserRestController(ModelRestController):
     label = "User"
     model = User
