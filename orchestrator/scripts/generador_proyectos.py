@@ -210,9 +210,7 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parents[3]
 
-BACKEND_DIR = Path(
-    os.environ.get("BACKEND_DIR", BASE_DIR)
-).resolve()
+BACKEND_DIR = Path(__file__).resolve().parents[4]
 
 APPS_DIR = BACKEND_DIR / "apps"
 
