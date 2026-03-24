@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos
+.env
+.venv
+venv/
+
+# Logs
+*.log
+
+# Node (si hay algo mezclado)
+node_modules/
+
+# Build frontend (MUY importante)
+build/
+dist/
+
+# Archivos temporales
+*.swp
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.yml
