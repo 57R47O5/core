@@ -23,12 +23,6 @@ export default function VotanteFormPage() {
           titleEdit="Editar Votante"
         />
       </ContextTile>
-      <ContextTile
-          title="Carga Masiva"
-          tileKey="carga-masiva"
-          capability={"crear"}> 
-          <CargaMasivaVotantes />
-      </ContextTile>
         <ContextTile
           title = "Documentos"
           tileKey = "documentos"

@@ -19,7 +19,7 @@ export const ContactoFields = {
     ),
   },
 
-  tipo: {
+  tipo_id: {
     label: "Tipo",
     initial: null,
     form: true, 

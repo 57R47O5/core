@@ -1,4 +1,5 @@
-import { Spinner, Table, Button, Badge } from "react-bootstrap";
+import { useState } from "react";
+import { Spinner, Table, Button, Badge, Pagination } from "react-bootstrap";
 import BaseLink from "../displays/BaseLink";
 
 function formatFecha(value) {
@@ -122,12 +123,16 @@ export const ORCTableColumna = {
 };
 
 
+
 export function DataTable({
   items = [],
   columns = [],
   onEdit,
   loading,
+  pageSize = 5, // cantidad de filas por página
 }) {
+  const [currentPage, setCurrentPage] = useState(1);
+
   if (loading) {
     return (
       <div className="text-center my-4">
@@ -163,38 +168,62 @@ export function DataTable({
     };
   };
 
+  // --- Paginación ---
+  const totalPages = Math.ceil(items.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedItems = items.slice(startIndex, startIndex + pageSize);
+
   return (
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          {columns.map((col) => (
-            <th key={col.field} style={getStyle(col)}>
-              {col.label}
-            </th>
-          ))}
-          {onEdit && <th style={{ width: "120px" }}>Acciones</th>}
-        </tr>
-      </thead>
-
-      <tbody>
-        {items.map((item) => (
-          <tr key={item.id}>
+    <>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
             {columns.map((col) => (
-              <td key={col.field} style={getStyle(col)}>
-                {renderCell(item, col)}
-              </td>
+              <th key={col.field} style={getStyle(col)}>
+                {col.label}
+              </th>
             ))}
-
-            {onEdit && (
-              <td>
-                <Button size="sm" onClick={() => onEdit(item)}>
-                  Editar
-                </Button>
-              </td>
-            )}
+            {onEdit && <th style={{ width: "120px" }}>Acciones</th>}
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+
+        <tbody>
+          {paginatedItems.map((item) => (
+            <tr key={item.id}>
+              {columns.map((col) => (
+                <td key={col.field} style={getStyle(col)}>
+                  {renderCell(item, col)}
+                </td>
+              ))}
+
+              {onEdit && (
+                <td>
+                  <Button size="sm" onClick={() => onEdit(item)}>
+                    Editar
+                  </Button>
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      {/* Componente de paginación */}
+      <div className="d-flex justify-content-center">
+        <Pagination>
+          <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+          <Pagination.Prev onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1} />
+
+          <Pagination.Item active>{currentPage}</Pagination.Item>
+
+
+          <Pagination.Next
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          />
+          <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+        </Pagination>
+      </div>
+    </>
   );
 }
