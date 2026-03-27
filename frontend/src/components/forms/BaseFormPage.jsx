@@ -14,15 +14,6 @@ export default function BaseFormPage({FormComponent}) {
   const formModel = FormComponent();
   const { instance, loading, controller } = useInstance();
   const  { isCreate} = useRouteMode();
-
-  if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <Spinner animation="border" />
-      </div>
-    );
-  }
-
   const handleSubmit = useFormSubmit({controller});
   const handleDelete = useFormDelete({controller});
   const botoneraConfig = useBotoneraConfig({
@@ -41,6 +32,14 @@ export default function BaseFormPage({FormComponent}) {
     FormComponent,
     context,
   });
+
+  if (loading) {
+    return (
+      <div className="text-center mt-5">
+        <Spinner animation="border" />
+      </div>
+    );
+  }
 
   return (
     <CenteredCard>

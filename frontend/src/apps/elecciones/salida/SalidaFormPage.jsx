@@ -37,12 +37,7 @@ export function  SalidaFormPageContent({id, controller}) {
           defaults={{salida: id}}
         >
         <BaseFormPage
-          id={null}
-          isCreate = {true}
-          controller="visita"
           FormComponent={VisitaForm}
-          titleNew="Nueva Visita"
-          titleEdit="Editar Visitas"
           />
         </InstanceProvider>
       </ContextTile>
