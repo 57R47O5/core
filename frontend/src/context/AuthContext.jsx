@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
     
     setUser(null);
     setIsAuthenticated(false);
+    setMenu([]);
   };
   
   // --------------------------------------------
@@ -57,6 +58,7 @@ export const AuthProvider = ({ children }) => {
   
   useEffect(()=>{
     const getMenu = async()=>{
+      if (!user) return;
         try {
           const response = await obtenerMenu();
           setMenu(response);
@@ -68,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     
     getMenu();
 
-  },[])
+  },[user])
 
   return (
     <AuthContext.Provider

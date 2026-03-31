@@ -1,3 +1,4 @@
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/app.css"
 import { useContext } from "react";
@@ -8,7 +9,7 @@ import NavBar from "./components/Nav/Nav";
 import LoginPage from "./pages/LoginPage"
 import Register from"./pages/RegisterPage"
 import { AuthContext, AuthProvider } from "../src/context/AuthContext";
-import { Sidebar } from "./components/SideBar";
+import { Sidebar } from "./components/Sidebar";
 import AnaliticaDashboardPage from "./apps/elecciones/analitica/AnaliticaDashboardPage";
 
 function RutasComunes (){
@@ -23,6 +24,7 @@ function RutasComunes (){
     </Routes>    
   )
 }
+
 
 function App() {
   return (

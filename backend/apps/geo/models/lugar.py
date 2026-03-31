@@ -120,7 +120,7 @@ class Punto(Lugar):
     Pensado específicamente para registrar desde
     la ubicación del usuario
     '''
-    objects = PuntoManager()
+    #objects = PuntoManager()
 
     class Meta:
         proxy = True

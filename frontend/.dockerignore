@@ -1,0 +1,40 @@
+# Dependencias (LO MÁS IMPORTANTE)
+node_modules/
+
+# Build output
+build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Entornos
+.env
+.env.local
+.env.development
+.env.production
+
+# Git
+.git
+.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Tests / coverage
+coverage/
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Otros temporales
+*.tmp
+*.swp
