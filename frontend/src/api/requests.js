@@ -4,7 +4,7 @@ import { getToken, clearToken } from "./tokenService";
 
 // --- Instancia principal de axios ---
 const request = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: "/api/",
   withCredentials: true
 });
 

@@ -3,4 +3,4 @@ from apps.auth.models.permiso import Permiso
 from framework.menu.menu import generar_menu
 
 def get_menu_for(user:User):
-    return generar_menu(user.permisos)
+    return generar_menu(user.permisos) if user else None

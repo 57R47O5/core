@@ -3,7 +3,7 @@ import UserForm from "./UserForm";
 import { Spinner, Card } from "react-bootstrap";
 import O2MProvider from "../../../components/o2m/O2MProvider";
 import O2MInlineList from "../../../components/o2m/O2MInlineList";
-import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
+import { useInstance } from "../../../context/InstanceContext";
 import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
 import EntityLink from "../../../components/displays/EntityLink";

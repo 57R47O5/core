@@ -1,41 +1,22 @@
 import BaseFormPage from "../../../components/forms/BaseFormPage";
 import CampanaForm from "./CampanaForm";
-import { useInstance, InstanceProvider } from "../../../context/InstanceContext";
 import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
-import { useRouteMode } from "../../../hooks/useRouteMode";
-
-function Campana({}){
-  useInstance();
-
-  return <ContextGrid
-      controller={"campana"}
-      defaultActive={"datos-campana"}
-        columns={2}
-      >
-    <ContextTile
-      title={"Datos Campaña"}
-      tileKey={"datos-campana"}
-    >
-      <BaseFormPage
-        controller="campana"
-        FormComponent={CampanaForm}
-        titleNew="Nueva Campaña Electoral"
-        titleEdit="Editar Campaña Electoral"
-      />
-    </ContextTile>
-  </ContextGrid>
-}
 
 export default function CampanaFormPage() {
-  const {id} = useRouteMode();
-  const controller = "campana"
+
   return (
-      <InstanceProvider
-        controller={controller} 
-        id = {id}     
+      <ContextGrid
+        controller={"campana"}
+        defaultActive={"datos-campana"}
+        >
+      <ContextTile
+        title={"Datos Campaña"}
+        tileKey={"datos-campana"}
       >
-        <Campana/>
-        </InstanceProvider>
-    );
+        <BaseFormPage
+          FormComponent={CampanaForm}
+        />
+      </ContextTile>
+    </ContextGrid>);
 }

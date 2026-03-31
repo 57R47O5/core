@@ -68,7 +68,7 @@ class VisitaSerializer(serializers.ModelSerializer):
 
 class VisitaCreateSerializer(serializers.ModelSerializer):
     lugar = PuntoInputSerializer()
-    salida = serializers.PrimaryKeyRelatedField(queryset=Salida.objects.filter(estado=EstadoSalida.objects.EN_CURSO))
+    salida = serializers.PrimaryKeyRelatedField(queryset=Salida.objects.all())
     resultado = serializers.PrimaryKeyRelatedField(queryset=ResultadoVisita.objects.all())
     votante = serializers.PrimaryKeyRelatedField(queryset=Votante.objects.all())
 

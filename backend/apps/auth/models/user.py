@@ -44,11 +44,12 @@ class User(models.Model):
         return roles
     
     def is_owner(self):
-        return "Owner" in self.roles
+        return "Auth Owner" in self.roles
     
     @property
     def permisos(self):
         from django.apps import apps
+
         # Caso especial técnico
         if self.is_owner():
             Permiso = apps.get_model("auth", "Permiso")

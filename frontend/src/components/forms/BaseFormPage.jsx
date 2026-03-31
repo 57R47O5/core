@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import CenteredCard from "../displays/CenteredCard";
 import { useRouteMode } from "../../hooks/useRouteMode";
 import { useInstance } from "../../context/InstanceContext";
-import Botonera from "../botonera/botonera";
+import Botonera from "../botonera/Botonera";
 import { useFormSubmit } from "../../hooks/useFormSubmit";
 import { useFormDelete } from "../../hooks/useFormDelete";
 import { useBotoneraConfig } from "../../hooks/useBotoneraConfig";

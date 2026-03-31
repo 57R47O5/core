@@ -1,0 +1,74 @@
+services:
+  db:
+    image: postgis/postgis:15-3.4
+    container_name: logos-db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  liquibase:
+    image: liquibase/liquibase:latest
+    container_name: logos-liquibase
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - ./liquibase:/liquibase/changelog
+      - ./liquibase/drivers:/liquibase/classpath
+    command: >
+      --classpath=/liquibase/classpath/postgresql-42.7.8.jar
+      --url=jdbc:postgresql://db:5432/${DB_NAME}
+      --username=${DB_USER}
+      --password=${DB_PASSWORD}
+      --changeLogFile=/changelog/generated/elecciones/master.yaml
+      update
+    restart: on-failure
+
+  backend:
+    build: ./backend
+    env_file:
+      - .env
+    container_name: logos-backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    expose:
+      - "8000"   # solo expone a la red interna, no al host
+    depends_on:
+      - db
+      - liquibase
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL}
+    container_name: logos-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+
+  nginx:
+    image: nginx:alpine
+    container_name: logos-nginx
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./frontend/dist:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"   # usa 8080 en el host para evitar conflicto con el 80 ocupado
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  postgres_data:
