@@ -52,6 +52,8 @@ services:
       args:
         REACT_APP_API_URL: ${REACT_APP_API_URL}
     container_name: logos-frontend
+    volumes:
+    - ./frontend/dist:/app/dist
     depends_on:
       - backend
 
