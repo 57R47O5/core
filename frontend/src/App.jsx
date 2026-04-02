@@ -34,11 +34,7 @@ function App() {
         <div className="app-container">
           <NavBar/>
         <div className="app-body">
-          {isAuthenticated && (
-            <div className="sidebar">
-              <Sidebar/>
-            </div>
-          )}
+          <Sidebar/>
           <main className="app-main">
             <RutasComunes/>
             <Routes>

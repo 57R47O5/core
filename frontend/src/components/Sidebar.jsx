@@ -66,8 +66,9 @@ const SidebarNode = ({ node }) => {
 
 export const Sidebar = () => {
   const { menu, isAuthenticated } = useContext(AuthContext);
+  const hayMenu = menu && menu.length > 0;
 
-  if (!menu || !isAuthenticated) return null;
+  if (!hayMenu || !isAuthenticated) return null;
 
   return (
     <nav className="sidebar">
