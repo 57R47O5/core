@@ -11,6 +11,7 @@ import Register from"./pages/RegisterPage"
 import { AuthContext, AuthProvider } from "../src/context/AuthContext";
 import { Sidebar } from "./components/Sidebar";
 import AnaliticaDashboardPage from "./apps/elecciones/analitica/AnaliticaDashboardPage";
+import { isAuthenticated } from "./api/tokenService";
 
 function RutasComunes (){
 
@@ -33,9 +34,11 @@ function App() {
         <div className="app-container">
           <NavBar/>
         <div className="app-body">
-          <div className="sidebar">
-            <Sidebar/>
-          </div>
+          {isAuthenticated && (
+            <div className="sidebar">
+              <Sidebar/>
+            </div>
+          )}
           <main className="app-main">
             <RutasComunes/>
             <Routes>
