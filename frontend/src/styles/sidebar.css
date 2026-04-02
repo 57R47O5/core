@@ -1,3 +1,4 @@
+/* Sidebar base */
 .sidebar-group {
   display: flex;
   flex-direction: column;
@@ -6,8 +7,11 @@
   padding: 1rem 0.5rem;
   text-align: center;
   transition: all 0.2s ease;
+  width: 100%; /* que ocupe todo el ancho disponible */
+  max-width: 240px; /* límite en desktop */
 }
 
+/* Iconos y labels */
 .sidebar-icon {
   font-size: 1.8rem;
   transition: transform 0.2s ease;
@@ -18,7 +22,7 @@
   margin-top: 0.4rem;
   opacity: 0.85;
   text-align: center;
-  color:white
+  color: white;
 }
 
 /* Hover */
@@ -31,16 +35,36 @@
   border-radius: 8px;
 }
 
-/*Link*/
+/* Links */
 .sidebar-link {
   flex-grow: 1;
   color: cadetblue;
-  border-bottom: 1;
-  border-bottom-color: white;
   text-decoration: none;
+  display: block;
+  padding: 0.5rem;
 }
 
+/* Submenú */
 .sidebar-submenu li {
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-  border-collapse: collapse;
+}
+
+/* Adaptación móvil */
+@media (max-width: 768px) {
+  .sidebar-group {
+    flex-direction: row; /* íconos y texto en fila */
+    justify-content: flex-start;
+    padding: 0.5rem 1rem;
+    max-width: 100%; /* que se expanda */
+  }
+
+  .sidebar-icon {
+    font-size: 1.5rem;
+  }
+
+  .sidebar-label {
+    font-size: 0.9rem;
+    margin-top: 0;
+    margin-left: 0.5rem;
+  }
 }

@@ -7,7 +7,6 @@ import {
   Container,
   Button,
   Modal,
-  NavDropdown,
 } from "react-bootstrap";
 
 const NavBar = ({children}) => {
@@ -34,7 +33,7 @@ const NavBar = ({children}) => {
       <Navbar expand="lg" bg="primary" data-bs-theme="dark" className="mb-4">
         <Container>
           <Navbar.Brand as={Link} to="/">
-            Elecciones
+            Agora
           </Navbar.Brand>
 
           <Navbar.Toggle aria-controls="main-navbar" />
@@ -47,24 +46,7 @@ const NavBar = ({children}) => {
                   <Nav.Link as={Link} to="/login">Iniciar Sesión</Nav.Link>
                 </>
               )}
-
-              {/* {isAuthenticated && (
-                <>
-                  <Nav.Link as={Link} to="/usuarios">Usuarios</Nav.Link>
-
-                  
-
-                  <NavDropdown title="Mi Cuenta" id="user-dropdown">
-                    <NavDropdown.Item as={Link} to={`/usuarios/${user.id}`}>
-                      Perfil
-                    </NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={handleLogoutClick}>
-                      Cerrar Sesión
-                    </NavDropdown.Item>
-                  </NavDropdown>
-                </>
-              )} */}
+              
             </Nav>
 
             {/* Botón de logout */}
