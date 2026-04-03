@@ -1,3 +1,4 @@
+import './datatable.css'
 import { useState } from "react";
 import { Spinner, Table, Button, Badge, Pagination } from "react-bootstrap";
 import BaseLink from "../displays/BaseLink";
@@ -174,7 +175,7 @@ export function DataTable({
   const paginatedItems = items.slice(startIndex, startIndex + pageSize);
 
   return (
-    <>
+    <div className="responsive-table">
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -224,6 +225,6 @@ export function DataTable({
           <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
         </Pagination>
       </div>
-    </>
+    </div>
   );
 }

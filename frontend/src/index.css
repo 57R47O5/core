@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root {
+  --allports-50:  #f4f8fb;
+  --allports-100: #e7eff7;
+  --allports-200: #cadeed;
+  --allports-300: #9cc3dd;
+  --allports-400: #67a3c9;
+  --allports-500: #4387b4;
+  --allports-600: #34719e;
+  --allports-700: #29577b;
+  --allports-800: #264a66;
+  --allports-900: #243f56;
+  --allports-950: #182939;
+}

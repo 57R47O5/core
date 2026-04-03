@@ -1,14 +1,16 @@
-/* Wrapper que centra horizontalmente */
+/* Wrapper centrador real */
 .centered-card-wrapper {
   display: flex;
   justify-content: center;
-  padding: 1.5rem 1rem;
   width: 100%;
+  padding: 1rem; /* más chico para mobile */
+  box-sizing: border-box;
 }
 
 /* Card base */
 .centered-card {
   width: 100%;
+  max-width: 720px; /* controla ancho en desktop */
   border-radius: 14px;
   border: none;
   transition: all 0.2s ease;
@@ -18,7 +20,7 @@
 .centered-card-header {
   background: transparent;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem; /* más compacto en mobile */
 }
 
 /* Header layout */
@@ -26,20 +28,63 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 }
 
 /* Title */
 .centered-card-title {
   margin: 0;
   font-weight: 600;
+  font-size: 1rem; /* mejor escala en mobile */
 }
 
 /* Subtitle */
 .centered-card-subtitle {
   color: #6c757d;
+  font-size: 0.85rem;
 }
 
 /* Body */
 .centered-card-body {
-  padding: 1.5rem;
+  padding: 1rem;
+}
+
+/* ---------------------- */
+/* 📱 Breakpoints */
+/* ---------------------- */
+
+/* Tablets */
+@media (min-width: 576px) {
+  .centered-card-wrapper {
+    padding: 1.25rem;
+  }
+
+  .centered-card-body {
+    padding: 1.25rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .centered-card-wrapper {
+    padding: 2rem;
+  }
+
+  .centered-card {
+    max-width: 640px; /* más contenido, menos stretch */
+  }
+
+  .centered-card-body {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .centered-card {
+    border-radius: 10px;
+  }
+
+  .centered-card-wrapper {
+    padding: 0.5rem;
+  }
 }

@@ -1,3 +1,4 @@
+import './../../index.css';
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -30,12 +31,11 @@ const NavBar = ({children}) => {
 
   return (
     <>
-      <Navbar expand="lg" bg="primary" data-bs-theme="dark" className="mb-4">
+      <Navbar expand="lg" data-bs-theme="dark" className="mb-4" style={{backgroundColor: "var(--allports-900)"}}>
         <Container>
-          <Navbar.Brand as={Link} to="/">
+          <Navbar.Brand as={Link} to="/" className="mx-auto">
             Agora
           </Navbar.Brand>
-
           <Navbar.Toggle aria-controls="main-navbar" />
           <Navbar.Collapse id="main-navbar">
             <Nav className="me-auto">
