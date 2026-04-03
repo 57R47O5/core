@@ -4,7 +4,7 @@ import * as Icons from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-const SidebarNode = ({ node }) => {
+const SidebarNode = ({ node, onNavigate }) => {
   const Icon = node.icon ? Icons[node.icon] : null;
   const hasChildren = node.content && node.content.length > 0;
 
@@ -25,13 +25,21 @@ const SidebarNode = ({ node }) => {
         {node.to ? (
           <NavLink
             to={node.to}
-            className="sidebar-link"
-            onClick={e => hasChildren && e.preventDefault()}
+            className={({ isActive }) =>
+              "sidebar-link" + (isActive ? " active" : "")
+            }
+            onClick={(e) => {
+              if (hasChildren) {
+                e.preventDefault();
+              } else {
+                onNavigate(); // 👈 cerrar sidebar al navegar
+              }
+            }}
           >
-          <span className="sidebar-group">
-          {Icon && (
-            <span className="sidebar-icon">
-              <Icon />
+            <span className="sidebar-group">
+              {Icon && (
+                <span className="sidebar-icon">
+                  <Icon />
                 </span>
               )}
               <span className="sidebar-label">
@@ -41,21 +49,26 @@ const SidebarNode = ({ node }) => {
           </NavLink>
         ) : (
           <span className="sidebar-group">
-          {Icon && (
-            <span className="sidebar-icon">
-              <Icon />
-                </span>
-              )}
-              <span className="sidebar-label">
-                {node.label}
+            {Icon && (
+              <span className="sidebar-icon">
+                <Icon />
               </span>
+            )}
+            <span className="sidebar-label">
+              {node.label}
             </span>
-        )}        
+          </span>
+        )}
       </div>
+
       {hasChildren && open && (
         <ul className="sidebar-submenu">
           {node.content.map(child => (
-            <SidebarNode key={child.key} node={child} />
+            <SidebarNode
+              key={child.key}
+              node={child}
+              onNavigate={onNavigate}
+            />
           ))}
         </ul>
       )}
@@ -63,21 +76,37 @@ const SidebarNode = ({ node }) => {
   );
 };
 
-
-export const Sidebar = () => {
+export const Sidebar = ({ isOpen, setIsOpen }) => {
   const { menu, isAuthenticated } = useContext(AuthContext);
-  const hayMenu = menu && menu.length > 0;
 
+  const hayMenu = menu && menu.length > 0;
   if (!hayMenu || !isAuthenticated) return null;
 
+  const toggleSidebar = () => setIsOpen(prev => !prev);
+  const closeSidebar = () => setIsOpen(false);
+
   return (
-    <nav className="sidebar">
-      <ul className="list-unstyled">
-        {menu.map(node => (
-          <SidebarNode key={node.key} node={node} />
-        ))}
-      </ul>
-    </nav>
+    <>
+      {/* Botón hamburguesa */}
+      <button className="sidebar-toggle" onClick={toggleSidebar}>
+        ☰
+      </button>
+
+      {/* Overlay */}
+      {isOpen && <div className="sidebar-overlay" onClick={closeSidebar} />}
+
+      {/* Sidebar */}
+      <nav className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
+        <ul className="list-unstyled">
+          {menu.map(node => (
+            <SidebarNode
+              key={node.key}
+              node={node}
+              onNavigate={closeSidebar}
+            />
+          ))}
+        </ul>
+      </nav>
+    </>
   );
 };
-

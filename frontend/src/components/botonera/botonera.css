@@ -1,0 +1,28 @@
+/* Contenedor base */
+.action-buttons {
+  display: flex;
+  flex-direction: column; /* MOBILE: vertical */
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* Todos los botones ocupan todo el ancho en mobile */
+.action-buttons .btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tablet en adelante */
+@media (min-width: 576px) {
+  .action-buttons {
+    flex-direction: row;
+    flex-wrap: wrap; /* evita overflow */
+    justify-content: flex-end; /* opcional: alinear a la derecha */
+  }
+
+  .action-buttons .btn {
+    width: auto; /* vuelven a tamaño natural */
+  }
+}

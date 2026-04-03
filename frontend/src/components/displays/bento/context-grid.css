@@ -15,15 +15,39 @@
 
 .context-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1rem;
-  transition: grid-template-columns 0.35s ease;
-  grid-auto-flow: dense;
+  grid-template-columns: 1fr; 
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 720px; 
+  margin: 0 auto;   
+  padding: 0 0.5rem;
 }
+
+/* =========================
+   TABLET
+========================= */
+
+@media (min-width: 576px) {
+  .context-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    max-width: 900px;
+    padding: 0 1rem;
+  }
+}
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 768px) {
+  .context-grid {
+    max-width: 1100px;
+    gap: 1rem;
+  }
 
 /* cuando hay uno activo */
 .context-grid.has-active {
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 2.5fr 1fr;
   align-items: start;
 }
 
@@ -42,6 +66,7 @@
   transform: none;
 }
 
+}
 /* =========================
    Tile base refinado
 ========================= */
@@ -117,4 +142,26 @@
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--context-primary-dark);
+}
+
+@media (max-width: 575px) {
+  .context-tile {
+    border-radius: 14px;
+    min-height: 120px;
+  }
+
+  .context-tile.collapsed {
+    padding: 1rem;
+  }
+
+  .context-tile.collapsed .card-title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .context-tile.expanded {
+    transform: none;
+    box-shadow: none;
+  }
 }
