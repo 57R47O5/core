@@ -28,7 +28,7 @@ services:
       --url=jdbc:postgresql://db:5432/${DB_NAME}
       --username=${DB_USER}
       --password=${DB_PASSWORD}
-      --changeLogFile=/liquibase/changelog/generated/elecciones/master.yaml
+      --changeLogFile=/changelog/generated/elecciones/master.yaml
 
   backend:
     build: ./backend
