@@ -24,11 +24,13 @@ services:
       - ./liquibase:/liquibase/changelog
       - ./liquibase/drivers:/liquibase/classpath
     command:
-      - --classpath=/liquibase/classpath/postgresql-42.7.8.jar
-      - --url=jdbc:postgresql://db:5432/${DB_NAME}
-      - --username=${DB_USER}
-      - --password=${DB_PASSWORD}
-      - --changeLogFile=/liquibase/changelog/generated/elecciones/master.yaml
+      --classpath=/liquibase/classpath/postgresql-42.7.8.jar
+      --url=jdbc:postgresql://db:5432/${DB_NAME}
+      --username=${DB_USER}
+      --password=${DB_PASSWORD}
+      --changeLogFile=/liquibase/changelog/generated/elecciones/master.yaml
+      clearCheckSums
+      update
 
   backend:
     build: ./backend
@@ -42,7 +44,6 @@ services:
       - "8000"   # solo expone a la red interna, no al host
     depends_on:
       - db
-      - liquibase
 
   frontend:
     build:
