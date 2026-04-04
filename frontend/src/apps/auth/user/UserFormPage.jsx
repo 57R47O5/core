@@ -42,7 +42,7 @@ function RolesUser({}) {
       columns={columns}
       initialItem={{
         ...initialValues,
-        user: instance.id, 
+      user: instance.id, 
       }}
       validationSchema={validationSchema}
     >

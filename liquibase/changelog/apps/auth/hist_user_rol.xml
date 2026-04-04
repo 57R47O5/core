@@ -25,8 +25,8 @@
 
             <column name="is_deleted" type="BOOLEAN"/>
 
-            <column name="createdby_id" type="INTEGER"/>
-            <column name="updatedby_id" type="INTEGER"/>
+            <column name="createdby" type="INTEGER"/>
+            <column name="updatedby" type="INTEGER"/>
 
             <column name="createdat" type="TIMESTAMP"/>
             <column name="updatedat" type="TIMESTAMP"/>
@@ -49,13 +49,13 @@
     <!-- ===================================================== -->
 
     <changeSet id="user-rol-history-002-index-id" author="system">
-        <createIndex indexName="idx_user_rol_hist_id" tableName="user_rol_history">
+        <createIndex indexName="idx_user_rol_hist_id" tableName="hist_user_rol">
             <column name="id"/>
         </createIndex>
     </changeSet>
 
     <changeSet id="user-rol-history-003-index-history-date" author="system">
-        <createIndex indexName="idx_user_rol_hist_date" tableName="user_rol_history">
+        <createIndex indexName="idx_user_rol_hist_date" tableName="hist_user_rol">
             <column name="history_date"/>
         </createIndex>
     </changeSet>

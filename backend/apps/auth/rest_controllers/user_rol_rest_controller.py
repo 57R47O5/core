@@ -14,10 +14,10 @@ from apps.auth.serializers.user_rol_serializer import (
 from controllers.base.base_rest_controller import ModelRestController
 
 class PermisosUserRol(PermisoGroup):
-    VIEW=Constant("auth.user_rol.view")
-    CREATE=Constant("auth.user_rol.create")
-    UPDATE=Constant("auth.user_rol.update")
-    DESTROY=Constant("auth.user_rol.destroy")
+    VIEW=Constant("auth.user-rol.view")
+    CREATE=Constant("auth.user-rol.create")
+    UPDATE=Constant("auth.user-rol.update")
+    DESTROY=Constant("auth.user-rol.destroy")
 
 
 class UserRolRestController(ModelRestController):
@@ -40,7 +40,7 @@ class UserRolRestController(ModelRestController):
     def create(self, request):
         datos=request.data.copy()
         datos_listos = {
-            'user': datos.pop('id'),
+            'user': datos.pop('user'),
             'rol': datos.pop('rol')
         }
         serializer=self.create_serializer(data=datos_listos)

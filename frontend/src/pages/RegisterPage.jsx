@@ -1,66 +1,130 @@
-import { useState } from "react";
+import "./../index.css";
 import { useNavigate } from "react-router-dom";
 import { register } from "../api/auth";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    username: "",
-    email: "",
-    password: "",
+
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      email: "",
+      password: "",
+      password2: "",
+    },
+
+    validationSchema: Yup.object({
+      username: Yup.string()
+        .min(3, "Mínimo 3 caracteres")
+        .required("Requerido"),
+
+      email: Yup.string()
+        .email("Email inválido")
+        .required("Requerido"),
+
+      password: Yup.string()
+        .min(6, "Mínimo 6 caracteres")
+        .required("Requerido"),
+
+      password2: Yup.string()
+        .oneOf([Yup.ref("password")], "Las contraseñas no coinciden")
+        .required("Requerido"),
+    }),
+
+    onSubmit: async (values, { setSubmitting, setStatus }) => {
+      setStatus(null);
+
+      try {
+        const payload = {
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        };
+
+        await register(payload);
+        navigate("/login");
+      } catch (err) {
+        console.error(err);
+        setStatus("Error al registrar el usuario. Verifica los datos.");
+      } finally {
+        setSubmitting(false);
+      }
+    },
   });
-  const [error, setError] = useState("");
-
-  const onChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    try {
-      await register(form);
-      navigate("/login");
-    } catch (err) {
-      console.error(err);
-      setError("Error al registrar el usuario. Verifica los datos.");
-    }
-  };
 
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Crear cuenta</h2>
-      <form onSubmit={onSubmit} style={styles.form}>
+
+      <form onSubmit={formik.handleSubmit} style={styles.form}>
+        {/* USERNAME */}
         <input
           type="text"
           name="username"
           placeholder="Nombre de usuario"
-          value={form.username}
-          onChange={onChange}
-          required
+          value={formik.values.username}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           style={styles.input}
         />
+        {formik.touched.username && formik.errors.username && (
+          <p style={styles.error}>{formik.errors.username}</p>
+        )}
+
+        {/* EMAIL */}
         <input
           type="email"
           name="email"
           placeholder="Correo electrónico"
-          value={form.email}
-          onChange={onChange}
-          required
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           style={styles.input}
         />
+        {formik.touched.email && formik.errors.email && (
+          <p style={styles.error}>{formik.errors.email}</p>
+        )}
+
+        {/* PASSWORD */}
         <input
           type="password"
           name="password"
           placeholder="Contraseña"
-          value={form.password}
-          onChange={onChange}
-          required
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           style={styles.input}
         />
-        {error && <p style={styles.error}>{error}</p>}
-        <button type="submit" style={styles.button}>Registrarse</button>
+        {formik.touched.password && formik.errors.password && (
+          <p style={styles.error}>{formik.errors.password}</p>
+        )}
+
+        {/* PASSWORD 2 */}
+        <input
+          type="password"
+          name="password2"
+          placeholder="Repetir contraseña"
+          value={formik.values.password2}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          style={styles.input}
+        />
+        {formik.touched.password2 && formik.errors.password2 && (
+          <p style={styles.error}>{formik.errors.password2}</p>
+        )}
+
+        {/* ERROR GLOBAL */}
+        {formik.status && <p style={styles.error}>{formik.status}</p>}
+
+        <button
+          type="submit"
+          style={styles.button}
+          disabled={formik.isSubmitting}
+        >
+          {formik.isSubmitting ? "Registrando..." : "Registrarse"}
+        </button>
       </form>
 
       <p style={styles.text}>
@@ -73,7 +137,8 @@ const Register = () => {
   );
 };
 
-// 🎨 Estilos simples (inline para mantenerlo todo en un solo archivo)
+export default Register;
+
 const styles = {
   container: {
     maxWidth: "400px",
@@ -103,7 +168,7 @@ const styles = {
     padding: "10px",
     border: "none",
     borderRadius: "5px",
-    background: "#4CAF50",
+    background: "var(--allports-700)",
     color: "#fff",
     cursor: "pointer",
   },
@@ -115,10 +180,9 @@ const styles = {
     marginTop: "1rem",
   },
   link: {
-    color: "#4CAF50",
+    color: "var(--allports-700)",
     cursor: "pointer",
     textDecoration: "underline",
   },
 };
 
-export default Register;
