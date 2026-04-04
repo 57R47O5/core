@@ -23,7 +23,6 @@ services:
     volumes:
       - ./liquibase:/liquibase/changelog
       - ./liquibase/drivers:/liquibase/classpath
-    entrypoint: []  
     command: >
       --classpath=/liquibase/classpath/postgresql-42.7.8.jar
       --url=jdbc:postgresql://db:5432/${DB_NAME}
