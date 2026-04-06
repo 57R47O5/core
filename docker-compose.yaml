@@ -75,8 +75,6 @@ services:
     build:
       context: ./landingAgora
     container_name: logos-landing
-    ports:
-      - "8080:80"  # temporal, para test local
     restart: unless-stopped
 
 volumes:
