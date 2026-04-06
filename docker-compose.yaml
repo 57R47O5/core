@@ -68,7 +68,7 @@ services:
     image: nginx:alpine
     container_name: logos-nginx
     volumes:
-      - ./frontend/nginx/conf:/etc/nginx/conf.d
+      - ./nginx/conf:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
       - "80:80"
