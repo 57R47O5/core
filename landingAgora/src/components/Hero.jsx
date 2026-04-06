@@ -51,7 +51,7 @@ export default function Hero() {
       </p>
 
       <a
-        href="https://logosoft.com.py"
+        href="https://demo.logosoft.com.py"
         className="hero-btn"
         target="_blank"
         rel="noopener noreferrer"
