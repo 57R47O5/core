@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import F
 from framework.permisos import PermisoGroup
 from framework.models.basemodels import Constant
 
@@ -25,3 +25,17 @@ class ContactoRestController(ModelRestController):
     update_serializer = ContactoUpdateSerializer
     retrieve_serializer = ContactoRetrieveSerializer    
     permisos = PermisosContacto
+
+    def serialize_list(self, queryset):
+        """
+        Serialización rápida por defecto usando .values().
+        Puede ser sobrescrita por subclases si requieren algo custom.
+        """
+        model = queryset.model
+        if hasattr(model, "descripcion_expression") and \
+            not hasattr(model, "descripcion"):
+            queryset = queryset.annotate(
+                descripcion=model.descripcion_expression()
+            )
+
+        return list(queryset.values().annotate(tipo=F("tipo_id")).values())
