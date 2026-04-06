@@ -63,7 +63,7 @@ services:
     volumes:
       - ./nginx/conf:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt:ro
-      - ./proyectos/landingAgora/dist:/usr/share/nginx/landing:ro
+      - ./landingAgora/dist:/usr/share/nginx/landing:ro
       - ./frontend/dist:/usr/share/nginx/demo:ro
     ports:
       - "80:80"
@@ -73,7 +73,7 @@ services:
 
   landing:
     build:
-      context: ./proyectos/landingAgora
+      context: ./landingAgora
     container_name: logos-landing
     ports:
       - "8080:80"  # temporal, para test local
