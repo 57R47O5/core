@@ -16,6 +16,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+    - app-network
 
   liquibase:
     image: liquibase/liquibase:latest
@@ -34,6 +36,8 @@ services:
       --password=${DB_PASSWORD}
       --changeLogFile=/liquibase/changelog/generated/elecciones/master.yaml
       update
+    networks:
+    - app-network
 
   backend:
     build: ./backend
