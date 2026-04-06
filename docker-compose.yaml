@@ -29,7 +29,6 @@ services:
       --username=${DB_USER}
       --password=${DB_PASSWORD}
       --changeLogFile=/liquibase/changelog/generated/elecciones/master.yaml
-      clearCheckSums
       update
 
   backend:
@@ -64,14 +63,21 @@ services:
     volumes:
       - ./nginx/conf:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt:ro
-      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./frontend/dist:/usr/share/nginx/html:ro
+      - ./proyectos/landingAgora/dist:/usr/share/nginx/landing:ro
+      - ./frontend/dist:/usr/share/nginx/demo:ro
     ports:
       - "80:80"
-      - "443:443"   
+      - "443:443"
     depends_on:
       - backend
-      - frontend
+
+  landing:
+    build:
+      context: ./proyectos/landingAgora
+    container_name: logos-landing
+    ports:
+      - "8080:80"  # temporal, para test local
+    restart: unless-stopped
 
 volumes:
   postgres_data:
