@@ -217,7 +217,7 @@ function TemasDetectados({data}){
 
 export default function AnaliticaDashboardPage() {
 
-  const { listar } = getAPIBase("analitica");
+  const { listar } = getAPIBase("api/analitica");
   const [data, setData] = useState(null);
 
   useEffect(() => {
