@@ -1,0 +1,113 @@
+.hero {
+  text-align: center;
+  padding: 60px 16px;
+}
+
+.hero h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.hero p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.hero button {
+  background: black;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .hero {
+    padding: 80px 24px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+
+  .hero p {
+    font-size: 18px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .hero {
+    padding: 100px 20px;
+  }
+
+  .hero h1 {
+    font-size: 52px;
+  }
+}
+
+.hero-btn {
+  display: inline-block;
+  background: black;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.hero-sub {
+  margin-bottom: 30px;
+  color: #444;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.hero-stats div {
+  text-align: center;
+}
+
+.big {
+  display: block;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.hero-stats span:last-child {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .hero-stats {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .big {
+    font-size: 28px;
+  }
+}
+
+.hero-copy {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.hero-copy strong {
+  display: block;
+  margin-top: 10px;
+}

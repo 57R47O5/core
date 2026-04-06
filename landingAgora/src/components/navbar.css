@@ -1,0 +1,37 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.navbar-logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.navbar-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .navbar {
+    padding: 16px 40px;
+  }
+
+  .navbar-logo {
+    font-size: 20px;
+  }
+
+  .navbar-btn {
+    padding: 10px 16px;
+    font-size: 15px;
+  }
+}

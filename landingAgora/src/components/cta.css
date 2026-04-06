@@ -1,0 +1,30 @@
+.cta {
+  text-align: center;
+  padding: 60px 16px;
+}
+
+.cta h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.cta button {
+  background: black;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .cta {
+    padding: 80px 20px;
+  }
+
+  .cta h2 {
+    font-size: 30px;
+  }
+}
