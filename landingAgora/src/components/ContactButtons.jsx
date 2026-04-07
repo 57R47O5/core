@@ -4,7 +4,7 @@ export default function ContactButtons() {
   return (
     <div className="contact-floating">
       <a
-        href="https://wa.me/59571312951"
+        href="https://wa.me/595971312951"
         target="_blank"
         rel="noopener noreferrer"
         className="whatsapp"
