@@ -13,6 +13,7 @@ export default function VotanteListPage() {
       { label: "Apellidos", field: "apellidos" },
       { label: "Distrito", field: "distrito" }
       ]}
+      autodirigir={false}
     />
   );
   }

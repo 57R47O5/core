@@ -20,6 +20,7 @@ export default function BaseListPage({
   FilterComponent,
   columns,
   title = "Listado",
+  autodirigir = true,
 }) {
   const navigate = useNavigate();
   const { buscar } = getAPIBase(controller);
@@ -33,7 +34,7 @@ export default function BaseListPage({
       const data = await buscar(filters);
       setItems(data || []);
 
-      if (data?.length === 1) {
+      if (data?.length === 1 && autodirigir) {
         navigate(`/${controller}/${data[0].id}`);
       }
     } finally {
