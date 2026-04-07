@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useField } from "formik";
 import { Form, ListGroup, Spinner } from "react-bootstrap";
 import request from "../../api/requests";
@@ -12,7 +12,7 @@ export default function FormikAutocompleteRemote({
   delay = 300,
   ...props
 }) {
-  const [ field, meta, helpers] = useField(name);
+  const [field, meta, helpers] = useField(name);
   const { setValue } = helpers;
 
   const [texto, setTexto] = useState("");
@@ -62,6 +62,31 @@ export default function FormikAutocompleteRemote({
     setTexto(op.descripcion);
     setMostrarLista(false);
   };
+
+  // 👇 Nuevo efecto: si ya existe un valor inicial en Formik, buscarlo en /options/
+  useEffect(() => {
+    const cargarValorInicial = async () => {
+      if (field.value) {
+        setLoading(true);
+        try {
+          const resp = await request.get(`${endpoint}/options/`);
+          if (Array.isArray(resp)) {
+            const encontrado = resp.find((op) => op.id === field.value);
+            if (encontrado) {
+              setTexto(encontrado.descripcion);
+              // opcional: agregarlo a opciones para que quede en la lista
+              setOpciones([encontrado]);
+            }
+          }
+        } catch (e) {
+          console.error("Error cargando valor inicial", e);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    cargarValorInicial();
+  }, [field.value, endpoint]);
 
   return (
     <Form.Group className="mb-3" style={{ position: "relative" }}>
