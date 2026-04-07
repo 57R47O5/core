@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ReactSpeedometer from "react-d3-speedometer";
 import {  WordCloud } from "@isoterik/react-word-cloud";
 import "./dashboard.css"
+import request from "../../../api/requests";
 
 import {
   LineChart,
@@ -14,7 +15,6 @@ import {
 } from "recharts";
 
 import { Card, Row, Col, Spinner } from "react-bootstrap";
-import  getAPIBase from "../../../api/BaseAPI";
 
 function EvolucionTemporal({visitasTiempo}){
   return (
@@ -217,12 +217,11 @@ function TemasDetectados({data}){
 
 export default function AnaliticaDashboardPage() {
 
-  const { listar } = getAPIBase("analitica/");
   const [data, setData] = useState(null);
 
   useEffect(() => {
     async function cargar() {
-      const res = await listar();
+      const res = await request.get(`analitica/`);
       setData(res);
     }
     cargar();
