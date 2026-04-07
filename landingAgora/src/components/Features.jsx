@@ -3,17 +3,17 @@ import "./features.css"
 const features = [
   {
     title: "Geolocalización",
-    desc: "Visualizá votantes en mapa",
+    desc: "Donde están los votantes",
     img: "/images/map.png",
   },
   {
     title: "Segmentación",
-    desc: "Clasificá por intención de voto",
+    desc: "Quiénes te quieren votar",
     img: "/images/segment.png",
   },
   {
     title: "Reportes",
-    desc: "Tomá decisiones con datos reales",
+    desc: "Qué quieren tus votantes",
     img: "/images/reports.png",
   },
 ]
