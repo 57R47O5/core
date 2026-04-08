@@ -1,7 +1,6 @@
 import { Spinner, Card, Form } from "react-bootstrap";
 import { Formik } from "formik";
 import CenteredCard from "../displays/CenteredCard";
-import { useRouteMode } from "../../hooks/useRouteMode";
 import { useInstance } from "../../context/InstanceContext";
 import Botonera from "../botonera/Botonera";
 import { useFormSubmit } from "../../hooks/useFormSubmit";
@@ -10,16 +9,40 @@ import { useBotoneraConfig } from "../../hooks/useBotoneraConfig";
 import { resolveInitialValues } from "../../hooks/InitialValues";
 import { resolveValidationSchema } from "../../hooks/ValidationSchema";
 
-export default function BaseFormPage({FormComponent}) {
+export default function BaseFormPage({ FormComponent }) {
+  const { id, instance, exists, loading, controller } = useInstance();
+
+  return (
+    <BaseFormPageInner
+      FormComponent={FormComponent}
+      id={id}
+      instance={instance}
+      exists={exists}
+      loading={loading}
+      controller={controller}
+    />
+  );
+}
+
+export function BaseFormPageInner({
+  FormComponent,
+  id,
+  instance,
+  exists,
+  loading,
+  controller,
+}) {
   const formModel = FormComponent();
-  const { instance, loading, controller } = useInstance();
-  const  { isCreate} = useRouteMode();
-  const handleSubmit = useFormSubmit({controller});
-  const handleDelete = useFormDelete({controller});
+
+  const handleSubmit = useFormSubmit({ id, exists, controller });
+  const handleDelete = useFormDelete({ id, controller });
+
   const botoneraConfig = useBotoneraConfig({
     onDelete: handleDelete,
   });
+
   const context = instance?._context || {};
+  const isCreate = !exists;
 
   const initialValues = resolveInitialValues({
     formModel,
@@ -54,20 +77,18 @@ export default function BaseFormPage({FormComponent}) {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {(formik) => {
+          {(formik) => (
+            <Form>
+              <formModel.FormFields formik={formik} instance={instance} />
 
-            return (
-              <Form>
-                 <formModel.FormFields formik={formik} instance={instance} />
-                <div className="d-flex justify-content-between mt-3">
+              <div className="d-flex justify-content-between mt-3">
                 <Botonera
                   {...botoneraConfig}
                   isSubmitting={formik.isSubmitting}
                 />
               </div>
-              </Form>
-            );
-          }}
+            </Form>
+          )}
         </Formik>
       </Card.Body>
     </CenteredCard>

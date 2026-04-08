@@ -1,10 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { useRouteMode } from "./useRouteMode";
 import getAPIBase from "../api/BaseAPI";
 
-export function useFormDelete({ controller }) {
+export function useFormDelete({ id, controller }) {
   const navigate = useNavigate();
-  const  {id} = useRouteMode();
   const { eliminar } = getAPIBase(controller);
   const redirectTo=`${controller}/`
 

@@ -1,9 +1,9 @@
-import BaseFormPage from "../../../components/forms/BaseFormPage";
+import BaseFormPage, {BaseFormPageInner} from "../../../components/forms/BaseFormPage";
 import SalidaForm from "./SalidaForm";
 import ContextGrid from "../../../components/displays/bento/ContextGrid";
 import ContextTile from "../../../components/displays/bento/ContextTile";
 import { useRouteMode } from "../../../hooks/useRouteMode";
-import { InstanceProvider } from "../../../context/InstanceContext";
+import { InstanceProvider, useInstance } from "../../../context/InstanceContext";
 import VisitaForm from "../visita/VisitaForm";
 import VisitaList from "../visita/VisitaList";
 
@@ -36,9 +36,7 @@ export function  SalidaFormPageContent({id, controller}) {
           id={null}
           defaults={{salida: id}}
         >
-        <BaseFormPage
-          FormComponent={VisitaForm}
-          />
+        <CrearVisita/>
         </InstanceProvider>
       </ContextTile>
       <ContextTile
@@ -58,6 +56,19 @@ export function  SalidaFormPageContent({id, controller}) {
     </ContextGrid>
   )
 }
+
+function CrearVisita() {
+  const {id, instance, controller, exists} = useInstance();
+  return (
+    <BaseFormPageInner
+      FormComponent={VisitaForm}
+      id={id}
+      instance={instance}
+      exists={exists}
+      controller={controller}
+      />
+    )
+  }
 
 export default function SalidaFormPage() {
   const { id } = useRouteMode();
