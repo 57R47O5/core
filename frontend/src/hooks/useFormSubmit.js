@@ -1,12 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useRouteMode } from "./useRouteMode";
 import getAPIBase from "../api/BaseAPI";
 
-export function useFormSubmit({controller}) {
+export function useFormSubmit({id, exists, controller}) {
   const navigate = useNavigate();
-  const  {id, isCreate} = useRouteMode();
   const { crear, editar } = getAPIBase(controller);
   const redirectTo=`${controller}/`
+  const  isCreate = !exists;
 
 
   const handleSubmit = async (values, { setSubmitting }) => {
