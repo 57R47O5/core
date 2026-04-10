@@ -1,4 +1,5 @@
 import "./contact.css"
+import * as Icons from "react-icons/fa";
 
 export default function ContactButtons() {
   return (
@@ -9,14 +10,14 @@ export default function ContactButtons() {
         rel="noopener noreferrer"
         className="whatsapp"
       >
-        WhatsApp
+        <Icons.FaWhatsapp size={30} />
       </a>
 
       <a
         href="mailto:info@logosoft.com.py"
         className="email"
       >
-        Email
+        <Icons.FaEnvelope size={30} />
       </a>
     </div>
   )

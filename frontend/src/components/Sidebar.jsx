@@ -32,7 +32,7 @@ const SidebarNode = ({ node, onNavigate }) => {
               if (hasChildren) {
                 e.preventDefault();
               } else {
-                onNavigate(); // 👈 cerrar sidebar al navegar
+                onNavigate(); // cerrar sidebar al navegar
               }
             }}
           >
