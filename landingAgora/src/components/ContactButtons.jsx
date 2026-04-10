@@ -14,7 +14,7 @@ export default function ContactButtons() {
       </a>
 
       <a
-        href="mailto:info@logosoft.com.py"
+        href="mailto:admin@logosoft.com.py"
         className="email"
       >
         <Icons.FaEnvelope size={30} />
