@@ -191,3 +191,12 @@ databaseChangeLog:
   - include:
       file: ../../apps/elecciones/rol_permiso-data.xml
       relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/procedimientos/cargar-staging.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/procedimientos/crear-staging.xml
+      relativeToChangelogFile: true
+  - include:
+      file: ../../apps/elecciones/procedimientos/cargar-votantes.xml
+      relativeToChangelogFile: true

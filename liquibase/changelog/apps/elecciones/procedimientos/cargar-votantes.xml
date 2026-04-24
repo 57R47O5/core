@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+<changeSet id="proc-cargar-padron" author="esteban">
+    <sql splitStatements="false" stripComments="false">
+        CREATE OR REPLACE PROCEDURE cargar_padron(p_distrito INT DEFAULT NULL)
+        LANGUAGE plpgsql
+        AS $$
+        DECLARE
+            v_now TIMESTAMP := NOW();
+            v_user TEXT := 'carga_masiva';
+        BEGIN
+
+            -- 1. staging limpio
+            DROP TABLE IF EXISTS tmp_staging;
+
+            CREATE TEMP TABLE tmp_staging AS
+            SELECT DISTINCT
+                cedula,
+                nombre,
+                apellido,
+                fec_nac,
+                distrito
+            FROM staging_votantes
+            WHERE cedula IS NOT NULL
+            AND (p_distrito IS NULL OR distrito = p_distrito);
+
+            CREATE INDEX ON tmp_staging(cedula);
+
+            RAISE NOTICE 'Staging preparado';
+
+            -- 2. detectar nuevos (clave: cédula)
+            CREATE TEMP TABLE tmp_nuevos AS
+            SELECT s.*
+            FROM tmp_staging s
+            LEFT JOIN documento_identidad d
+                ON d.numero = s.cedula
+            WHERE d.id IS NULL;
+
+            RAISE NOTICE 'Nuevos detectados: %', (SELECT COUNT(*) FROM tmp_nuevos);
+
+            -- 3. crear personas
+            CREATE TEMP TABLE tmp_personas AS
+            SELECT
+                nextval('persona_id_seq') AS persona_id,
+                *
+            FROM tmp_nuevos;
+
+            -- 4. insertar persona
+            INSERT INTO persona (
+                id, is_deleted, createdby, updatedby, createdat, updatedat
+            )
+            SELECT
+                persona_id,
+                FALSE,
+                v_user,
+                v_user,
+                v_now,
+                v_now
+            FROM tmp_personas;
+
+            -- 5. persona_fisica
+            INSERT INTO persona_fisica (
+                persona, nombres, apellidos, fecha_nacimiento,
+                is_deleted, createdby, updatedby, createdat, updatedat
+            )
+            SELECT
+                persona_id,
+                nombre,
+                apellido,
+                fec_nac,
+                FALSE,
+                v_user,
+                v_user,
+                v_now,
+                v_now
+            FROM tmp_personas;
+
+            -- 6. documento_identidad
+            INSERT INTO documento_identidad (
+                persona, tipo, numero,
+                is_deleted, createdby, updatedby, createdat, updatedat
+            )
+            SELECT
+                persona_id,
+                1,
+                cedula,
+                FALSE,
+                v_user,
+                v_user,
+                v_now,
+                v_now
+            FROM tmp_personas;
+
+            -- 7. votantes (todos)
+            INSERT INTO votante (
+                persona, distrito,
+                is_deleted, createdby, updatedby, createdat, updatedat
+            )
+            SELECT
+                d.persona,
+                s.distrito,
+                FALSE,
+                v_user,
+                v_user,
+                v_now,
+                v_now
+            FROM tmp_staging s
+            JOIN documento_identidad d ON d.numero = s.cedula
+            WHERE NOT EXISTS (
+                SELECT 1 FROM votante v WHERE v.persona = d.persona
+            );
+
+            RAISE NOTICE 'Carga completa finalizada';
+
+        END;
+        $$;
+    </sql>
+</changeSet>
+</databaseChangeLog>
