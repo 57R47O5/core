@@ -51,6 +51,8 @@ class VotanteRestController(ModelRestController):
         for key, value in params.items():
             if key in  ['nombres', 'apellidos']:
                 filtro &= Q(**{f"persona__{key}__icontains":value})
+            if key == "documento":
+                filtro &= Q(persona__persona__documentos__numero__icontains=value)
         return filtro
 
     def serialize_list(self, queryset):

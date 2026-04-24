@@ -1,11 +1,22 @@
 import * as Yup from "yup";
 import { PersonaFisicaFields } from "../../base/persona_fisica/PersonaFisicaFields";
 import SelectFormik from "../../../components/forms/SelectFormik";
+import InputFormik from "../../../components/forms/InputFormik";
 
 
 export const VotanteFields = {
 
   ...PersonaFisicaFields,
+
+  documento: {
+    label: "Documento",
+    initial: null,
+    form: false,
+    filter: true,
+    render: (props) => <InputFormik {...props} 
+      endpoint={"distrito-electoral"}/>,
+
+  },
 
   distrito: {
     label: "Distrito",
