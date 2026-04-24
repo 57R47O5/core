@@ -52,6 +52,7 @@ services:
       - "8000"   # solo expone a la red interna, no al host
     depends_on:
       - db
+      - liquibase
     networks:
     - app-network
 
